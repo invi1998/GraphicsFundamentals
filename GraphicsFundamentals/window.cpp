@@ -143,7 +143,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		}*/
 
 		// 绘制直线
-		raster.drawLine(CELL::float2(100, 300), CELL::float2(0, 0), CELL::Rgba(200, 0, 0));
+		raster.drawLine(CELL::float2(100, 300), CELL::float2(0, 0), CELL::Rgba(200, 0, 210), CELL::Rgba(10, 255, 64));
 
 		// 直接让 raster 使用我们创建好的buffer，就可以省去这里进行buffer拷贝的过程
 		//memcpy(buffer, raster._buffer, raster.getLength() * sizeof(CELL::Rgba));

@@ -29,6 +29,6 @@ namespace CELL {
 
 		void drawPoint(int x, int y, Rgba color, int ptSize);
 
-		void drawLine(float2 pt1, float2 pt2, Rgba color);
+		void drawLine(float2 pt1, float2 pt2, Rgba color1, Rgba color2);
 	};
 }
