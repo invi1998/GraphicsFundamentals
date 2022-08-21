@@ -52,8 +52,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		"Raster",																											// 设置之前的创建基础类名，
 		"Raster",																											// 窗口的名称
 		WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN | WS_CLIPSIBLINGS,			// 这是一个说明窗口外观的通用标志
-		0,																														// 设置窗口右上角的位置 x
-		0,																														// 设置窗口右上角的位置 y
+		800,																													// 设置窗口右上角的位置 x
+		50,																													// 设置窗口右上角的位置 y
 		480,																													// 设置窗口宽
 		420,																													// 设置窗口高
 		0,																														// 如果有父窗口填父窗口的句柄，没有就取NULL
@@ -66,11 +66,53 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	UpdateWindow(hWnd);
 	ShowWindow(hWnd, SW_SHOW);
 
+	// 得到窗口大小（得到当前客户区的窗口大小，客户区就是除了标题栏以外的区域），传入一个窗口句柄和一个RECT结构体指针，将窗口信息输出到这个指针结构体中
+	RECT rt = { 0 };
+	GetClientRect(hWnd, &rt);
+
+	int width = rt.right - rt.left;
+	int height = rt.bottom - rt.top;
+	void* buffer = nullptr;
+
+	// windows里绘制上下文（绘制）对象 就用这个DC，
+	// 创建一个DC（当前窗口的DC）
+	HDC hDC = GetDC(hWnd);
+	// 创建一个内存DC（跟当前窗口兼容的DC）
+	HDC hMem = ::CreateCompatibleDC(hDC);
+
+	// 4通道（rgba）32位图
+	//typedef int color;
+	//color buffer[width][height];
+
+	// Windows绘图基础
+	BITMAPINFO bmpInfor;
+	bmpInfor.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+	bmpInfor.bmiHeader.biWidth = width;
+	bmpInfor.bmiHeader.biHeight = height;
+	bmpInfor.bmiHeader.biPlanes = 1;
+	bmpInfor.bmiHeader.biBitCount = 32;						// 一个像素占32个比特位
+	bmpInfor.bmiHeader.biCompression = BI_RGB;
+	bmpInfor.bmiHeader.biSizeImage = 0;
+	bmpInfor.bmiHeader.biXPelsPerMeter = 0;
+	bmpInfor.bmiHeader.biYPelsPerMeter = 0;
+	bmpInfor.bmiHeader.biClrUsed = 0;
+	bmpInfor.bmiHeader.biClrImportant = 0;
+
+	// 创建位图
+	// 这里这个函数会返回一个buffer，这个buffer就是输出，这个buffer就是指的是我们RGBA颜色值得缓冲区的内存地址
+	HBITMAP hBmp = CreateDIBSection(hDC, &bmpInfor, DIB_RGB_COLORS, (void**)&buffer, 0, 0);
+	// 把位图放在内存DC上（把内存DC和我们的位图关联到一起）
+	// 这个DC（hMem）就相当于一个画板，这个位图（hBmp）就相当于一张白纸，如果你想画画，就需要将纸放在画板上，这个放的过程就是
+	// 这里的 SelectObject
+	SelectObject(hMem, hBmp);
+	// windows里画图不能直接把图片画在窗口上，必须把图片放在画板上，跟DC关联到一起才能绘制
+
 	// windows消息循环
 	MSG msg = { 0 };
 	while (true)
 	{
 		if (msg.message == WM_DESTROY || msg.message == WM_CLOSE || msg.message == WM_QUIT) {
+			// 当收到 缩小，全屏，退出 都执行退出，关闭窗口
 			break;
 		}
 
@@ -78,6 +120,16 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			TranslateMessage(&msg);
 			DispatchMessageW(&msg);
 		}
+
+		memset(buffer, 255, width * height * 4);
+
+		unsigned char* rgba = (unsigned char*)buffer;		// 将buffer转为char 类型
+		int pitch = width * 4;												// 计算一行的大小（字节数）
+		memset(rgba + pitch * 10, 135, pitch);					// 然后到第十行的时候，把值全改位135
+		// 因为我们每隔像素占4个通道（rgba），占4个字节，那么一行就占 4*width
+		// 因为是二维数组表示，所以第n行的起始地址就是 buffer + （width*n)
+
+		BitBlt(hDC, 0, 0, width, height, hMem, 0, 0, SRCCOPY);
 	}
 
 	return 0;
