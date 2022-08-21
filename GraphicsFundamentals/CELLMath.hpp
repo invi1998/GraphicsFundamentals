@@ -13,7 +13,7 @@ namespace CELL
 #define PI                      3.14159265358979323
 #define TWO_PI                  6.28318530717958647
 #define HALF_PI                 1.57079632679489661
-#define DEG2RAD(theta)          (0.01745329251994329 * theta)
+#define DEG2RAD(theta)          (0.01745329251994329 * (theta))
 #define RAD2DEG                 57.2957795130823208
 #define LOG2                    0.69314718055994529
 #define WGS_84_RADIUS_EQUATOR   6378137.0

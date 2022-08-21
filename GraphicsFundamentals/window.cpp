@@ -53,8 +53,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		NULL,
 		"Raster",																											// 设置之前的创建基础类名，
 		"Raster",																											// 窗口的名称
-		// WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN | WS_CLIPSIBLINGS,			// 这是一个说明窗口外观的通用标志
-		WS_POPUPWINDOW,																						// 不要标题栏
+		WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN | WS_CLIPSIBLINGS,			// 这是一个说明窗口外观的通用标志
+	   //WS_POPUPWINDOW,																						// 不要标题栏
 		800,																													// 设置窗口右上角的位置 x
 		50,																													// 设置窗口右上角的位置 y
 		256,																													// 设置窗口宽
@@ -143,7 +143,33 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		}*/
 
 		// 绘制直线
-		raster.drawLine(CELL::float2(100, 300), CELL::float2(0, 0), CELL::Rgba(200, 0, 210), CELL::Rgba(10, 255, 64));
+		//raster.drawLine(CELL::float2(100, 300), CELL::float2(0, 0), CELL::Rgba(200, 0, 210), CELL::Rgba(10, 255, 64));
+
+		// 绘制直线2
+		CELL::float2 arPoint[] = {
+			CELL::float2(11, 210),
+			CELL::float2(101, 45),
+			CELL::float2(1, 110),
+			CELL::float2(187, 0),
+			CELL::float2(62, 190),
+		};
+
+		raster.drawArrays(CELL::DM_LINE_STRIP, arPoint, sizeof(arPoint) / sizeof(CELL::float2));
+
+		// 画一个圆
+		/*x = r * cos() + center.x;
+		y = r * sin() + center.y;*/
+
+		CELL::float2 center(100, 100);		// 圆心
+		float radius = 80;						// 半径
+		CELL::float2 arCircle[360];
+
+		for (int i = 0; i < 360; ++i)
+		{
+			arCircle[i].x = radius * cos(DEG2RAD(i)) + center.x;
+			arCircle[i].y = radius * sin(DEG2RAD(i)) + center.y;
+		}
+		raster.drawArrays(CELL::DM_LINE_LOOP, arCircle, sizeof(arCircle) / sizeof(CELL::float2));
 
 		// 直接让 raster 使用我们创建好的buffer，就可以省去这里进行buffer拷贝的过程
 		//memcpy(buffer, raster._buffer, raster.getLength() * sizeof(CELL::Rgba));

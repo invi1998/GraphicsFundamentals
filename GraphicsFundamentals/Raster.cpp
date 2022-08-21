@@ -1,7 +1,7 @@
 #include "Raster.h"
 
 namespace CELL {
-	Raster::Raster(int w, int h, void* buffer) : _width(w), _height(h) {
+	Raster::Raster(int w, int h, void* buffer) : _width(w), _height(h), _color(90, 201, 87) {
 		_buffer = (Rgba*)buffer;
 	}
 
@@ -38,6 +38,11 @@ namespace CELL {
 		default:
 			break;
 		}
+	}
+
+	void Raster::drawPoint(float2 pt, Rgba color)
+	{
+		setPiexl(pt.x, pt.y, color);
 	}
 
 	void Raster::clear() {
@@ -100,6 +105,52 @@ namespace CELL {
 				Rgba color = colorLerp(color1, color2, scaler);
 				setPiexl(x, y, color);
 			}
+		}
+	}
+
+	void Raster::drawArrays(DRAWMODE mode, const float2* points, int count)
+	{
+		switch (mode)
+		{
+		case DM_POINT:
+		{
+			for (int i = 0; i < count; ++i)
+			{
+				drawPoint(points[i], _color);
+			}
+		}
+		break;
+		case DM_LINES:
+		{
+			count = count / 2 * 2;		// 保证他是2的倍数
+			for (int i = 0; i < count; ++i)
+			{
+				drawLine(points[i], points[i + 1], _color, _color);
+			}
+		}
+
+		break;
+		case DM_LINE_LOOP:
+		{
+			drawLine(points[0], points[1], _color, _color);
+			for (int i = 2; i < count; ++i)
+			{
+				drawLine(points[i - 1], points[i], _color, _color);
+			}
+			drawLine(points[0], points[count - 1], _color, _color);
+		}
+		break;
+		case DM_LINE_STRIP:
+		{
+			drawLine(points[0], points[1], _color, _color);
+			for (int i = 2; i < count; ++i)
+			{
+				drawLine(points[i - 1], points[i], _color, _color);
+			}
+		}
+		break;
+		default:
+			break;
 		}
 	}
 }
