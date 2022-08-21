@@ -13,10 +13,10 @@ namespace CELL {
 	public:
 		Raster(int w, int h, void* buffer);
 		~Raster();
-
-		void drawPoint(int x, int y, Rgba color, int ptSize);
-
+		int getLength();
 		void clear();
+
+	public:
 
 		/*inline void setPiexl(int x, int y, Rgba color) {*/
 		inline void setPiexl(unsigned x, unsigned y, Rgba color) {
@@ -27,6 +27,8 @@ namespace CELL {
 			_buffer[y * _width + x] = color;
 		}
 
-		int getLength();
+		void drawPoint(int x, int y, Rgba color, int ptSize);
+
+		void drawLine(float2 pt1, float2 pt2, Rgba color);
 	};
 }

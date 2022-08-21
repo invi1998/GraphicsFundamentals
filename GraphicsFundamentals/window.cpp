@@ -137,9 +137,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		raster.clear();
 
-		for (int i = 0; i < 100; ++i) {
+		// 绘制100个随机点
+		/*for (int i = 0; i < 100; ++i) {
 			raster.drawPoint(rand() % 256, rand() % 256, CELL::Rgba(255, 0, 0), 3);
-		}
+		}*/
+
+		// 绘制直线
+		raster.drawLine(CELL::float2(100, 100), CELL::float2(100, 200), CELL::Rgba(200, 0, 0));
 
 		// 直接让 raster 使用我们创建好的buffer，就可以省去这里进行buffer拷贝的过程
 		//memcpy(buffer, raster._buffer, raster.getLength() * sizeof(CELL::Rgba));

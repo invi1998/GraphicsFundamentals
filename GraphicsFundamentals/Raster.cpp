@@ -47,4 +47,17 @@ namespace CELL {
 	int Raster::getLength() {
 		return _width * _height;
 	}
+
+	void Raster::drawLine(float2 pt1, float2 pt2, Rgba color) {
+		// »ñÈ¡Ð±ÂÊ
+		float xOffset = pt1.x - pt2.x;
+		float yOffset = pt1.y - pt2.y;
+
+		float scope = yOffset / xOffset;
+
+		for (float x = pt1.x; x <= pt2.x; x += 1.0f) {
+			float y = pt1.y + (x - pt1.x) * scope;
+			setPiexl(x, y, color);
+		}
+	}
 }
