@@ -1,5 +1,7 @@
 #include <windows.h>
 #include <tchar.h>
+#include "Raster.h"
+#include "CELLMath.hpp"
 
 // 在Windows下创建一个窗口
 
@@ -51,11 +53,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		NULL,
 		"Raster",																											// 设置之前的创建基础类名，
 		"Raster",																											// 窗口的名称
-		WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN | WS_CLIPSIBLINGS,			// 这是一个说明窗口外观的通用标志
+		// WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN | WS_CLIPSIBLINGS,			// 这是一个说明窗口外观的通用标志
+		WS_POPUPWINDOW,																						// 不要标题栏
 		800,																													// 设置窗口右上角的位置 x
 		50,																													// 设置窗口右上角的位置 y
-		480,																													// 设置窗口宽
-		420,																													// 设置窗口高
+		256,																													// 设置窗口宽
+		256,																													// 设置窗口高
 		0,																														// 如果有父窗口填父窗口的句柄，没有就取NULL
 		0,																														// 指向附属窗口的句柄
 		hInstance,																											// 这是应用程序的实例。这里使用WinMain()中第一个实参，hinstance句柄
@@ -87,8 +90,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	// Windows绘图基础
 	BITMAPINFO bmpInfor;
 	bmpInfor.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
-	bmpInfor.bmiHeader.biWidth = width;
-	bmpInfor.bmiHeader.biHeight = height;
+	bmpInfor.bmiHeader.biWidth = 256;
+	bmpInfor.bmiHeader.biHeight = 256;
 	bmpInfor.bmiHeader.biPlanes = 1;
 	bmpInfor.bmiHeader.biBitCount = 32;						// 一个像素占32个比特位
 	bmpInfor.bmiHeader.biCompression = BI_RGB;
@@ -106,6 +109,15 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	// 这里的 SelectObject
 	SelectObject(hMem, hBmp);
 	// windows里画图不能直接把图片画在窗口上，必须把图片放在画板上，跟DC关联到一起才能绘制
+
+	// 画一个点
+	CELL::Raster raster;
+
+	raster.clear();
+
+	for (int i = 0; i < 100; ++i) {
+		raster.drawPoint(rand() % 256, rand() % 256, CELL::Rgba(255, 0, 0), 3);
+	}
 
 	// windows消息循环
 	MSG msg = { 0 };
@@ -129,6 +141,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		// 因为我们每隔像素占4个通道（rgba），占4个字节，那么一行就占 4*width
 		// 因为是二维数组表示，所以第n行的起始地址就是 buffer + （width*n)
 
+		memcpy(buffer, raster._buffer, sizeof(raster._buffer));
 		BitBlt(hDC, 0, 0, width, height, hMem, 0, 0, SRCCOPY);
 	}
 
