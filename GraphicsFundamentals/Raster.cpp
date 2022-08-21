@@ -1,7 +1,8 @@
 #include "Raster.h"
 
 namespace CELL {
-	Raster::Raster() {
+	Raster::Raster(int w, int h, void* buffer) : _width(w), _height(h) {
+		_buffer = (Rgba*)buffer;
 	}
 
 	Raster::~Raster() {}
@@ -40,13 +41,10 @@ namespace CELL {
 	}
 
 	void Raster::clear() {
-		memset(_buffer, 255, sizeof(_buffer));
+		memset(_buffer, 255, sizeof(Rgba) * getLength());
 	}
 
-	void Raster::setPiexl(int x, int y, Rgba color) {
-		if (x < 0 || y < 0 || x >= 256 || y >= 256) {
-			return;
-		}
-		_buffer[x][y] = color;
+	int Raster::getLength() {
+		return _width * _height;
 	}
 }

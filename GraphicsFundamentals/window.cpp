@@ -90,8 +90,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	// Windows绘图基础
 	BITMAPINFO bmpInfor;
 	bmpInfor.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
-	bmpInfor.bmiHeader.biWidth = 256;
-	bmpInfor.bmiHeader.biHeight = 256;
+	bmpInfor.bmiHeader.biWidth = width;
+	bmpInfor.bmiHeader.biHeight = height;
 	bmpInfor.bmiHeader.biPlanes = 1;
 	bmpInfor.bmiHeader.biBitCount = 32;						// 一个像素占32个比特位
 	bmpInfor.bmiHeader.biCompression = BI_RGB;
@@ -111,13 +111,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	// windows里画图不能直接把图片画在窗口上，必须把图片放在画板上，跟DC关联到一起才能绘制
 
 	// 画一个点
-	CELL::Raster raster;
-
-	raster.clear();
-
-	for (int i = 0; i < 100; ++i) {
-		raster.drawPoint(rand() % 256, rand() % 256, CELL::Rgba(255, 0, 0), 3);
-	}
+	CELL::Raster raster(width, height, buffer);
 
 	// windows消息循环
 	MSG msg = { 0 };
@@ -141,7 +135,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		// 因为我们每隔像素占4个通道（rgba），占4个字节，那么一行就占 4*width
 		// 因为是二维数组表示，所以第n行的起始地址就是 buffer + （width*n)
 
-		memcpy(buffer, raster._buffer, sizeof(raster._buffer));
+		raster.clear();
+
+		for (int i = 0; i < 100; ++i) {
+			raster.drawPoint(rand() % 256, rand() % 256, CELL::Rgba(255, 0, 0), 3);
+		}
+
+		// 直接让 raster 使用我们创建好的buffer，就可以省去这里进行buffer拷贝的过程
+		//memcpy(buffer, raster._buffer, raster.getLength() * sizeof(CELL::Rgba));
 		BitBlt(hDC, 0, 0, width, height, hMem, 0, 0, SRCCOPY);
 	}
 
