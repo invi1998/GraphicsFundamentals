@@ -209,7 +209,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		//raster.drawFillRect(-145, -145, 1000, 587);
 
 		// 绘制渐变矩形
-		CELL::int2 points[] = {
+		/*CELL::int2 points[] = {
 			CELL::int2(10, 10),
 			CELL::int2(800, 10),
 			CELL::int2(800, 430),
@@ -223,7 +223,16 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			CELL::Rgba(252, 84, 44)
 		};
 
-		raster.drawRect(points, colors);
+		raster.drawRect(points, colors);*/
+
+		// 绘制不规则三角形
+		CELL::int2 pt[3] = {
+			CELL::int2(100, 10),
+			CELL::int2(10, 100),
+			CELL::int2(200, 100),
+		};
+
+		raster.drawTriggle(pt[0], pt[1], pt[2]);
 
 		// 直接让 raster 使用我们创建好的buffer，就可以省去这里进行buffer拷贝的过程
 		//memcpy(buffer, raster._buffer, raster.getLength() * sizeof(CELL::Rgba));

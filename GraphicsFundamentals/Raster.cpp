@@ -252,21 +252,37 @@ namespace CELL {
 	{
 		for (int x = span._xstart; x <= span._xEnd; ++x)
 		{
-			Rgba color = colorLerp(color1, color2, (x - start_x) / length);
-			setPiexl()
+			setPiexlEx(x, span._y, _color);
 		}
 	}
 
+	/*
+	 *			(x1, y1)
+	 *				/\
+	 *			   /  \
+	 *		E1	  /    \
+	 *			 /      \
+	 *			/        \		E2
+	 * (x2,y2) /		  \
+	 *		   .		   \
+	 *		     .          \
+	 *		E3		.		 \	(x3, y3)
+	 *
+	 */
 	void Raster::drawEdge(const Edge& e1, const Edge& e2)
 	{
-		float xOffset = e2._x2 - e2._x1;
+		float yOffset1 = e1._y2 - e1._y1;
+		if (yOffset1 == 0) return;
+
 		float yOffset = e2._y2 - e2._y1;
+		if (yOffset == 0) return;
+
+		float xOffset = e2._x2 - e2._x1;
 		float scale = 0.0f;
 		float xStep = 1.0f / yOffset;
 
 		float xOffset1 = e1._x2 - e1._x1;
-		float yOffset1 = e1._y2 - e1._y1;
-		float scale1 = 0.0f;
+		float scale1 = (e2._y1 - e1._y1) / yOffset1;
 		float xStep1 = 1.0f / yOffset1;
 
 		for (int y = e2._y1; y < e2._y2; ++y)
@@ -281,5 +297,30 @@ namespace CELL {
 			scale += xStep;
 			scale1 += xStep1;
 		}
+	}
+
+	void Raster::drawTriggle(int2 p0, int2 p1, int2 p2)
+	{
+		Edge edges[3] = {
+			Edge(p0.x, p0.y, p1.x, p1.y),
+			Edge(p1.x, p1.y, p2.x, p2.y),
+			Edge(p2.x, p2.y, p0.x, p0.y)
+		};
+
+		int iMax = 0;
+		int length = edges[0]._y2 - edges[0]._y1;
+		for (int i = 1; i < 3; ++i)
+		{
+			int len = edges[i]._y2 - edges[i]._y1;
+			if (len > length)
+			{
+				length = i;
+				//iMax = i;
+			}
+		}
+		int iShort1 = (iMax + 1) % 3;
+		int iShort2 = (iMax + 2) % 3;
+		drawEdge(edges[iMax], edges[iShort1]);
+		drawEdge(edges[iMax], edges[iShort2]);
 	}
 }

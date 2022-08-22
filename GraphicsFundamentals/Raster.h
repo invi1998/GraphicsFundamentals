@@ -20,7 +20,7 @@ namespace CELL {
 
 	public:
 		Span(int xStart, int xEnd, int y);
-		~Span();
+		~Span() = default;
 	};
 
 	class Edge
@@ -82,5 +82,7 @@ namespace CELL {
 		void drawSpan(const Span& span);
 
 		void drawEdge(const Edge& e1, const Edge& e2);
+
+		void drawTriggle(int2 p0, int2 p1, int2 p2);
 	};
 }
