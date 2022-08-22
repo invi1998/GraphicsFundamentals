@@ -153,4 +153,15 @@ namespace CELL {
 			break;
 		}
 	}
+
+	void Raster::drawFillRect(int star_x, int star_y, int w, int h)
+	{
+		for (int x = star_x; x < star_x + w; ++x)
+		{
+			for (int y = star_y; y < star_y + h; ++y)
+			{
+				setPiexl(x, y, Rgba(139, 98, 210));
+			}
+		}
+	}
 }

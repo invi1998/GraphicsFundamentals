@@ -57,8 +57,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	   //WS_POPUPWINDOW,																						// 不要标题栏
 		800,																													// 设置窗口右上角的位置 x
 		50,																													// 设置窗口右上角的位置 y
-		256,																													// 设置窗口宽
-		256,																													// 设置窗口高
+		1000,																													// 设置窗口宽
+		500,																													// 设置窗口高
 		0,																														// 如果有父窗口填父窗口的句柄，没有就取NULL
 		0,																														// 指向附属窗口的句柄
 		hInstance,																											// 这是应用程序的实例。这里使用WinMain()中第一个实参，hinstance句柄
@@ -204,6 +204,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				grev[0] = grev[1];
 			}
 		}
+
+		// 绘制矩形
+		raster.drawFillRect(45, 45, 100, 87);
 
 		// 直接让 raster 使用我们创建好的buffer，就可以省去这里进行buffer拷贝的过程
 		//memcpy(buffer, raster._buffer, raster.getLength() * sizeof(CELL::Rgba));

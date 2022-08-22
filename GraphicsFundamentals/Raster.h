@@ -25,7 +25,7 @@ namespace CELL {
 		int getLength();
 		void clear();
 
-	public:
+	private:
 
 		/*inline void setPiexl(int x, int y, Rgba color) {*/
 		inline void setPiexl(unsigned x, unsigned y, Rgba color) {
@@ -36,6 +36,12 @@ namespace CELL {
 			_buffer[y * _width + x] = color;
 		}
 
+		// 不做安全检查的填充像素函数
+		inline void setPiexlEx(unsigned x, unsigned y, Rgba color) {
+			_buffer[y * _width + x] = color;
+		}
+
+	public:
 		void drawPoint(int x, int y, Rgba color, int ptSize);
 
 		void drawPoint(float2 pt, Rgba color);
@@ -43,5 +49,7 @@ namespace CELL {
 		void drawLine(float2 pt1, float2 pt2, Rgba color1, Rgba color2);
 
 		void drawArrays(DRAWMODE mode, const float2* points, int count);
+
+		void drawFillRect(int star_x, int star_y, int w, int h);
 	};
 }
