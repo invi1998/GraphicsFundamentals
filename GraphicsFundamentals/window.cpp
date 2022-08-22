@@ -219,8 +219,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		CELL::Rgba colors[] = {
 			CELL::Rgba(22, 45, 210),
 			CELL::Rgba(122, 225, 20),
-			CELL::Rgba(92, 145, 190),
-			CELL::Rgba(212, 15, 180)
+			CELL::Rgba(212, 15, 180),
+			CELL::Rgba(252, 84, 44)
 		};
 
 		raster.drawRect(points, colors);

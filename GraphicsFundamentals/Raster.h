@@ -53,5 +53,7 @@ namespace CELL {
 		void drawFillRect(int star_x, int star_y, int w, int h);
 
 		void drawRect(const int2* points, const Rgba* color);
+
+		void drawLine(int start_x, int end_x, Rgba color1, Rgba color2);
 	};
 }

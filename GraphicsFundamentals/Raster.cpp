@@ -208,4 +208,15 @@ namespace CELL {
 			}
 		}
 	}
+
+	void Raster::drawLine(int start_x, int end_x, Rgba color1, Rgba color2)
+	{
+		float length = tmax(end_x - start_x, 1);
+
+		for (int x = start_x; x <= end_x; ++x)
+		{
+			Rgba color = colorLerp(color1, color2, (x - start_x) / length);
+			setPiexl()
+		}
+	}
 }
