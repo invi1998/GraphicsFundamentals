@@ -123,7 +123,7 @@ namespace CELL {
 		case DM_LINES:
 		{
 			count = count / 2 * 2;		// 保证他是2的倍数
-			for (int i = 0; i < count; ++i)
+			for (int i = 0; i < count; i += 2)
 			{
 				drawLine(points[i], points[i + 1], _color, _color);
 			}

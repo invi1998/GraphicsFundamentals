@@ -146,7 +146,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		//raster.drawLine(CELL::float2(100, 300), CELL::float2(0, 0), CELL::Rgba(200, 0, 210), CELL::Rgba(10, 255, 64));
 
 		// 绘制直线2
-		CELL::float2 arPoint[] = {
+		/*CELL::float2 arPoint[] = {
 			CELL::float2(11, 210),
 			CELL::float2(101, 45),
 			CELL::float2(1, 110),
@@ -154,22 +154,56 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			CELL::float2(62, 190),
 		};
 
-		raster.drawArrays(CELL::DM_LINE_STRIP, arPoint, sizeof(arPoint) / sizeof(CELL::float2));
+		raster.drawArrays(CELL::DM_LINE_STRIP, arPoint, sizeof(arPoint) / sizeof(CELL::float2));*/
 
 		// 画一个圆
 		/*x = r * cos() + center.x;
 		y = r * sin() + center.y;*/
 
-		CELL::float2 center(100, 100);		// 圆心
-		float radius = 80;						// 半径
-		CELL::float2 arCircle[360];
+		//CELL::float2 center(100, 100);		// 圆心
+		//float radius = 80;						// 半径
+		//CELL::float2 arCircle[360];
 
-		for (int i = 0; i < 360; ++i)
+		//for (int i = 0; i < 360; ++i)
+		//{
+		//	arCircle[i].x = radius * cos(DEG2RAD(i)) + center.x;
+		//	arCircle[i].y = radius * sin(DEG2RAD(i)) + center.y;
+		//}
+		//raster.drawArrays(CELL::DM_LINE_LOOP, arCircle, sizeof(arCircle) / sizeof(CELL::float2));
+
+		// 绘制贝塞尔曲线
+		CELL::float2 arPointBzier[] = {
+			CELL::float2(150, 50),
+			CELL::float2(20, 160),
+			CELL::float2(180, 100),
+			CELL::float2(170, 210),
+		};
+		// 贝塞尔曲线公式
+		//B(t) - Po(1 - t) + 3P1t(1 - t) + 3P2t(1 - t) + P3t。，t∈[0，1]
+		CELL::float2 grev[2];
+		for (float t = 0.0f; t < 1.0f; t += 0.01f)
 		{
-			arCircle[i].x = radius * cos(DEG2RAD(i)) + center.x;
-			arCircle[i].y = radius * sin(DEG2RAD(i)) + center.y;
+			float x = arPointBzier[0].x * pow(1 - t, 3) * pow(t, 0)
+				+ 3 * arPointBzier[1].x * pow(1 - t, 2) * pow(t, 1)
+				+ 3 * arPointBzier[2].x * pow(1 - t, 1) * pow(t, 2)
+				+ arPointBzier[3].x * pow(1 - t, 0) * pow(t, 3);
+
+			float y = arPointBzier[0].y * pow(1 - t, 3) * pow(t, 0)
+				+ 3 * arPointBzier[1].y * pow(1 - t, 2) * pow(t, 1)
+				+ 3 * arPointBzier[2].y * pow(1 - t, 1) * pow(t, 2)
+				+ arPointBzier[3].y * pow(1 - t, 0) * pow(t, 3);
+
+			if (t == 0)
+			{
+				grev[0] = CELL::float2(x, y);
+			}
+			else
+			{
+				grev[1] = CELL::float2(x, y);
+				raster.drawArrays(CELL::DM_LINES, grev, 2);
+				grev[0] = grev[1];
+			}
 		}
-		raster.drawArrays(CELL::DM_LINE_LOOP, arCircle, sizeof(arCircle) / sizeof(CELL::float2));
 
 		// 直接让 raster 使用我们创建好的buffer，就可以省去这里进行buffer拷贝的过程
 		//memcpy(buffer, raster._buffer, raster.getLength() * sizeof(CELL::Rgba));
