@@ -172,15 +172,15 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		//raster.drawArrays(CELL::DM_LINE_LOOP, arCircle, sizeof(arCircle) / sizeof(CELL::float2));
 
 		// 绘制贝塞尔曲线
-		CELL::float2 arPointBzier[] = {
+		/*CELL::float2 arPointBzier[] = {
 			CELL::float2(150, 50),
 			CELL::float2(20, 160),
 			CELL::float2(180, 100),
 			CELL::float2(170, 210),
-		};
+		};*/
 		// 贝塞尔曲线公式
 		//B(t) - Po(1 - t) + 3P1t(1 - t) + 3P2t(1 - t) + P3t。，t∈[0，1]
-		CELL::float2 grev[2];
+		/*CELL::float2 grev[2];
 		for (float t = 0.0f; t < 1.0f; t += 0.01f)
 		{
 			float x = arPointBzier[0].x * pow(1 - t, 3) * pow(t, 0)
@@ -203,10 +203,27 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				raster.drawArrays(CELL::DM_LINES, grev, 2);
 				grev[0] = grev[1];
 			}
-		}
+		}*/
 
 		// 绘制矩形
-		raster.drawFillRect(-145, -145, 1000, 587);
+		//raster.drawFillRect(-145, -145, 1000, 587);
+
+		// 绘制渐变矩形
+		CELL::int2 points[] = {
+			CELL::int2(10, 10),
+			CELL::int2(800, 10),
+			CELL::int2(800, 430),
+			CELL::int2(10, 430)
+		};
+
+		CELL::Rgba colors[] = {
+			CELL::Rgba(22, 45, 210),
+			CELL::Rgba(122, 225, 20),
+			CELL::Rgba(92, 145, 190),
+			CELL::Rgba(212, 15, 180)
+		};
+
+		raster.drawRect(points, colors);
 
 		// 直接让 raster 使用我们创建好的buffer，就可以省去这里进行buffer拷贝的过程
 		//memcpy(buffer, raster._buffer, raster.getLength() * sizeof(CELL::Rgba));

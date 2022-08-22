@@ -51,5 +51,7 @@ namespace CELL {
 		void drawArrays(DRAWMODE mode, const float2* points, int count);
 
 		void drawFillRect(int star_x, int star_y, int w, int h);
+
+		void drawRect(const int2* points, const Rgba* color);
 	};
 }

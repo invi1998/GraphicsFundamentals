@@ -170,4 +170,42 @@ namespace CELL {
 			}
 		}
 	}
+
+	void Raster::drawRect(const int2* points, const Rgba* color)
+	{
+		/*
+		 * 绘制如下一个渐变矩形
+		 *
+		 * p_0, c_0----------------------p_1, c_1
+		 * |								|
+		 * |								|
+		 * |								|
+		 * |								|
+		 * p_3, c_3---------------------p_2, c_2
+		 *
+		 */
+
+		int left = tmax(points[0].x, 0);
+		int top = tmax(points[0].y, 0);
+
+		int right = tmin(points[2].x, _width);
+		int bottom = tmin(points[2].y, _height);
+
+		float w = right - left;
+		float h = bottom - top;
+
+		for (int x = left; x < right; ++x)
+		{
+			// 计算横向的渐变颜色差值
+			Rgba color0 = colorLerp(color[0], color[1], (x - left) / w);
+			Rgba color1 = colorLerp(color[3], color[2], (x - left) / w);
+
+			for (int y = top; y < bottom; ++y)
+			{
+				// 在横向渐变差值的基础上计算垂直方向的差值，得到这个点应该填充的颜色
+				Rgba color2 = colorLerp(color0, color1, (y - top) / h);
+				setPiexlEx(x, y, color2);
+			}
+		}
+	}
 }
