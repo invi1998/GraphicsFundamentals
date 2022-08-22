@@ -156,11 +156,17 @@ namespace CELL {
 
 	void Raster::drawFillRect(int star_x, int star_y, int w, int h)
 	{
-		for (int x = star_x; x < star_x + w; ++x)
+		int left = tmax(star_x, 0);
+		int top = tmax(star_y, 0);
+
+		int right = tmin(star_x + w, _width);
+		int bottom = tmin(star_y + h, _height);
+
+		for (int x = left; x < right; ++x)
 		{
-			for (int y = star_y; y < star_y + h; ++y)
+			for (int y = top; y < bottom; ++y)
 			{
-				setPiexl(x, y, Rgba(139, 98, 210));
+				setPiexlEx(x, y, Rgba(139, 98, 210));
 			}
 		}
 	}
