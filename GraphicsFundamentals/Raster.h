@@ -11,6 +11,31 @@ namespace CELL {
 		DM_LINE_STRIP = 3
 	};
 
+	class Span
+	{
+	public:
+		int _xstart;
+		int _xEnd;
+		int _y;
+
+	public:
+		Span(int xStart, int xEnd, int y);
+		~Span();
+	};
+
+	class Edge
+	{
+	public:
+		int _x1;
+		int _y1;
+		int _x2;
+		int _y2;
+
+	public:
+		Edge(int x1, int x2, int y1, int y2);
+		~Edge() = default;
+	};
+
 	class Raster
 	{
 	private:
@@ -54,6 +79,8 @@ namespace CELL {
 
 		void drawRect(const int2* points, const Rgba* color);
 
-		void drawLine(int start_x, int end_x, Rgba color1, Rgba color2);
+		void drawSpan(const Span& span);
+
+		void drawEdge(const Edge& e1, const Edge& e2);
 	};
 }

@@ -1,6 +1,45 @@
 #include "Raster.h"
 
 namespace CELL {
+	Span::Span(int xStart, int xEnd, int y)
+	{
+		if (xStart < xEnd)
+		{
+			_xstart = xStart;
+			_xEnd = xEnd;
+			_y = y;
+		}
+		else
+		{
+			_xstart = xEnd;
+			_xEnd = xStart;
+			_y = y;
+		}
+	}
+
+	// ------------------------------------------------
+	Edge::Edge(int x1, int x2, int y1, int y2)
+	{
+		if (y1 < y2)
+		{
+			_x1 = x1;
+			_y1 = y1;
+
+			_x2 = x2;
+			_y2 = y2;
+		}
+		else
+		{
+			_x1 = x2;
+			_y1 = y2;
+
+			_x2 = x1;
+			_y2 = y1;
+		}
+	}
+
+	//--------------------------------------------------
+
 	Raster::Raster(int w, int h, void* buffer) : _width(w), _height(h), _color(90, 201, 87) {
 		_buffer = (Rgba*)buffer;
 	}
@@ -209,14 +248,38 @@ namespace CELL {
 		}
 	}
 
-	void Raster::drawLine(int start_x, int end_x, Rgba color1, Rgba color2)
+	void Raster::drawSpan(const Span& span)
 	{
-		float length = tmax(end_x - start_x, 1);
-
-		for (int x = start_x; x <= end_x; ++x)
+		for (int x = span._xstart; x <= span._xEnd; ++x)
 		{
 			Rgba color = colorLerp(color1, color2, (x - start_x) / length);
 			setPiexl()
+		}
+	}
+
+	void Raster::drawEdge(const Edge& e1, const Edge& e2)
+	{
+		float xOffset = e2._x2 - e2._x1;
+		float yOffset = e2._y2 - e2._y1;
+		float scale = 0.0f;
+		float xStep = 1.0f / yOffset;
+
+		float xOffset1 = e1._x2 - e1._x1;
+		float yOffset1 = e1._y2 - e1._y1;
+		float scale1 = 0.0f;
+		float xStep1 = 1.0f / yOffset1;
+
+		for (int y = e2._y1; y < e2._y2; ++y)
+		{
+			int x1 = e1._x1 + scale1 * xOffset1;
+			int x2 = e2._x1 + scale * xOffset;
+
+			Span span(x1, x2, y);
+
+			drawSpan(span);
+
+			scale += xStep;
+			scale1 += xStep1;
 		}
 	}
 }
