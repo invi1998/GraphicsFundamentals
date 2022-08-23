@@ -229,7 +229,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		// 绘制不规则三角形
 		CELL::int2 pt[3] = {
-			CELL::int2(100, 210),
+			CELL::int2(100, -110),
 			CELL::int2(10, 400),
 			CELL::int2(700, 120),
 		};
