@@ -365,4 +365,25 @@ namespace CELL {
 		drawEdge(edges[iMax], edges[iShort1]);
 		drawEdge(edges[iMax], edges[iShort2]);
 	}
+
+	/*
+	 * ÎÆÀí»ù´¡
+	 */
+	void Raster::drawImage(int star_x, int star_y, int w, int h)
+	{
+		int left = tmax(star_x, 0);
+		int top = tmax(star_y, 0);
+
+		int right = tmin(star_x + w, _width);
+		int bottom = tmin(star_y + h, _height);
+
+		for (int x = left; x < right; ++x)
+		{
+			for (int y = top; y < bottom; ++y)
+			{
+				Rgba color(rand() % 256, rand() % 256, rand() % 256);
+				setPiexlEx(x, y, color);
+			}
+		}
+	}
 }

@@ -73,6 +73,9 @@ namespace CELL {
 			_buffer[y * _width + x] = color;
 		}
 
+		/*
+		 * 光栅基础
+		 */
 	public:
 		void drawPoint(int x, int y, Rgba color, int ptSize);
 
@@ -100,5 +103,11 @@ namespace CELL {
 			}
 			return false;
 		}
+
+		/*
+		 * image 纹理基础
+		 */
+	public:
+		void drawImage(int star_x, int star_y, int w, int h);
 	};
 }

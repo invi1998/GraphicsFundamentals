@@ -138,6 +138,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		// 因为是二维数组表示，所以第n行的起始地址就是 buffer + （width*n)
 
 		raster.clear();
+		// 直接让 raster 使用我们创建好的buffer，就可以省去这里进行buffer拷贝的过程
+		//memcpy(buffer, raster._buffer, raster.getLength() * sizeof(CELL::Rgba));
 
 		// 绘制100个随机点
 		/*for (int i = 0; i < 100; ++i) {
@@ -228,36 +230,38 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		raster.drawRect(points, colors);*/
 
 		// 绘制不规则三角形
-		CELL::int2 pt[3] = {
-			CELL::int2(-100, 20),
-			CELL::int2(450, 600),
-			CELL::int2(700, 120),
-		};
-		CELL::Rgba colorTraggle[3] = {
-			CELL::Rgba(240, 78, 121),
-			CELL::Rgba(20, 178, 11),
-			CELL::Rgba(45, 30, 111)
-		};
+		//CELL::int2 pt[3] = {
+		//	CELL::int2(-100, 20),
+		//	CELL::int2(450, 600),
+		//	CELL::int2(700, 120),
+		//};
+		//CELL::Rgba colorTraggle[3] = {
+		//	CELL::Rgba(240, 78, 121),
+		//	CELL::Rgba(20, 178, 11),
+		//	CELL::Rgba(45, 30, 111)
+		//};
 
-		CELL::CELLTimestamp tms;
+		//CELL::CELLTimestamp tms;
 
-		tms.update();
-		/*for (int i = 0; i < 1000; ++i)
-		{
-		}*/
-		raster.drawTriggle(pt[0], pt[1], pt[2], colorTraggle[0], colorTraggle[1], colorTraggle[2]);
+		//tms.update();
+		///*for (int i = 0; i < 1000; ++i)
+		//{
+		//}*/
+		//raster.drawTriggle(pt[0], pt[1], pt[2], colorTraggle[0], colorTraggle[1], colorTraggle[2]);
 
-		double mis = tms.getElapsedTimeInMicroSec();
-		// 优化前绘制一次					mis	3175.2772000122072	double
-		// 优化差值						mis	3212.1111000061037	double
-		// 优化减法和除法（改为一次加法）	mis	3002.5886000061037	double
+		//double mis = tms.getElapsedTimeInMicroSec();
+		//// 优化前绘制一次					mis	3175.2772000122072	double
+		//// 优化差值						mis	3212.1111000061037	double
+		//// 优化减法和除法（改为一次加法）	mis	3002.5886000061037	double
 
-		char szBuf[128];
-		sprintf_s(szBuf, "%f", mis);
-		// 直接让 raster 使用我们创建好的buffer，就可以省去这里进行buffer拷贝的过程
-		//memcpy(buffer, raster._buffer, raster.getLength() * sizeof(CELL::Rgba));
+		//char szBuf[128];
+		//sprintf_s(szBuf, "%f", mis);
 
-		TextOut(hMem, width - 100, 10, szBuf, strlen(szBuf));
+		//TextOut(hMem, width - 100, 10, szBuf, strlen(szBuf));
+
+		// --------------------------
+		// 绘制随机像素的图片
+		raster.drawImage(100, 100, 100, 100);
 
 		BitBlt(hDC, 0, 0, width, height, hMem, 0, 0, SRCCOPY);
 	}
