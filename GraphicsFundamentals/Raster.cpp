@@ -323,6 +323,10 @@ namespace CELL {
 
 	void Raster::drawTriggle(int2 p0, int2 p1, int2 p2, Rgba c0, Rgba c1, Rgba c2)
 	{
+		if (!isInRect(p0) && !isInRect(p1) && !isInRect(p2))
+		{
+			return;
+		}
 		Edge edges[3] = {
 			Edge(p0.x, p0.y, p1.x, p1.y, c0, c1),
 			Edge(p1.x, p1.y, p2.x, p2.y, c1, c2),

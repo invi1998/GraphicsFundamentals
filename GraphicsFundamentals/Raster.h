@@ -91,5 +91,14 @@ namespace CELL {
 		void drawEdge(const Edge& e1, const Edge& e2);
 
 		void drawTriggle(int2 p0, int2 p1, int2 p2, Rgba c0, Rgba c1, Rgba c2);
+
+		inline bool isInRect(int2 pt)
+		{
+			if (pt.x >= 0 && pt.x <= _width && pt.y >= 0 && pt.y <= _height)
+			{
+				return true;
+			}
+			return false;
+		}
 	};
 }
