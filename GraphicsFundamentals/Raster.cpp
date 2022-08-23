@@ -263,9 +263,14 @@ namespace CELL {
 	void Raster::drawSpan(const Span& span)
 	{
 		float length = span._xEnd - span._xStart;
+		float scale = 0;
+		float step = 1.0f / length;
 		for (int x = span._xStart; x <= span._xEnd; ++x)
 		{
-			Rgba color = colorLerp(span._rolorStart, span._colorEnd, (x - span._xStart) / length);
+			//Rgba color = colorLerp(span._rolorStart, span._colorEnd, (x - span._xStart) / length);
+			// 优化 把之前每次的减法和除法两个操作优化为做一个加法
+			Rgba color = colorLerp(span._rolorStart, span._colorEnd, scale);
+			scale += step;
 			setPiexlEx(x, span._y, color);
 		}
 	}
@@ -331,8 +336,8 @@ namespace CELL {
 			int len = edges[i]._y2 - edges[i]._y1;
 			if (len > length)
 			{
-				length = i;
-				//iMax = i;
+				length = len;
+				iMax = i;
 			}
 		}
 		int iShort1 = (iMax + 1) % 3;

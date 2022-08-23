@@ -21,12 +21,18 @@
     <ClCompile Include="Raster.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="CELLTimestamp.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CELLMath.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Raster.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CELLTimestamp.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

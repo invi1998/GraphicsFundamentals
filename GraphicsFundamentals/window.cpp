@@ -2,7 +2,9 @@
 #include <tchar.h>
 #include "Raster.h"
 #include "CELLMath.hpp"
+#include "CELLTimestamp.h"
 
+//#define _CRT_SECURE_NO_WARNINGS
 // 在Windows下创建一个窗口
 
 LRESULT CALLBACK windowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
@@ -228,7 +230,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		// 绘制不规则三角形
 		CELL::int2 pt[3] = {
 			CELL::int2(100, 210),
-			CELL::int2(10, 0),
+			CELL::int2(10, 400),
 			CELL::int2(700, 120),
 		};
 		CELL::Rgba colorTraggle[3] = {
@@ -237,10 +239,26 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			CELL::Rgba(45, 30, 111)
 		};
 
+		CELL::CELLTimestamp tms;
+
+		tms.update();
+		/*for (int i = 0; i < 1000; ++i)
+		{
+		}*/
 		raster.drawTriggle(pt[0], pt[1], pt[2], colorTraggle[0], colorTraggle[1], colorTraggle[2]);
 
+		double mis = tms.getElapsedTimeInMicroSec();
+		// 优化前绘制一次					mis	3175.2772000122072	double
+		// 优化差值						mis	3212.1111000061037	double
+		// 优化减法和除法（改为一次加法）	mis	3002.5886000061037	double
+
+		char szBuf[128];
+		sprintf_s(szBuf, "%f", mis);
 		// 直接让 raster 使用我们创建好的buffer，就可以省去这里进行buffer拷贝的过程
 		//memcpy(buffer, raster._buffer, raster.getLength() * sizeof(CELL::Rgba));
+
+		TextOut(hMem, width - 100, 10, szBuf, strlen(szBuf));
+
 		BitBlt(hDC, 0, 0, width, height, hMem, 0, 0, SRCCOPY);
 	}
 
