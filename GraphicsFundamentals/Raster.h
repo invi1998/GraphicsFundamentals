@@ -14,12 +14,15 @@ namespace CELL {
 	class Span
 	{
 	public:
-		int _xstart;
+		int _xStart;
 		int _xEnd;
 		int _y;
 
+		Rgba _rolorStart;
+		Rgba _colorEnd;
+
 	public:
-		Span(int xStart, int xEnd, int y);
+		Span(int xStart, int xEnd, int y, Rgba colorS, Rgba colorE);
 		~Span() = default;
 	};
 
@@ -31,8 +34,12 @@ namespace CELL {
 		int _x2;
 		int _y2;
 
+		// ¶¥µãÑÕÉ«Öµ
+		Rgba _c1;
+		Rgba _c2;
+
 	public:
-		Edge(int x1, int x2, int y1, int y2);
+		Edge(int x1, int x2, int y1, int y2, Rgba color1, Rgba color2);
 		~Edge() = default;
 	};
 
@@ -83,6 +90,6 @@ namespace CELL {
 
 		void drawEdge(const Edge& e1, const Edge& e2);
 
-		void drawTriggle(int2 p0, int2 p1, int2 p2);
+		void drawTriggle(int2 p0, int2 p1, int2 p2, Rgba c0, Rgba c1, Rgba c2);
 	};
 }

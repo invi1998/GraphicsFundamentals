@@ -1,24 +1,30 @@
 #include "Raster.h"
 
 namespace CELL {
-	Span::Span(int xStart, int xEnd, int y)
+	Span::Span(int xStart, int xEnd, int y, Rgba colorS, Rgba colorE)
 	{
 		if (xStart < xEnd)
 		{
-			_xstart = xStart;
+			_xStart = xStart;
 			_xEnd = xEnd;
 			_y = y;
+
+			_rolorStart = colorS;
+			_colorEnd = colorE;
 		}
 		else
 		{
-			_xstart = xEnd;
+			_xStart = xEnd;
 			_xEnd = xStart;
 			_y = y;
+
+			_rolorStart = colorE;
+			_colorEnd = colorS;
 		}
 	}
 
 	// ------------------------------------------------
-	Edge::Edge(int x1, int x2, int y1, int y2)
+	Edge::Edge(int x1, int y1, int x2, int y2, Rgba color1, Rgba color2)
 	{
 		if (y1 < y2)
 		{
@@ -27,6 +33,9 @@ namespace CELL {
 
 			_x2 = x2;
 			_y2 = y2;
+
+			_c1 = color1;
+			_c2 = color2;
 		}
 		else
 		{
@@ -35,6 +44,9 @@ namespace CELL {
 
 			_x2 = x1;
 			_y2 = y1;
+
+			_c1 = color2;
+			_c2 = color1;
 		}
 	}
 
@@ -250,9 +262,11 @@ namespace CELL {
 
 	void Raster::drawSpan(const Span& span)
 	{
-		for (int x = span._xstart; x <= span._xEnd; ++x)
+		float length = span._xEnd - span._xStart;
+		for (int x = span._xStart; x <= span._xEnd; ++x)
 		{
-			setPiexlEx(x, span._y, _color);
+			Rgba color = colorLerp(span._rolorStart, span._colorEnd, (x - span._xStart) / length);
+			setPiexlEx(x, span._y, color);
 		}
 	}
 
@@ -290,7 +304,10 @@ namespace CELL {
 			int x1 = e1._x1 + scale1 * xOffset1;
 			int x2 = e2._x1 + scale * xOffset;
 
-			Span span(x1, x2, y);
+			Rgba color1 = colorLerp(e1._c1, e1._c2, scale1);
+			Rgba color2 = colorLerp(e2._c1, e2._c2, scale);
+
+			Span span(x1, x2, y, color1, color2);
 
 			drawSpan(span);
 
@@ -299,12 +316,12 @@ namespace CELL {
 		}
 	}
 
-	void Raster::drawTriggle(int2 p0, int2 p1, int2 p2)
+	void Raster::drawTriggle(int2 p0, int2 p1, int2 p2, Rgba c0, Rgba c1, Rgba c2)
 	{
 		Edge edges[3] = {
-			Edge(p0.x, p0.y, p1.x, p1.y),
-			Edge(p1.x, p1.y, p2.x, p2.y),
-			Edge(p2.x, p2.y, p0.x, p0.y)
+			Edge(p0.x, p0.y, p1.x, p1.y, c0, c1),
+			Edge(p1.x, p1.y, p2.x, p2.y, c1, c2),
+			Edge(p2.x, p2.y, p0.x, p0.y, c2, c0)
 		};
 
 		int iMax = 0;

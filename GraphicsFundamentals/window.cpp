@@ -227,12 +227,17 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		// 绘制不规则三角形
 		CELL::int2 pt[3] = {
-			CELL::int2(100, 10),
-			CELL::int2(10, 100),
-			CELL::int2(200, 100),
+			CELL::int2(100, 210),
+			CELL::int2(10, 0),
+			CELL::int2(700, 120),
+		};
+		CELL::Rgba colorTraggle[3] = {
+			CELL::Rgba(240, 78, 121),
+			CELL::Rgba(20, 178, 11),
+			CELL::Rgba(45, 30, 111)
 		};
 
-		raster.drawTriggle(pt[0], pt[1], pt[2]);
+		raster.drawTriggle(pt[0], pt[1], pt[2], colorTraggle[0], colorTraggle[1], colorTraggle[2]);
 
 		// 直接让 raster 使用我们创建好的buffer，就可以省去这里进行buffer拷贝的过程
 		//memcpy(buffer, raster._buffer, raster.getLength() * sizeof(CELL::Rgba));
