@@ -265,7 +265,13 @@ namespace CELL {
 		float length = span._xEnd - span._xStart;
 		float scale = 0;
 		float step = 1.0f / length;
-		for (int x = span._xStart; x < span._xEnd; ++x)
+
+		int starX = tmax(span._xStart, 0);
+		int endX = tmin(span._xEnd, _width);
+
+		scale += (starX - span._xStart) / length;
+
+		for (int x = starX; x < endX; ++x)
 		{
 			//Rgba color = colorLerp(span._rolorStart, span._colorEnd, (x - span._xStart) / length);
 			// 优化 把之前每次的减法和除法两个操作优化为做一个加法
