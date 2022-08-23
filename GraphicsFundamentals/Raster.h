@@ -1,6 +1,8 @@
 #pragma once
 
 #include "CELLMath.hpp"
+#include "FreeImage.h"
+#include "Image.hpp"
 
 namespace CELL {
 	enum DRAWMODE
@@ -108,6 +110,6 @@ namespace CELL {
 		 * image ÎÆÀí»ù´¡
 		 */
 	public:
-		void drawImage(int star_x, int star_y, int w, int h);
+		void drawImage(int star_x, int star_y, const Image* image);
 	};
 }

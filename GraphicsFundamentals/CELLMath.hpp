@@ -5222,6 +5222,10 @@ namespace CELL
 			_b = b;
 			_a = a;
 		}
+		Rgba4Byte(uint rgba)
+		{
+			_color = rgba;
+		}
 		friend  bool    operator == (const Rgba4Byte& left, const Rgba4Byte& right)
 		{
 			return  left._r == right._r &&
@@ -5265,10 +5269,21 @@ namespace CELL
 			return  (_b) | (_g << 8) | (_r << 16) | (_a << 24);
 		}
 	public:
-		unsigned char   _b;
+		/*unsigned char   _b;
 		unsigned char   _g;
 		unsigned char   _r;
-		unsigned char   _a;
+		unsigned char   _a;*/
+		union
+		{
+			struct
+			{
+				unsigned char   _b;
+				unsigned char   _g;
+				unsigned char   _r;
+				unsigned char   _a;
+			};
+			uint _color;
+		};
 	};
 
 	typedef Rgba4Byte   Rgba;

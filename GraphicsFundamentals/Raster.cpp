@@ -1,6 +1,35 @@
 #include "Raster.h"
 
 namespace CELL {
+	Image* Image::loadFromFile(const char* fileName)
+	{
+		// 1 获取图片格式
+		FREE_IMAGE_FORMAT fifmt = FreeImage_GetFileType(fileName, 0);
+		if (fifmt == FIF_UNKNOWN)
+		{
+			return nullptr;
+		}
+
+		// 2 加载图片
+		FIBITMAP* dib = FreeImage_Load(fifmt, fileName, 0);
+
+		FREE_IMAGE_COLOR_TYPE type = FreeImage_GetColorType(dib);
+
+		// 获取数据指针
+		FIBITMAP* temp = dib;
+		dib = FreeImage_ConvertTo32Bits(dib);
+		FreeImage_Unload(temp);
+
+		BYTE* pixels = (BYTE*)FreeImage_GetBits(dib);
+		int width = FreeImage_GetWidth(dib);
+		int height = FreeImage_GetHeight(dib);
+
+		Image* image = new Image(width, height, pixels);
+
+		FreeImage_Unload(dib);
+		return image;
+	}
+
 	Span::Span(int xStart, int xEnd, int y, Rgba colorS, Rgba colorE)
 	{
 		if (xStart < xEnd)
@@ -369,19 +398,19 @@ namespace CELL {
 	/*
 	 * 纹理基础
 	 */
-	void Raster::drawImage(int star_x, int star_y, int w, int h)
+	void Raster::drawImage(int star_x, int star_y, const Image* image)
 	{
 		int left = tmax(star_x, 0);
 		int top = tmax(star_y, 0);
 
-		int right = tmin(star_x + w, _width);
-		int bottom = tmin(star_y + h, _height);
+		int right = tmin(star_x + image->width(), _width);
+		int bottom = tmin(star_y + image->height(), _height);
 
 		for (int x = left; x < right; ++x)
 		{
 			for (int y = top; y < bottom; ++y)
 			{
-				Rgba color(rand() % 256, rand() % 256, rand() % 256);
+				Rgba color = image->piexlAt(x - left, y - top);
 				setPiexlEx(x, y, color);
 			}
 		}

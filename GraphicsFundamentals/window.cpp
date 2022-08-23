@@ -2,7 +2,8 @@
 #include <tchar.h>
 #include "Raster.h"
 #include "CELLMath.hpp"
-#include "CELLTimestamp.h"
+//#include "CELLTimestamp.h"
+//#include <FreeImage.h>
 
 //#define _CRT_SECURE_NO_WARNINGS
 // 在Windows下创建一个窗口
@@ -30,6 +31,15 @@ LRESULT CALLBACK windowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 // HINSTANCE hPrevInstance,	上一个实例的句柄
 // LPSTR lpCmdLine,				命令行（我们给这个exe程序所传递的一些信息）
 // int nShowCmd						显示命令（是否显示窗口）
+
+void getResourcePath(HINSTANCE hInstance, char pPath[1024])
+{
+	char path_buffer[_MAX_PATH], drive[_MAX_DRIVE], dir[_MAX_DIR], file[_MAX_FNAME], ext[_MAX_EXT];
+	GetModuleFileName(hInstance, path_buffer, sizeof(path_buffer));
+	//_splitpath_s(szPathName, szDriver, szPath, 0, 0);
+	_splitpath_s(path_buffer, drive, dir, file, ext);
+	sprintf_s(pPath, 1024, "%s%s", drive, dir);
+}
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd) {
 	// 1：注册一个窗口类
@@ -112,7 +122,15 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	SelectObject(hMem, hBmp);
 	// windows里画图不能直接把图片画在窗口上，必须把图片放在画板上，跟DC关联到一起才能绘制
 
-	// 画一个点
+	// 得到编译之后的exe文件所在的文件路径
+	char imagPathBuf[1024]{};
+	getResourcePath(0, imagPathBuf);
+
+	char szImage[1024];
+	sprintf_s(szImage, 1024, "%s/image/1.jpg", imagPathBuf);
+	CELL::Image* image_s = CELL::Image::loadFromFile(szImage);
+
+	// 创建一个我们的绘图对象
 	CELL::Raster raster(width, height, buffer);
 
 	// windows消息循环
@@ -261,10 +279,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		// --------------------------
 		// 绘制随机像素的图片
-		raster.drawImage(100, 100, 100, 100);
+		//raster.drawImage(100, 100, 100, 100);
+
+		raster.drawImage(0, 0, image_s);
 
 		BitBlt(hDC, 0, 0, width, height, hMem, 0, 0, SRCCOPY);
 	}
+
+	//delete[] image_s;
 
 	return 0;
 }

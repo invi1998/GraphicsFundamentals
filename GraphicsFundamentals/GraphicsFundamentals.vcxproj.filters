@@ -35,5 +35,11 @@
     <ClInclude Include="CELLTimestamp.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="Image.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>
