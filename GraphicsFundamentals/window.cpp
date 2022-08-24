@@ -297,7 +297,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		//raster.drawImageAlphaTest(0, 0, alphaImage, 100);
 
 		// alpha »ìºÏ
-		raster.drawImageAlphaBlend(0, 0, alphaImage);
+		//raster.drawImageAlphaBlend(0, 0, alphaImage, 0.8f);
+
+		// alpha Í¸Ã÷
+		raster.drawImageAlpha(0, 0, alphaImage, 0.5f);
 
 		BitBlt(hDC, 0, 0, width, height, hMem, 0, 0, SRCCOPY);
 	}

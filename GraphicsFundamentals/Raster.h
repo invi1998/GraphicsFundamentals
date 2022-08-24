@@ -128,7 +128,16 @@ namespace CELL {
 		 */
 		void drawImageAlphaTest(int star_x, int star_y, const Image* image, byte alpha);
 
-		// alpha 混合
-		void drawImageAlphaBlend(int star_x, int star_y, const Image* image);
+		// alpha 混合 (带alpha透明的alpha混合）
+		void drawImageAlphaBlend(int star_x, int star_y, const Image* image, float alpha);
+
+		/**
+		 * \brief alpha 透明
+		 * \param star_x 起始点x
+		 * \param star_y 起始点y
+		 * \param image 绘制图片的地址
+		 * \param alpha alpha值，1 不透明，0 全透明
+		 */
+		void drawImageAlpha(int star_x, int star_y, const Image* image, float alpha);
 	};
 }
