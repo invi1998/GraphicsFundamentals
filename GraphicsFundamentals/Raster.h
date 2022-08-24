@@ -113,5 +113,7 @@ namespace CELL {
 		void drawImage(int star_x, int star_y, const Image* image);
 
 		void drawImageWidthColorKey(int star_x, int star_y, const Image* image, Rgba colorKey);
+
+		void drawImageAlphaTest(int star_x, int star_y, const Image* image, byte alpha);
 	};
 }
