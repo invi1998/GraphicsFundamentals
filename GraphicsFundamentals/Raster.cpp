@@ -511,4 +511,22 @@ namespace CELL {
 			}
 		}
 	}
+
+	void Raster::drawImage(int star_x, int star_y, const Image* image, int x1, int y1, int w, int h)
+	{
+		int left = tmax(star_x, 0);
+		int top = tmax(star_y, 0);
+
+		int right = tmin(star_x + w, _width);
+		int bottom = tmin(star_y + h, _height);
+
+		for (int x = left; x < right; ++x)
+		{
+			for (int y = top; y < bottom; ++y)
+			{
+				Rgba color = image->piexlAt(x - left + x1, y - top + y1);
+				setPiexlEx(x, y, color);
+			}
+		}
+	}
 }

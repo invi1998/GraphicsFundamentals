@@ -117,6 +117,18 @@ namespace CELL {
 	public:
 		void drawImage(int star_x, int star_y, const Image* image);
 
+		/**
+		 * \brief 绘制图片plus版本
+		 * \param star_x 窗口绘制的起始位x
+		 * \param star_y 窗口绘制的起始位y
+		 * \param image 图片的地址
+		 * \param x 图片的起始坐标x
+		 * \param y 图片的起始坐标y
+		 * \param w 图片的绘制区域宽
+		 * \param h 图片的绘制区域高
+		 */
+		void drawImage(int star_x, int star_y, const Image* image, int x, int y, int w, int h);
+
 		void drawImageWidthColorKey(int star_x, int star_y, const Image* image, Rgba colorKey);
 
 		/**

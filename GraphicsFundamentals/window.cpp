@@ -288,7 +288,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		//raster.drawImage(100, 100, 100, 100);
 
 		// 绘制FreeImage加载进来的图片
-		raster.drawImage(0, 0, image_s);
+		//raster.drawImage(0, 0, image_s);
+
+		// 绘制图片2
+		raster.drawImage(0, 0, colorKey, 1500, 1500, 500, 500);
 
 		// colorKey 剔除颜色
 		//raster.drawImageWidthColorKey(0, 0, colorKey, CELL::Rgba(0, 0, 0));
@@ -300,7 +303,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		//raster.drawImageAlphaBlend(0, 0, alphaImage, 0.8f);
 
 		// alpha 透明
-		raster.drawImageAlpha(0, 0, alphaImage, 0.5f);
+		//raster.drawImageAlpha(0, 0, alphaImage, 0.5f);
 
 		BitBlt(hDC, 0, 0, width, height, hMem, 0, 0, SRCCOPY);
 	}
