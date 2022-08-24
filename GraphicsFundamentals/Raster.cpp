@@ -24,6 +24,18 @@ namespace CELL {
 		int width = FreeImage_GetWidth(dib);
 		int height = FreeImage_GetHeight(dib);
 
+		// 处理图片坐标和windows窗口坐标（y轴）倒置（不一致）的问题
+		/*int pitch = width * 4;
+		BYTE* row = new BYTE[width * 4];
+		for (int j = 0; j < height / 2; j++)
+		{
+			memcpy_s(row, width * 4, pixels + j * pitch, pitch);
+			memcpy_s(pixels + j * pitch, width * 4, pixels + (height - j - 1) * pitch, pitch);
+			memcpy_s(pixels + (height - j - 1) * pitch, pitch, row, pitch);
+		}
+
+		delete[] row;*/
+
 		Image* image = new Image(width, height, pixels);
 
 		FreeImage_Unload(dib);
@@ -412,6 +424,27 @@ namespace CELL {
 			{
 				Rgba color = image->piexlAt(x - left, y - top);
 				setPiexlEx(x, y, color);
+			}
+		}
+	}
+
+	void Raster::drawImageWidthColorKey(int star_x, int star_y, const Image* image, Rgba colorKey)
+	{
+		int left = tmax(star_x, 0);
+		int top = tmax(star_y, 0);
+
+		int right = tmin(star_x + image->width(), _width);
+		int bottom = tmin(star_y + image->height(), _height);
+
+		for (int x = left; x < right; ++x)
+		{
+			for (int y = top; y < bottom; ++y)
+			{
+				Rgba color = image->piexlAt(x - left, y - top);
+				if (color != colorKey)
+				{
+					setPiexlEx(x, y, color);
+				}
 			}
 		}
 	}

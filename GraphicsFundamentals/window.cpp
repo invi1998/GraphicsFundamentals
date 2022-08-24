@@ -130,6 +130,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	sprintf_s(szImage, 1024, "%s/image/1.jpg", imagPathBuf);
 	CELL::Image* image_s = CELL::Image::loadFromFile(szImage);
 
+	sprintf_s(szImage, 1024, "%s/image/2.jpg", imagPathBuf);
+	CELL::Image* colorKey = CELL::Image::loadFromFile(szImage);
+
 	// 创建一个我们的绘图对象
 	CELL::Raster raster(width, height, buffer);
 
@@ -281,7 +284,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		// 绘制随机像素的图片
 		//raster.drawImage(100, 100, 100, 100);
 
+		// 绘制FreeImage加载进来的图片
 		raster.drawImage(0, 0, image_s);
+
+		// colorKey 剔除颜色
+		raster.drawImageWidthColorKey(0, 0, colorKey, CELL::Rgba(0, 0, 0));
 
 		BitBlt(hDC, 0, 0, width, height, hMem, 0, 0, SRCCOPY);
 	}
