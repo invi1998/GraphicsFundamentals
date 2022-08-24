@@ -121,7 +121,7 @@ namespace CELL {
 		 * \brief 绘制图片plus版本
 		 * \param star_x 窗口绘制的起始位x
 		 * \param star_y 窗口绘制的起始位y
-		 * \param image 图片的地址
+		 * \param image 图片
 		 * \param x 图片的起始坐标x
 		 * \param y 图片的起始坐标y
 		 * \param w 图片的绘制区域宽
@@ -135,7 +135,7 @@ namespace CELL {
 		 * \brief alpha测试
 		 * \param star_x 起始点x
 		 * \param star_y 起始点y
-		 * \param image 绘制的图片路径
+		 * \param image 绘制的图片
 		 * \param alpha alpha通过值
 		 */
 		void drawImageAlphaTest(int star_x, int star_y, const Image* image, byte alpha);
@@ -147,9 +147,19 @@ namespace CELL {
 		 * \brief alpha 透明
 		 * \param star_x 起始点x
 		 * \param star_y 起始点y
-		 * \param image 绘制图片的地址
+		 * \param image 绘制图片
 		 * \param alpha alpha值，1 不透明，0 全透明
 		 */
 		void drawImageAlpha(int star_x, int star_y, const Image* image, float alpha);
+
+		/**
+		 * \brief 图像缩放
+		 * \param distX 目标画板的X
+		 * \param distY 目标画板的Y
+		 * \param distW 目标画板的宽
+		 * \param distH 目标画板的高
+		 * \param image 绘制的图像
+		 */
+		void drawImageScale(int distX, int distY, int distW, int distH, const Image* image);
 	};
 }

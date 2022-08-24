@@ -69,8 +69,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	   //WS_POPUPWINDOW,																						// 不要标题栏
 		800,																													// 设置窗口右上角的位置 x
 		50,																													// 设置窗口右上角的位置 y
-		1000,																													// 设置窗口宽
-		500,																													// 设置窗口高
+		2000,																													// 设置窗口宽
+		2000,																													// 设置窗口高
 		0,																														// 如果有父窗口填父窗口的句柄，没有就取NULL
 		0,																														// 指向附属窗口的句柄
 		hInstance,																											// 这是应用程序的实例。这里使用WinMain()中第一个实参，hinstance句柄
@@ -291,7 +291,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		//raster.drawImage(0, 0, image_s);
 
 		// 绘制图片2
-		raster.drawImage(0, 0, colorKey, 1500, 1500, 500, 500);
+		//raster.drawImage(0, 0, colorKey, 1500, 1500, 500, 500);
 
 		// colorKey 剔除颜色
 		//raster.drawImageWidthColorKey(0, 0, colorKey, CELL::Rgba(0, 0, 0));
@@ -304,6 +304,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		// alpha 透明
 		//raster.drawImageAlpha(0, 0, alphaImage, 0.5f);
+
+		// 最近点采样（图片缩放）
+		// 1080 * 1512 ---> 540, 756
+		//raster.drawImageScale(100, 100, 540, 756, image_s);
+		// 1080 * 1512 ---> 1620, 2268
+		raster.drawImageScale(100, 0, 1620, 1512, image_s);
 
 		BitBlt(hDC, 0, 0, width, height, hMem, 0, 0, SRCCOPY);
 	}

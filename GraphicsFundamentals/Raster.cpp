@@ -426,6 +426,7 @@ namespace CELL {
 				setPiexlEx(x, y, color);
 			}
 		}
+		int i = 0;
 	}
 
 	void Raster::drawImageWidthColorKey(int star_x, int star_y, const Image* image, Rgba colorKey)
@@ -526,6 +527,25 @@ namespace CELL {
 			{
 				Rgba color = image->piexlAt(x - left + x1, y - top + y1);
 				setPiexlEx(x, y, color);
+			}
+		}
+	}
+
+	void Raster::drawImageScale(int distX, int distY, int distW, int distH, const Image* image)
+	{
+		// 首先应该先得到我们图片宽高和我们要绘制画板的宽高的比例
+		float xScale = static_cast<float>(image->width()) / static_cast<float>(distW);
+		float yScale = static_cast<float>(image->height()) / static_cast<float>(distH);
+
+		for (int x = distX; x < distX + distW; ++x)
+		{
+			for (int y = distY; y < distY + distH; ++y)
+			{
+				float xImage = (x - distX) * xScale;
+				float yImage = (y - distY) * yScale;
+
+				Rgba srcColor = image->piexlAt(xImage, yImage);
+				setPiexlEx(x, y, srcColor);
 			}
 		}
 	}
