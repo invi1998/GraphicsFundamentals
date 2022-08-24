@@ -469,4 +469,25 @@ namespace CELL {
 			}
 		}
 	}
+
+	void Raster::drawImageAlphaBlend(int star_x, int star_y, const Image* image)
+	{
+		int left = tmax(star_x, 0);
+		int top = tmax(star_y, 0);
+
+		int right = tmin(star_x + image->width(), _width);
+		int bottom = tmin(star_y + image->height(), _height);
+
+		for (int x = left; x < right; ++x)
+		{
+			for (int y = top; y < bottom; ++y)
+			{
+				Rgba srcColor = image->piexlAt(x - left, y - top);
+				Rgba dstColr = getPiexl(x, y);
+
+				Rgba color = colorLerp(dstColr, srcColor, srcColor._a / 255.0f);
+				setPiexlEx(x, y, color);
+			}
+		}
+	}
 }

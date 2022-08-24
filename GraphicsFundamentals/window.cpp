@@ -294,7 +294,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		//raster.drawImageWidthColorKey(0, 0, colorKey, CELL::Rgba(0, 0, 0));
 
 		// alpha ≤‚ ‘
-		raster.drawImageAlphaTest(0, 0, alphaImage, 100);
+		//raster.drawImageAlphaTest(0, 0, alphaImage, 100);
+
+		// alpha ªÏ∫œ
+		raster.drawImageAlphaBlend(0, 0, alphaImage);
 
 		BitBlt(hDC, 0, 0, width, height, hMem, 0, 0, SRCCOPY);
 	}

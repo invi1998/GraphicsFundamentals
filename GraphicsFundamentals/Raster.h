@@ -75,6 +75,11 @@ namespace CELL {
 			_buffer[y * _width + x] = color;
 		}
 
+		// 获取当前像素点的背景颜色
+		inline Rgba getPiexl(unsigned x, unsigned y) {
+			return Rgba(_buffer[y * _width + x]);
+		}
+
 		/*
 		 * 光栅基础
 		 */
@@ -114,6 +119,16 @@ namespace CELL {
 
 		void drawImageWidthColorKey(int star_x, int star_y, const Image* image, Rgba colorKey);
 
+		/**
+		 * \brief alpha测试
+		 * \param star_x 起始点x
+		 * \param star_y 起始点y
+		 * \param image 绘制的图片路径
+		 * \param alpha alpha通过值
+		 */
 		void drawImageAlphaTest(int star_x, int star_y, const Image* image, byte alpha);
+
+		// alpha 混合
+		void drawImageAlphaBlend(int star_x, int star_y, const Image* image);
 	};
 }
