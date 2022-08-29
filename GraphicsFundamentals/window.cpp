@@ -316,7 +316,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			CELL::float2(0.0f, 0.0f),CELL::float2(0.5f, 1.0f),CELL::float2(1.0f, 0.0f),
 			CELL::Rgba(0, 163, 233),CELL::Rgba(255, 175, 202),CELL::Rgba(255, 242, 0)
 		};
-		raster.drawTriggle(vertex, colorKey);
+		raster.drawTriggle(vertex, image_s);
 
 		BitBlt(hDC, 0, 0, width, height, hMem, 0, 0, SRCCOPY);
 	}

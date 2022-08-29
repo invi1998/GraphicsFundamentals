@@ -328,13 +328,16 @@ namespace CELL {
 		{
 			//Rgba color = colorLerp(span._rolorStart, span._colorEnd, (x - span._xStart) / length);
 			// 优化 把之前每次的减法和除法两个操作优化为做一个加法
-			//Rgba color = colorLerp(span._rolorStart, span._colorEnd, scale);
+			Rgba color = colorLerp(span._rolorStart, span._colorEnd, scale);
 
 			float2 uv = uvLerp(span._uvStart, span._uvEnd, scale);
 			// 通过UV坐标提取图片像素坐标颜色值
-			Rgba color = image->piexUV(uv.x, uv.y);
+			Rgba piexl = image->piexUV(uv.x, uv.y);
+
+			Rgba dst = color + piexl;
+
 			scale += step;
-			setPiexlEx(x, span._y, color);
+			setPiexlEx(x, span._y, dst);
 		}
 	}
 

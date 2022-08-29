@@ -5240,6 +5240,15 @@ namespace CELL
 				left._b != right._b ||
 				left._a != right._a;
 		}
+		friend  Rgba4Byte    operator+ (const Rgba4Byte& left, const Rgba4Byte& right)
+		{
+			return  Rgba4Byte(
+				left._r + right._r,
+				left._g + right._g,
+				left._b + right._b,
+				left._a + right._a
+			);
+		}
 		operator unsigned()
 		{
 			unsigned    color;
@@ -5262,11 +5271,13 @@ namespace CELL
 		}
 		operator ulong()
 		{
-			return  toUint();
+			//return  toUint();
+			return _color;
 		}
 		uint    toUint()
 		{
-			return  (_b) | (_g << 8) | (_r << 16) | (_a << 24);
+			//return  (_b) | (_g << 8) | (_r << 16) | (_a << 24);
+			return _color;
 		}
 	public:
 		/*unsigned char   _b;
@@ -5305,8 +5316,8 @@ namespace CELL
 	{
 		tvec2<float>   uv;
 
-		uv.x = (unsigned char)(c1.x + s * (c2.x - c1.x));
-		uv.y = (unsigned char)(c1.y + s * (c2.y - c1.y));
+		uv.x = c1.x + s * (c2.x - c1.x);
+		uv.y = c1.y + s * (c2.y - c1.y);
 		return uv;
 	}
 
