@@ -36,15 +36,15 @@ namespace CELL {
 	public:
 		int _x1;
 		int _y1;
-		float2 _uv1;
 		int _x2;
 		int _y2;
-		float2 _uv2;
 
 		// ¶¥µãÑÕÉ«Öµ
 		Rgba _c1;
 		Rgba _c2;
 
+		float2 _uv1;
+		float2 _uv2;
 	public:
 		Edge(int x1, int x2, int y1, int y2, Rgba color1, Rgba color2, float2 uv1, float2 uv2);
 		~Edge() = default;
@@ -116,12 +116,12 @@ namespace CELL {
 
 		void drawRect(const int2* points, const Rgba* color);
 
-		void drawSpan(const Span& span);
+		void drawSpan(const Span& span, Image* image);
 
-		void drawEdge(const Edge& e1, const Edge& e2);
+		void drawEdge(const Edge& e1, const Edge& e2, Image* image);
 
 		//void drawTriggle(int2 p0, int2 p1, int2 p2, Rgba c0, Rgba c1, Rgba c2);
-		void drawTriggle(const Vertex& vertex);
+		void drawTriggle(const Vertex& vertex, Image* image);
 
 		inline bool isInRect(int2 pt)
 		{

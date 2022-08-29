@@ -54,5 +54,15 @@ namespace CELL
 		{
 			return Rgba(_pixel[y * _width + x]);
 		}
+
+		// 根据UV坐标查找图片对应的颜色值
+		Rgba piexUV(float u, float v)
+		{
+			// 把UV坐标转为像素坐标
+			float x = u * _width;
+			float y = v * _height;
+
+			return piexlAt(x, y);
+		}
 	};
 }

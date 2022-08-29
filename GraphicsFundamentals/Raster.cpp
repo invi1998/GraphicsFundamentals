@@ -77,27 +77,29 @@ namespace CELL {
 		{
 			_x1 = x1;
 			_y1 = y1;
-			_uv1 = uv1;
 
 			_x2 = x2;
 			_y2 = y2;
-			_uv2 = uv2;
 
 			_c1 = color1;
 			_c2 = color2;
+
+			_uv1 = uv1;
+			_uv2 = uv2;
 		}
 		else
 		{
 			_x1 = x2;
 			_y1 = y2;
-			_uv1 = uv2;
 
 			_x2 = x1;
 			_y2 = y1;
-			_uv2 = uv1;
 
 			_c1 = color2;
 			_c2 = color1;
+
+			_uv1 = uv2;
+			_uv2 = uv1;
 		}
 	}
 
@@ -311,7 +313,7 @@ namespace CELL {
 		}
 	}
 
-	void Raster::drawSpan(const Span& span)
+	void Raster::drawSpan(const Span& span, Image* image)
 	{
 		float length = span._xEnd - span._xStart;
 		float scale = 0;
@@ -326,7 +328,11 @@ namespace CELL {
 		{
 			//Rgba color = colorLerp(span._rolorStart, span._colorEnd, (x - span._xStart) / length);
 			// 优化 把之前每次的减法和除法两个操作优化为做一个加法
-			Rgba color = colorLerp(span._rolorStart, span._colorEnd, scale);
+			//Rgba color = colorLerp(span._rolorStart, span._colorEnd, scale);
+
+			float2 uv = uvLerp(span._uvStart, span._uvEnd, scale);
+			// 通过UV坐标提取图片像素坐标颜色值
+			Rgba color = image->piexUV(uv.x, uv.y);
 			scale += step;
 			setPiexlEx(x, span._y, color);
 		}
@@ -345,7 +351,7 @@ namespace CELL {
 	 *		E3		.		 \	(x3, y3)
 	 *
 	 */
-	void Raster::drawEdge(const Edge& e1, const Edge& e2)
+	void Raster::drawEdge(const Edge& e1, const Edge& e2, Image* image)
 	{
 		float yOffset1 = e1._y2 - e1._y1;
 		if (yOffset1 == 0) return;
@@ -386,14 +392,14 @@ namespace CELL {
 
 			Span span(x1, x2, y, color1, color2, uvstart, uvend);
 
-			drawSpan(span);
+			drawSpan(span, image);
 
 			scale += xStep;
 			scale1 += xStep1;
 		}
 	}
 
-	void Raster::drawTriggle(const Vertex& vertex)
+	void Raster::drawTriggle(const Vertex& vertex, Image* image)
 	{
 		if (!isInRect(vertex.p0) && !isInRect(vertex.p1) && !isInRect(vertex.p2))
 		{
@@ -418,8 +424,8 @@ namespace CELL {
 		}
 		int iShort1 = (iMax + 1) % 3;
 		int iShort2 = (iMax + 2) % 3;
-		drawEdge(edges[iMax], edges[iShort1]);
-		drawEdge(edges[iMax], edges[iShort2]);
+		drawEdge(edges[iMax], edges[iShort1], image);
+		drawEdge(edges[iMax], edges[iShort2], image);
 	}
 
 	/*
