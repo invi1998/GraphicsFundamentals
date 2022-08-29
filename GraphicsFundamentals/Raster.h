@@ -10,7 +10,15 @@ namespace CELL {
 		DM_POINT = 0,
 		DM_LINES = 1,
 		DM_LINE_LOOP = 2,
-		DM_LINE_STRIP = 3
+		DM_LINE_STRIP = 3,
+		DM_TRIANGLES = 4,
+	};
+
+	enum DATATYPE
+	{
+		DT_BYTE,
+		DT_FLOAT,
+		DT_DOUBLE
 	};
 
 	class Span
@@ -50,6 +58,15 @@ namespace CELL {
 		~Edge() = default;
 	};
 
+	// 数据元素的描述
+	struct DataElementDes
+	{
+		int _size;
+		DATATYPE _type;
+		int _stride;
+		const void* _data;
+	};
+
 	class Raster
 	{
 	private:
@@ -57,6 +74,10 @@ namespace CELL {
 		int _height;
 		Rgba _color;
 		Rgba* _buffer;
+
+		DataElementDes* _positionPointer;	// 顶点数据
+		DataElementDes* _colorPointer;	// 颜色数据
+		DataElementDes* _uvPointer;	// uv坐标数据
 	public:
 		Raster(int w, int h, void* buffer);
 		~Raster();
@@ -182,5 +203,27 @@ namespace CELL {
 		 * \param image 绘制的图像
 		 */
 		void drawImageScale(int distX, int distY, int distW, int distH, const Image* image);
+
+	public:
+		// 模仿实现OpenGL的状态机，对现有接口进行改造
+
+		/**
+		 * \brief 指定顶点、颜色、uv 数据缓冲区的函数
+		 * \param size 维度（二维还是三维，比如你这里有一个点，float类型，那么描述这个点是用2个float还是3个float）
+		 * \param type 数据类型
+		 * \param stride 偏移值（取完第一个元素值后，下一个元素值得位置在哪？就用这个偏移值进行计算）正常来说，这个值就等于 类型的大小*size
+		 * \param pointer 数据指针
+		 */
+		void vertexPointer(int size, DATATYPE type, int stride, const void* pointer);
+		void colorPointer(int size, DATATYPE type, int stride, const void* color);
+		void textureCoordPointer(int size, DATATYPE type, int stride, const void* uv);
+
+		/**
+		 * \brief 绘制图像
+		 * \param pri 绘制的模式（点，线， 面）
+		 * \param start 从哪里开始？
+		 * \param count 绘制数量
+		 */
+		void drawArrays(DRAWMODE pri, int start, int count);
 	};
 }

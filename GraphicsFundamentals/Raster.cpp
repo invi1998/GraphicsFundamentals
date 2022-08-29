@@ -107,6 +107,14 @@ namespace CELL {
 
 	Raster::Raster(int w, int h, void* buffer) : _width(w), _height(h), _color(90, 201, 87) {
 		_buffer = (Rgba*)buffer;
+
+		memset(&_positionPointer, 0, sizeof(DataElementDes*));
+		memset(&_colorPointer, 0, sizeof(DataElementDes*));
+		memset(&_uvPointer, 0, sizeof(DataElementDes*));
+
+		_positionPointer = nullptr;
+		_colorPointer = nullptr;
+		_uvPointer = nullptr;
 	}
 
 	Raster::~Raster() = default;
@@ -336,7 +344,7 @@ namespace CELL {
 
 			Rgba dst = color + piexl;
 
-			scale += step;
+			;
 			setPiexlEx(x, span._y, dst);
 		}
 	}
@@ -572,5 +580,30 @@ namespace CELL {
 				setPiexlEx(x, y, srcColor);
 			}
 		}
+	}
+
+	// ----------------------------------------------------------
+	void Raster::vertexPointer(int size, DATATYPE type, int stride, const void* pointer)
+	{
+		_positionPointer->_size = size;
+		_positionPointer->_type = type;
+		_positionPointer->_stride = stride;
+		_positionPointer->_data = pointer;
+	}
+
+	void Raster::colorPointer(int size, DATATYPE type, int stride, const void* color)
+	{
+		_colorPointer->_size = size;
+		_colorPointer->_type = type;
+		_colorPointer->_stride = stride;
+		_colorPointer->_data = color;
+	}
+
+	void Raster::textureCoordPointer(int size, DATATYPE type, int stride, const void* uv)
+	{
+		_uvPointer->_size = size;
+		_uvPointer->_type = type;
+		_uvPointer->_stride = stride;
+		_uvPointer->_data = uv;
 	}
 }

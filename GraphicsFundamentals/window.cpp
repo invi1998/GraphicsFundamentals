@@ -136,6 +136,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	sprintf_s(szImage, 1024, "%s/image/3.png", imagPathBuf);
 	CELL::Image* alphaImage = CELL::Image::loadFromFile(szImage);
 
+	struct Vertex
+	{
+		float x, y;
+		float u, v;
+		CELL::Rgba color;
+	};
+
 	// 创建一个我们的绘图对象
 	CELL::Raster raster(width, height, buffer);
 
@@ -311,12 +318,32 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		// 1080 * 1512 ---> 1620, 2268
 		//raster.drawImageScale(100, 0, 1620, 1512, image_s);
 
-		CELL::Raster::Vertex vertex = {
+		// 通过UV坐标绘制三角形纹理
+		/*CELL::Raster::Vertex vertex = {
 			CELL::int2(0, 0),CELL::int2(1000, 2000),CELL::int2(2000, 0),
 			CELL::float2(0.0f, 0.0f),CELL::float2(0.5f, 1.0f),CELL::float2(1.0f, 0.0f),
 			CELL::Rgba(0, 163, 233),CELL::Rgba(255, 175, 202),CELL::Rgba(255, 242, 0)
 		};
-		raster.drawTriggle(vertex, image_s);
+		raster.drawTriggle(vertex, image_s);*/
+
+		Vertex vertexs[] = {
+			{
+				10, 10, 0.0f, 0.0f, CELL::Rgba(231, 199, 10)
+			}, {
+				110, 110, 1.0f, 1.0f, CELL::Rgba(231, 199, 10)
+			}, {
+				110, 10, 1.0f, 0.0f, CELL::Rgba(231, 199, 10)
+			}
+		};
+
+		// 指定顶点
+		raster.vertexPointer(2, CELL::DT_FLOAT, sizeof(Vertex), &vertexs[0].x);
+		// 指定uv
+		raster.textureCoordPointer(2, CELL::DT_FLOAT, sizeof(Vertex), &vertexs[0].u);
+		// 指定颜色
+		raster.colorPointer(4, CELL::DT_BYTE, sizeof(Vertex), &vertexs[0].color);
+
+		raster.drawArrays(CELL::DM_TRIANGLES, 0, 3);
 
 		BitBlt(hDC, 0, 0, width, height, hMem, 0, 0, SRCCOPY);
 	}
