@@ -606,4 +606,8 @@ namespace CELL {
 		_uvPointer->_stride = stride;
 		_uvPointer->_data = uv;
 	}
+
+	void Raster::drawArrays(DRAWMODE pri, int start, int count)
+	{
+	}
 }
