@@ -42,7 +42,7 @@ namespace CELL {
 		return image;
 	}
 
-	Span::Span(int xStart, int xEnd, int y, Rgba colorS, Rgba colorE)
+	Span::Span(int xStart, int xEnd, int y, Rgba colorS, Rgba colorE, float2 uvstart, float2 uvend)
 	{
 		if (xStart < xEnd)
 		{
@@ -52,6 +52,9 @@ namespace CELL {
 
 			_rolorStart = colorS;
 			_colorEnd = colorE;
+
+			_uvStart = uvstart;
+			_uvEnd = uvend;
 		}
 		else
 		{
@@ -61,19 +64,24 @@ namespace CELL {
 
 			_rolorStart = colorE;
 			_colorEnd = colorS;
+
+			_uvStart = uvend;
+			_uvEnd = uvstart;
 		}
 	}
 
 	// ------------------------------------------------
-	Edge::Edge(int x1, int y1, int x2, int y2, Rgba color1, Rgba color2)
+	Edge::Edge(int x1, int y1, int x2, int y2, Rgba color1, Rgba color2, float2 uv1, float2 uv2)
 	{
 		if (y1 < y2)
 		{
 			_x1 = x1;
 			_y1 = y1;
+			_uv1 = uv1;
 
 			_x2 = x2;
 			_y2 = y2;
+			_uv2 = uv2;
 
 			_c1 = color1;
 			_c2 = color2;
@@ -82,9 +90,11 @@ namespace CELL {
 		{
 			_x1 = x2;
 			_y1 = y2;
+			_uv1 = uv2;
 
 			_x2 = x1;
 			_y2 = y1;
+			_uv2 = uv1;
 
 			_c1 = color2;
 			_c2 = color1;
@@ -366,10 +376,15 @@ namespace CELL {
 			int x1 = e1._x1 + scale1 * xOffset1;
 			int x2 = e2._x1 + scale * xOffset;
 
+			// 颜色差值计算
 			Rgba color1 = colorLerp(e1._c1, e1._c2, scale1);
 			Rgba color2 = colorLerp(e2._c1, e2._c2, scale);
 
-			Span span(x1, x2, y, color1, color2);
+			// UV坐标差值计算
+			float2 uvstart = uvLerp(e1._uv1, e1._uv2, scale1);
+			float2 uvend = uvLerp(e2._uv1, e2._uv2, scale);
+
+			Span span(x1, x2, y, color1, color2, uvstart, uvend);
 
 			drawSpan(span);
 
@@ -378,16 +393,16 @@ namespace CELL {
 		}
 	}
 
-	void Raster::drawTriggle(int2 p0, int2 p1, int2 p2, Rgba c0, Rgba c1, Rgba c2)
+	void Raster::drawTriggle(const Vertex& vertex)
 	{
-		if (!isInRect(p0) && !isInRect(p1) && !isInRect(p2))
+		if (!isInRect(vertex.p0) && !isInRect(vertex.p1) && !isInRect(vertex.p2))
 		{
 			return;
 		}
 		Edge edges[3] = {
-			Edge(p0.x, p0.y, p1.x, p1.y, c0, c1),
-			Edge(p1.x, p1.y, p2.x, p2.y, c1, c2),
-			Edge(p2.x, p2.y, p0.x, p0.y, c2, c0)
+			Edge(vertex.p0.x, vertex.p0.y, vertex.p1.x, vertex.p1.y, vertex.c0, vertex.c1, vertex.uv0, vertex.uv1),
+			Edge(vertex.p1.x, vertex.p1.y, vertex.p2.x, vertex.p2.y, vertex.c1, vertex.c2, vertex.uv1, vertex.uv2),
+			Edge(vertex.p2.x, vertex.p2.y, vertex.p0.x, vertex.p0.y, vertex.c2, vertex.c0, vertex.uv2, vertex.uv0)
 		};
 
 		int iMax = 0;

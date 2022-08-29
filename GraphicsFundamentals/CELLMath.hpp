@@ -5288,6 +5288,7 @@ namespace CELL
 
 	typedef Rgba4Byte   Rgba;
 
+	// 对颜色进行差值计算
 	inline  Rgba4Byte   colorLerp(const Rgba4Byte& c1, const Rgba4Byte& c2, float s)
 	{
 		Rgba4Byte   color;
@@ -5297,6 +5298,16 @@ namespace CELL
 		color._b = (unsigned char)(c1._b + s * (c2._b - c1._b));
 		color._a = (unsigned char)(c1._a + s * (c2._a - c1._a));
 		return color;
+	}
+
+	// 对UV进行差值计算
+	inline  tvec2<float>   uvLerp(const tvec2<float>& c1, const tvec2<float>& c2, float s)
+	{
+		tvec2<float>   uv;
+
+		uv.x = (unsigned char)(c1.x + s * (c2.x - c1.x));
+		uv.y = (unsigned char)(c1.y + s * (c2.y - c1.y));
+		return uv;
 	}
 
 	template <typename T>

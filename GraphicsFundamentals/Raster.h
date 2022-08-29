@@ -23,8 +23,11 @@ namespace CELL {
 		Rgba _rolorStart;
 		Rgba _colorEnd;
 
+		float2 _uvStart;
+		float2 _uvEnd;
+
 	public:
-		Span(int xStart, int xEnd, int y, Rgba colorS, Rgba colorE);
+		Span(int xStart, int xEnd, int y, Rgba colorS, Rgba colorE, float2 uvstart, float2 uvend);
 		~Span() = default;
 	};
 
@@ -33,15 +36,17 @@ namespace CELL {
 	public:
 		int _x1;
 		int _y1;
+		float2 _uv1;
 		int _x2;
 		int _y2;
+		float2 _uv2;
 
 		// 顶点颜色值
 		Rgba _c1;
 		Rgba _c2;
 
 	public:
-		Edge(int x1, int x2, int y1, int y2, Rgba color1, Rgba color2);
+		Edge(int x1, int x2, int y1, int y2, Rgba color1, Rgba color2, float2 uv1, float2 uv2);
 		~Edge() = default;
 	};
 
@@ -51,13 +56,28 @@ namespace CELL {
 		int _width;
 		int _height;
 		Rgba _color;
-	public:
 		Rgba* _buffer;
 	public:
 		Raster(int w, int h, void* buffer);
 		~Raster();
 		int getLength();
 		void clear();
+
+		struct Vertex
+		{
+			// 3个顶点坐标
+			int2 p0;
+			int2 p1;
+			int2 p2;
+			// 3组UV坐标
+			float2 uv0;
+			float2 uv1;
+			float2 uv2;
+			// 3个顶点颜色
+			Rgba c0;
+			Rgba c1;
+			Rgba c2;
+		};
 
 	private:
 
@@ -100,7 +120,8 @@ namespace CELL {
 
 		void drawEdge(const Edge& e1, const Edge& e2);
 
-		void drawTriggle(int2 p0, int2 p1, int2 p2, Rgba c0, Rgba c1, Rgba c2);
+		//void drawTriggle(int2 p0, int2 p1, int2 p2, Rgba c0, Rgba c1, Rgba c2);
+		void drawTriggle(const Vertex& vertex);
 
 		inline bool isInRect(int2 pt)
 		{

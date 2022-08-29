@@ -309,7 +309,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		// 1080 * 1512 ---> 540, 756
 		//raster.drawImageScale(100, 100, 540, 756, image_s);
 		// 1080 * 1512 ---> 1620, 2268
-		raster.drawImageScale(100, 0, 1620, 1512, image_s);
+		//raster.drawImageScale(100, 0, 1620, 1512, image_s);
+
+		CELL::Raster::Vertex vertex = {
+			CELL::int2(0, 0),CELL::int2(1000, 2000),CELL::int2(2000, 0),
+			CELL::float2(0.5f, 0.0f),CELL::float2(0.5f, 1.0f),CELL::float2(1.0f, 0.0f),
+			CELL::Rgba(0, 163, 233),CELL::Rgba(255, 175, 202),CELL::Rgba(255, 242, 0)
+		};
+		raster.drawTriggle(vertex);
 
 		BitBlt(hDC, 0, 0, width, height, hMem, 0, 0, SRCCOPY);
 	}
