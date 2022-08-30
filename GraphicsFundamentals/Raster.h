@@ -144,6 +144,8 @@ namespace CELL {
 		//void drawTriggle(int2 p0, int2 p1, int2 p2, Rgba c0, Rgba c1, Rgba c2);
 		void drawTriggle(const Vertex& vertex, Image* image);
 
+		void drawTriggle(Edge edges[], Image* image);
+
 		inline bool isInRect(int2 pt)
 		{
 			if (pt.x >= 0 && pt.x <= _width && pt.y >= 0 && pt.y <= _height)

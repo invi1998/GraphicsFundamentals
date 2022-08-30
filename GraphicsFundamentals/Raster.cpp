@@ -112,12 +112,17 @@ namespace CELL {
 		memset(&_colorPointer, 0, sizeof(DataElementDes*));
 		memset(&_uvPointer, 0, sizeof(DataElementDes*));
 
-		_positionPointer = nullptr;
-		_colorPointer = nullptr;
-		_uvPointer = nullptr;
+		_positionPointer = new DataElementDes();
+		_colorPointer = new DataElementDes();
+		_uvPointer = new DataElementDes();
 	}
 
-	Raster::~Raster() = default;
+	Raster::~Raster()
+	{
+		delete _positionPointer;
+		delete _colorPointer;
+		delete _uvPointer;
+	};
 
 	void Raster::drawPoint(int x, int y, Rgba color, int ptSize) {
 		switch (ptSize)
@@ -439,6 +444,25 @@ namespace CELL {
 		drawEdge(edges[iMax], edges[iShort2], image);
 	}
 
+	void Raster::drawTriggle(Edge edges[], Image* image)
+	{
+		int iMax = 0;
+		int length = edges[0]._y2 - edges[0]._y1;
+		for (int i = 1; i < 3; ++i)
+		{
+			int len = edges[i]._y2 - edges[i]._y1;
+			if (len > length)
+			{
+				length = len;
+				iMax = i;
+			}
+		}
+		int iShort1 = (iMax + 1) % 3;
+		int iShort2 = (iMax + 2) % 3;
+		drawEdge(edges[iMax], edges[iShort1], image);
+		drawEdge(edges[iMax], edges[iShort2], image);
+	}
+
 	/*
 	 * ÎÆÀí»ù´¡
 	 */
@@ -609,5 +633,40 @@ namespace CELL {
 
 	void Raster::drawArrays(DRAWMODE pri, int start, int count)
 	{
+		if (!_positionPointer->_data)
+		{
+			return;
+		}
+		char* pos = (char*)_positionPointer->_data;
+		float* posData = (float*)pos;
+		int2 p0(posData[0], posData[1]);
+		posData += _positionPointer->_stride;
+		int2 p1(posData[0], posData[1]);
+		posData += _positionPointer->_stride;
+		int2 p2(posData[0], posData[1]);
+
+		char* color = (char*)_colorPointer->_data;
+		Rgba* corData = (Rgba*)color;
+		Rgba c0(corData[0]);
+		corData += _colorPointer->_stride;
+		Rgba c1(corData[0]);
+		corData += _colorPointer->_stride;
+		Rgba c2(corData[0]);
+
+		char* tex = (char*)_uvPointer->_data;
+		float* uvData = (float*)tex;
+		float2 uv0(uvData[0], uvData[1]);
+		uvData += _uvPointer->_stride;
+		float2 uv1(uvData[0], uvData[1]);
+		uvData += _uvPointer->_stride;
+		float2 uv2(uvData[0], uvData[1]);
+
+		Edge edges[] = {
+				Edge(p0.x, p0.y, p1.x, p1.y, c0, c1, uv0, uv1),
+				Edge(p1.x, p1.y, p2.x, p2.y, c1, c2, uv1, uv2),
+				Edge(p2.x, p2.y, p0.x, p0.y, c2, c0, uv2, uv0)
+		};
+
+		drawTriggle(edges, nullptr);
 	}
 }
