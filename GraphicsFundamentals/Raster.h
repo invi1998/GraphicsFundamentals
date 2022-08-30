@@ -28,7 +28,7 @@ namespace CELL {
 		int _xEnd;
 		int _y;
 
-		Rgba _rolorStart;
+		Rgba _colorStart;
 		Rgba _colorEnd;
 
 		float2 _uvStart;
@@ -75,9 +75,17 @@ namespace CELL {
 		Rgba _color;
 		Rgba* _buffer;
 
-		DataElementDes* _positionPointer;	// 顶点数据
-		DataElementDes* _colorPointer;	// 颜色数据
-		DataElementDes* _uvPointer;	// uv坐标数据
+		Image* _texture;
+
+		DataElementDes _positionPointer;	// 顶点数据
+		DataElementDes _colorPointer;	// 颜色数据
+		DataElementDes _uvPointer;	// uv坐标数据
+
+		DataElementDes _defaultColorPointer;
+		DataElementDes _defaultUVPointer;
+
+		Rgba _defaultColorArray[3];
+		float2 _defaultUvArray[3];
 	public:
 		Raster(int w, int h, void* buffer);
 		~Raster();
@@ -144,7 +152,9 @@ namespace CELL {
 		//void drawTriggle(int2 p0, int2 p1, int2 p2, Rgba c0, Rgba c1, Rgba c2);
 		void drawTriggle(const Vertex& vertex, Image* image);
 
-		void drawTriggle(Edge edges[], Image* image);
+		void drawTriggle(Edge edges[]);
+
+		void bindTexture(Image* image);
 
 		inline bool isInRect(int2 pt)
 		{

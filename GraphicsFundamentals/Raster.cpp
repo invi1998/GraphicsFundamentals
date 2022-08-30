@@ -50,7 +50,7 @@ namespace CELL {
 			_xEnd = xEnd;
 			_y = y;
 
-			_rolorStart = colorS;
+			_colorStart = colorS;
 			_colorEnd = colorE;
 
 			_uvStart = uvstart;
@@ -62,7 +62,7 @@ namespace CELL {
 			_xEnd = xStart;
 			_y = y;
 
-			_rolorStart = colorE;
+			_colorStart = colorE;
 			_colorEnd = colorS;
 
 			_uvStart = uvend;
@@ -107,22 +107,30 @@ namespace CELL {
 
 	Raster::Raster(int w, int h, void* buffer) : _width(w), _height(h), _color(90, 201, 87) {
 		_buffer = (Rgba*)buffer;
+		_texture = nullptr;
 
-		memset(&_positionPointer, 0, sizeof(DataElementDes*));
-		memset(&_colorPointer, 0, sizeof(DataElementDes*));
-		memset(&_uvPointer, 0, sizeof(DataElementDes*));
+		memset(&_positionPointer, 0, sizeof(_positionPointer));
+		memset(&_colorPointer, 0, sizeof(_colorPointer));
+		memset(&_uvPointer, 0, sizeof(_uvPointer));
 
-		_positionPointer = new DataElementDes();
-		_colorPointer = new DataElementDes();
-		_uvPointer = new DataElementDes();
+		_positionPointer = {};
+		_colorPointer = {};
+		_uvPointer = {};
+
+		// 默认颜色
+		_defaultColorPointer._size = 4;
+		_defaultColorPointer._type = DT_BYTE;
+		_defaultColorPointer._stride = sizeof(Rgba);
+		_defaultColorPointer._data = _defaultColorArray;
+
+		// 默认UV
+		_defaultUVPointer._size = 2;
+		_defaultUVPointer._type = DT_FLOAT;
+		_defaultUVPointer._stride = sizeof(float2);
+		_defaultUVPointer._data = _defaultUvArray;
 	}
 
-	Raster::~Raster()
-	{
-		delete _positionPointer;
-		delete _colorPointer;
-		delete _uvPointer;
-	};
+	Raster::~Raster() = default;
 
 	void Raster::drawPoint(int x, int y, Rgba color, int ptSize) {
 		switch (ptSize)
@@ -339,9 +347,9 @@ namespace CELL {
 
 		for (int x = starX; x < endX; ++x)
 		{
-			//Rgba color = colorLerp(span._rolorStart, span._colorEnd, (x - span._xStart) / length);
+			//Rgba color = colorLerp(span._colorStart, span._colorEnd, (x - span._xStart) / length);
 			// 优化 把之前每次的减法和除法两个操作优化为做一个加法
-			Rgba color = colorLerp(span._rolorStart, span._colorEnd, scale);
+			Rgba color = colorLerp(span._colorStart, span._colorEnd, scale);
 
 			float2 uv = uvLerp(span._uvStart, span._uvEnd, scale);
 			// 通过UV坐标提取图片像素坐标颜色值
@@ -349,8 +357,7 @@ namespace CELL {
 
 			Rgba dst = color + piexl;
 
-			;
-			setPiexlEx(x, span._y, dst);
+			setPiexlEx(x, span._y, piexl);
 		}
 	}
 
@@ -444,7 +451,7 @@ namespace CELL {
 		drawEdge(edges[iMax], edges[iShort2], image);
 	}
 
-	void Raster::drawTriggle(Edge edges[], Image* image)
+	void Raster::drawTriggle(Edge edges[])
 	{
 		int iMax = 0;
 		int length = edges[0]._y2 - edges[0]._y1;
@@ -459,8 +466,14 @@ namespace CELL {
 		}
 		int iShort1 = (iMax + 1) % 3;
 		int iShort2 = (iMax + 2) % 3;
-		drawEdge(edges[iMax], edges[iShort1], image);
-		drawEdge(edges[iMax], edges[iShort2], image);
+		drawEdge(edges[iMax], edges[iShort1], _texture);
+		drawEdge(edges[iMax], edges[iShort2], _texture);
+	}
+
+	// 绑定图片
+	void Raster::bindTexture(Image* image)
+	{
+		_texture = image;
 	}
 
 	/*
@@ -609,64 +622,81 @@ namespace CELL {
 	// ----------------------------------------------------------
 	void Raster::vertexPointer(int size, DATATYPE type, int stride, const void* pointer)
 	{
-		_positionPointer->_size = size;
-		_positionPointer->_type = type;
-		_positionPointer->_stride = stride;
-		_positionPointer->_data = pointer;
+		_positionPointer._size = size;
+		_positionPointer._type = type;
+		_positionPointer._stride = stride;
+		_positionPointer._data = pointer;
 	}
 
 	void Raster::colorPointer(int size, DATATYPE type, int stride, const void* color)
 	{
-		_colorPointer->_size = size;
-		_colorPointer->_type = type;
-		_colorPointer->_stride = stride;
-		_colorPointer->_data = color;
+		_colorPointer._size = size;
+		_colorPointer._type = type;
+		_colorPointer._stride = stride;
+		_colorPointer._data = color;
 	}
 
 	void Raster::textureCoordPointer(int size, DATATYPE type, int stride, const void* uv)
 	{
-		_uvPointer->_size = size;
-		_uvPointer->_type = type;
-		_uvPointer->_stride = stride;
-		_uvPointer->_data = uv;
+		_uvPointer._size = size;
+		_uvPointer._type = type;
+		_uvPointer._stride = stride;
+		_uvPointer._data = uv;
 	}
 
 	void Raster::drawArrays(DRAWMODE pri, int start, int count)
 	{
-		if (!_positionPointer->_data)
+		if (!_positionPointer._data)
 		{
 			return;
 		}
-		char* pos = (char*)_positionPointer->_data;
-		float* posData = (float*)pos;
-		int2 p0(posData[0], posData[1]);
-		posData += _positionPointer->_stride;
-		int2 p1(posData[0], posData[1]);
-		posData += _positionPointer->_stride;
-		int2 p2(posData[0], posData[1]);
 
-		char* color = (char*)_colorPointer->_data;
-		Rgba* corData = (Rgba*)color;
-		Rgba c0(corData[0]);
-		corData += _colorPointer->_stride;
-		Rgba c1(corData[0]);
-		corData += _colorPointer->_stride;
-		Rgba c2(corData[0]);
+		if (_colorPointer._data == 0)
+		{
+			_colorPointer = _defaultColorPointer;
+		}
+		if (_uvPointer._data == 0)
+		{
+			_uvPointer = _defaultUVPointer;
+		}
 
-		char* tex = (char*)_uvPointer->_data;
-		float* uvData = (float*)tex;
-		float2 uv0(uvData[0], uvData[1]);
-		uvData += _uvPointer->_stride;
-		float2 uv1(uvData[0], uvData[1]);
-		uvData += _uvPointer->_stride;
-		float2 uv2(uvData[0], uvData[1]);
+		char* posData = (char*)_positionPointer._data;
+		char* colorData = (char*)_colorPointer._data;
+		char* uvData = (char*)_uvPointer._data;
 
-		Edge edges[] = {
+		float* pos = (float*)posData;
+		int2 p0(pos[0], pos[1]);
+		posData += _positionPointer._stride;
+		pos = (float*)(posData);
+		int2 p1(pos[0], pos[1]);
+		posData += _positionPointer._stride;
+		pos = (float*)(posData);
+		int2 p2(pos[0], pos[1]);
+
+		Rgba* color = (Rgba*)colorData;
+		Rgba c0(*color);
+		colorData += _colorPointer._stride;
+		color = (Rgba*)colorData;
+		Rgba c1(*color);
+		colorData += _colorPointer._stride;
+		color = (Rgba*)colorData;
+		Rgba c2(*color);
+
+		float* uv = (float*)uvData;
+		float2 uv0(uv[0], uv[1]);
+		uvData += _uvPointer._stride;
+		uv = (float*)uvData;
+		float2 uv1(uv[0], uv[1]);
+		uvData += _uvPointer._stride;
+		uv = (float*)uvData;
+		float2 uv2(uv[0], uv[1]);
+
+		Edge edges[3] = {
 				Edge(p0.x, p0.y, p1.x, p1.y, c0, c1, uv0, uv1),
 				Edge(p1.x, p1.y, p2.x, p2.y, c1, c2, uv1, uv2),
 				Edge(p2.x, p2.y, p0.x, p0.y, c2, c0, uv2, uv0)
 		};
 
-		drawTriggle(edges, nullptr);
+		drawTriggle(edges);
 	}
 }

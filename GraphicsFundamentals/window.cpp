@@ -326,16 +326,18 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		};
 		raster.drawTriggle(vertex, image_s);*/
 
-		Vertex vertexs[] = {
+		Vertex vertexs[3] = {
 			{
-				10, 10, 0.0f, 0.0f, CELL::Rgba(231, 199, 10)
+				0, 0, 0.0f, 0.0f, CELL::Rgba(231, 199, 10)
+			},  {
+				2000, 0, 1.0f, 0.0f, CELL::Rgba(21, 19, 45)
 			}, {
-				110, 110, 1.0f, 1.0f, CELL::Rgba(231, 199, 10)
-			}, {
-				110, 10, 1.0f, 0.0f, CELL::Rgba(231, 199, 10)
-			}
+				1000, 2000, 0.5f, 1.0f, CELL::Rgba(121, 94, 110)
+			},
 		};
 
+		// 指定图片
+		raster.bindTexture(image_s);
 		// 指定顶点
 		raster.vertexPointer(2, CELL::DT_FLOAT, sizeof(Vertex), &vertexs[0].x);
 		// 指定uv
