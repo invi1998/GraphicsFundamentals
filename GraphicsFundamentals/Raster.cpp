@@ -343,8 +343,6 @@ namespace CELL {
 		int starX = tmax(span._xStart, 0);
 		int endX = tmin(span._xEnd, _width);
 
-		scale += (starX - span._xStart) / length;
-
 		for (int x = starX; x < endX; ++x)
 		{
 			//Rgba color = colorLerp(span._colorStart, span._colorEnd, (x - span._xStart) / length);
@@ -356,6 +354,8 @@ namespace CELL {
 			Rgba piexl = image->piexUV(uv.x, uv.y);
 
 			Rgba dst = color + piexl;
+
+			scale += step;
 
 			setPiexlEx(x, span._y, piexl);
 		}
