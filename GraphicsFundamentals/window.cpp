@@ -326,6 +326,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		};
 		raster.drawTriggle(vertex, image_s);*/
 
+		static float speet = 0.0f;
+
 		Vertex vertexs[6] = {
 			{
 				0, 0, 0.0f, 0.0f, CELL::Rgba(231, 199, 10)
@@ -342,6 +344,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				2000, 0, 1.0f, 0.0f, CELL::Rgba(121, 94, 110)
 			},
 		};
+
+		for (int i = 0; i < 6; ++i)
+		{
+			vertexs[i].u += speet;
+		}
+
+		speet += 0.1f;
 
 		// Ö¸¶¨Í¼Æ¬
 		raster.bindTexture(image_s);

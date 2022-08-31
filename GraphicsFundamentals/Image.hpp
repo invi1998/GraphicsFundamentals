@@ -62,7 +62,7 @@ namespace CELL
 			float x = u * _width;
 			float y = v * _height;
 
-			return piexlAt(x, y);
+			return piexlAt((unsigned)(x) % _width, (unsigned)(y) % _height);
 		}
 	};
 }
