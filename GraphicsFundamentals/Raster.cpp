@@ -357,7 +357,7 @@ namespace CELL {
 
 			scale += step;
 
-			setPiexlEx(x, span._y, piexl);
+			setPiexlEx(x, span._y, dst);
 		}
 	}
 
@@ -650,53 +650,69 @@ namespace CELL {
 		{
 			return;
 		}
-
-		if (_colorPointer._data == 0)
+		DataElementDes colorPointerDesc = _colorPointer;
+		DataElementDes uvPointerDesc = _uvPointer;
+		if (colorPointerDesc._data == 0)
 		{
-			_colorPointer = _defaultColorPointer;
+			colorPointerDesc = _defaultColorPointer;
 		}
-		if (_uvPointer._data == 0)
+		if (uvPointerDesc._data == 0)
 		{
-			_uvPointer = _defaultUVPointer;
+			uvPointerDesc = _defaultUVPointer;
 		}
 
 		char* posData = (char*)_positionPointer._data;
-		char* colorData = (char*)_colorPointer._data;
-		char* uvData = (char*)_uvPointer._data;
+		char* colorData = (char*)colorPointerDesc._data;
+		char* uvData = (char*)uvPointerDesc._data;
 
-		float* pos = (float*)posData;
-		int2 p0(pos[0], pos[1]);
-		posData += _positionPointer._stride;
-		pos = (float*)(posData);
-		int2 p1(pos[0], pos[1]);
-		posData += _positionPointer._stride;
-		pos = (float*)(posData);
-		int2 p2(pos[0], pos[1]);
+		for (int i = start; i < start + count; i += 3)
+		{
+			float* pos = (float*)posData;
+			int2 p0(pos[0], pos[1]);
+			posData += _positionPointer._stride;
+			pos = (float*)(posData);
+			int2 p1(pos[0], pos[1]);
+			posData += _positionPointer._stride;
+			pos = (float*)(posData);
+			int2 p2(pos[0], pos[1]);
+			posData += _positionPointer._stride;
 
-		Rgba* color = (Rgba*)colorData;
-		Rgba c0(*color);
-		colorData += _colorPointer._stride;
-		color = (Rgba*)colorData;
-		Rgba c1(*color);
-		colorData += _colorPointer._stride;
-		color = (Rgba*)colorData;
-		Rgba c2(*color);
+			Rgba* color = (Rgba*)colorData;
+			Rgba c0(*color);
+			colorData += colorPointerDesc._stride;
+			color = (Rgba*)colorData;
+			Rgba c1(*color);
+			colorData += colorPointerDesc._stride;
+			color = (Rgba*)colorData;
+			Rgba c2(*color);
+			colorData += colorPointerDesc._stride;
 
-		float* uv = (float*)uvData;
-		float2 uv0(uv[0], uv[1]);
-		uvData += _uvPointer._stride;
-		uv = (float*)uvData;
-		float2 uv1(uv[0], uv[1]);
-		uvData += _uvPointer._stride;
-		uv = (float*)uvData;
-		float2 uv2(uv[0], uv[1]);
+			float* uv = (float*)uvData;
+			float2 uv0(uv[0], uv[1]);
+			uvData += uvPointerDesc._stride;
+			uv = (float*)uvData;
+			float2 uv1(uv[0], uv[1]);
+			uvData += uvPointerDesc._stride;
+			uv = (float*)uvData;
+			float2 uv2(uv[0], uv[1]);
+			uvData += uvPointerDesc._stride;
 
-		Edge edges[3] = {
-				Edge(p0.x, p0.y, p1.x, p1.y, c0, c1, uv0, uv1),
-				Edge(p1.x, p1.y, p2.x, p2.y, c1, c2, uv1, uv2),
-				Edge(p2.x, p2.y, p0.x, p0.y, c2, c0, uv2, uv0)
-		};
+			Edge edges[3] = {
+					Edge(p0.x, p0.y, p1.x, p1.y, c0, c1, uv0, uv1),
+					Edge(p1.x, p1.y, p2.x, p2.y, c1, c2, uv1, uv2),
+					Edge(p2.x, p2.y, p0.x, p0.y, c2, c0, uv2, uv0)
+			};
 
-		drawTriggle(edges);
+			drawTriggle(edges);
+
+			if (_colorPointer._data == 0)
+			{
+				colorData = (char*)colorPointerDesc._data;
+			}
+			if (_uvPointer._data == 0)
+			{
+				uvData = (char*)uvPointerDesc._data;
+			}
+		}
 	}
 }

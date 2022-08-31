@@ -326,13 +326,20 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		};
 		raster.drawTriggle(vertex, image_s);*/
 
-		Vertex vertexs[3] = {
+		Vertex vertexs[6] = {
 			{
 				0, 0, 0.0f, 0.0f, CELL::Rgba(231, 199, 10)
 			},  {
 				2000, 0, 1.0f, 0.0f, CELL::Rgba(21, 19, 45)
 			}, {
-				1000, 2000, 0.5f, 1.0f, CELL::Rgba(121, 94, 110)
+				0, 2000, 0.0f, 1.0f, CELL::Rgba(121, 94, 110)
+			},
+			{
+				0, 2000, 0.0f, 1.0f, CELL::Rgba(231, 199, 10)
+			},  {
+				2000, 2000, 1.0f, 1.0f, CELL::Rgba(21, 19, 45)
+			}, {
+				2000, 0, 1.0f, 0.0f, CELL::Rgba(121, 94, 110)
 			},
 		};
 
@@ -343,9 +350,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		// 指定uv
 		raster.textureCoordPointer(2, CELL::DT_FLOAT, sizeof(Vertex), &vertexs[0].u);
 		// 指定颜色
-		raster.colorPointer(4, CELL::DT_BYTE, sizeof(Vertex), &vertexs[0].color);
+		//raster.colorPointer(4, CELL::DT_BYTE, sizeof(Vertex), &vertexs[0].color);
 
-		raster.drawArrays(CELL::DM_TRIANGLES, 0, 3);
+		raster.drawArrays(CELL::DM_TRIANGLES, 0, 6);
 
 		BitBlt(hDC, 0, 0, width, height, hMem, 0, 0, SRCCOPY);
 	}

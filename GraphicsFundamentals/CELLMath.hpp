@@ -5249,6 +5249,16 @@ namespace CELL
 				left._a + right._a
 			);
 		}
+		friend  Rgba4Byte    operator* (const Rgba4Byte& left, const Rgba4Byte& right)
+		{
+			return  Rgba4Byte(
+				left._r * right._r,
+				left._g * right._g,
+				left._b * right._b,
+				left._a * right._a
+			);
+		}
+
 		operator unsigned()
 		{
 			unsigned    color;
