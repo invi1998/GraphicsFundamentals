@@ -2026,6 +2026,30 @@ namespace CELL
 			--this->value[2];
 			return *this;
 		}
+
+		void scale(T x, T y)
+		{
+			this->value[0] = col_type(value_type(x), value_type(0), value_type(0));
+			this->value[1] = col_type(value_type(0), value_type(y), value_type(0));
+			this->value[2] = col_type(value_type(0), value_type(0), value_type(1));
+		}
+
+		void rotate(T angle)
+		{
+			T rad = DEG2RAD(angle);
+			T c = cos(rad);
+			T s = sin(rad);
+			this->value[0] = col_type(value_type(c), value_type(-s), value_type(0));
+			this->value[1] = col_type(value_type(s), value_type(c), value_type(0));
+			this->value[2] = col_type(value_type(0), value_type(0), value_type(1));
+		}
+
+		void translate(T x, T y)
+		{
+			this->value[0] = col_type(value_type(1), value_type(0), value_type(0));
+			this->value[1] = col_type(value_type(0), value_type(1), value_type(0));
+			this->value[2] = col_type(value_type(x), value_type(y), value_type(1));
+		}
 	};
 
 	template <typename T>

@@ -352,6 +352,21 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		speet += 0.1f;*/
 
+		// 平移矩阵的应用
+		static float trans = 0.0f;
+		CELL::matrix3 mat;
+		mat.translate(trans, trans);
+
+		trans += 1;
+
+		for (int i = 0; i < 6; ++i)
+		{
+			CELL::float3 pos(vertexs[i].x, vertexs[i].y, 1);
+			pos = mat * pos;
+			vertexs[i].x = pos.x;
+			vertexs[i].y = pos.y;
+		}
+
 		// 指定纹理包装类型
 		image_s->setWrapType(1);
 
