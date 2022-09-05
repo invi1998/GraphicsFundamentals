@@ -363,7 +363,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		// 缩放矩阵的应用
 		static float scale = -1.0f;
 		CELL::matrix3 mat_s;
-		mat_s.scale(scale, scale);
+		//mat_s.scale(scale, scale);
+		mat_s.scale(0.5f, 0.5f);
 		//scale += 0.1f;
 
 		// 旋转矩阵的应用
@@ -374,7 +375,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		CELL::matrix3 mat_t2;
 		mat_t2.translate(1000, 1000);
-		CELL::matrix3 mat_all = mat_t2 * (mat_r * mat_t);
+		CELL::matrix3 mat_all = mat_t2 * (mat_r * mat_s * mat_t);
 
 		//mat_all *= mat_t2;
 
