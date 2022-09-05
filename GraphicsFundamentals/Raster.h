@@ -77,6 +77,8 @@ namespace CELL {
 
 		Image* _texture;
 
+		matrix3 _matModel;		// 模型矩阵
+
 		DataElementDes _positionPointer;	// 顶点数据
 		DataElementDes _colorPointer;	// 颜色数据
 		DataElementDes _uvPointer;	// uv坐标数据
@@ -86,6 +88,7 @@ namespace CELL {
 
 		Rgba _defaultColorArray[3];
 		float2 _defaultUvArray[3];
+
 	public:
 		Raster(int w, int h, void* buffer);
 		~Raster();
@@ -237,5 +240,18 @@ namespace CELL {
 		 * \param count 绘制数量
 		 */
 		void drawArrays(DRAWMODE pri, int start, int count);
+
+		/**
+		 * 矩阵操作函数
+		 */
+
+		 /// <summary>
+		 /// 加载矩阵，用给定的矩阵来替换我们的当前的矩阵
+		 /// </summary>
+		 /// <param name="mat"></param>
+		void loadMatrix(const CELL::matrix3& mat);
+
+		// 将我们的矩阵置为单位矩阵
+		void loadIdentity();
 	};
 }

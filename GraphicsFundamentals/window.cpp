@@ -395,18 +395,20 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			vertexs[i].y = pos.y;
 		}*/
 
-		for (int i = 0; i < 6; ++i)
-		{
-			CELL::float3 pos(vertexs[i].x, vertexs[i].y, 1);
-			//pos = mat_r * pos;
-			pos = mat_all * pos;
-			vertexs[i].x = pos.x;
-			vertexs[i].y = pos.y;
-		}
+		//for (int i = 0; i < 6; ++i)
+		//{
+		//	CELL::float3 pos(vertexs[i].x, vertexs[i].y, 1);
+		//	//pos = mat_r * pos;
+		//	pos = mat_all * pos;
+		//	vertexs[i].x = pos.x;
+		//	vertexs[i].y = pos.y;
+		//}
 
 		// 指定纹理包装类型
 		image_s->setWrapType(0);
 
+		// 指定模型矩阵
+		raster.loadMatrix(mat_all);
 		// 指定图片
 		raster.bindTexture(image_s);
 		// 指定顶点

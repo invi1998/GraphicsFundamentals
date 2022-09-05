@@ -128,6 +128,9 @@ namespace CELL {
 		_defaultUVPointer._type = DT_FLOAT;
 		_defaultUVPointer._stride = sizeof(float2);
 		_defaultUVPointer._data = _defaultUvArray;
+
+		// 单位矩阵和任何矩阵相乘都等于任何矩阵
+		_matModel = CELL::matrix3(1);		// 默认设置模型矩阵为单位矩阵，单位矩阵和我们的值进行相乘是不会改变值的
 	}
 
 	Raster::~Raster() = default;
@@ -668,14 +671,23 @@ namespace CELL {
 		for (int i = start; i < start + count; i += 3)
 		{
 			float* pos = (float*)posData;
-			int2 p0(pos[0], pos[1]);
+			float3 p00(pos[0], pos[1], 1);
 			posData += _positionPointer._stride;
 			pos = (float*)(posData);
-			int2 p1(pos[0], pos[1]);
+			p00 = _matModel * p00;
+
+			float3 p01(pos[0], pos[1], 1);
 			posData += _positionPointer._stride;
 			pos = (float*)(posData);
-			int2 p2(pos[0], pos[1]);
+			p01 = _matModel * p01;
+
+			float3 p02(pos[0], pos[1], 1);
 			posData += _positionPointer._stride;
+			p02 = _matModel * p02;
+
+			int2 p0(p00.x, p00.y);
+			int2 p1(p01.x, p01.y);
+			int2 p2(p02.x, p02.y);
 
 			Rgba* color = (Rgba*)colorData;
 			Rgba c0(*color);
@@ -714,5 +726,16 @@ namespace CELL {
 				uvData = (char*)uvPointerDesc._data;
 			}
 		}
+	}
+
+	// 矩阵
+	void Raster::loadMatrix(const CELL::matrix3& mat)
+	{
+		_matModel = mat;
+	}
+
+	void Raster::loadIdentity()
+	{
+		_matModel = CELL::matrix3(1);
 	}
 }
