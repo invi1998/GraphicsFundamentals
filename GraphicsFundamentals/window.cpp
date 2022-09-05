@@ -354,15 +354,29 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		// 平移矩阵的应用
 		static float trans = 0.0f;
-		CELL::matrix3 mat;
-		mat.translate(trans, trans);
+		CELL::matrix3 mat_t;
+		mat_t.translate(2000, 2000);
 
-		trans += 1;
+		//trans += 1;
+
+		// 缩放矩阵的应用
+		static float scale = -1.0f;
+		CELL::matrix3 mat_s;
+		mat_s.scale(scale, scale);
+		//scale += 0.1f;
 
 		for (int i = 0; i < 6; ++i)
 		{
 			CELL::float3 pos(vertexs[i].x, vertexs[i].y, 1);
-			pos = mat * pos;
+			pos = mat_s * pos;
+			vertexs[i].x = pos.x;
+			vertexs[i].y = pos.y;
+		}
+
+		for (int i = 0; i < 6; ++i)
+		{
+			CELL::float3 pos(vertexs[i].x, vertexs[i].y, 1);
+			pos = mat_t * pos;
 			vertexs[i].x = pos.x;
 			vertexs[i].y = pos.y;
 		}
