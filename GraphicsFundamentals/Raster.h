@@ -77,7 +77,7 @@ namespace CELL {
 
 		Image* _texture;
 
-		matrix3 _matModel;		// 模型矩阵
+		matrix4 _matModel;		// 模型矩阵
 
 		DataElementDes _positionPointer;	// 顶点数据
 		DataElementDes _colorPointer;	// 颜色数据
@@ -249,7 +249,7 @@ namespace CELL {
 		 /// 加载矩阵，用给定的矩阵来替换我们的当前的矩阵
 		 /// </summary>
 		 /// <param name="mat"></param>
-		void loadMatrix(const CELL::matrix3& mat);
+		void loadMatrix(const matrix4& mat);
 
 		// 将我们的矩阵置为单位矩阵
 		void loadIdentity();

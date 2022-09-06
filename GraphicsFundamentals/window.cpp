@@ -138,7 +138,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	struct Vertex
 	{
-		float x, y;
+		float x, y, z;
 		float u, v;
 		CELL::Rgba color;
 	};
@@ -330,18 +330,18 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		Vertex vertexs[6] = {
 			{
-				0, 0, 0.0f, 0.0f, CELL::Rgba(231, 199, 10)
+				0, 0, 0, 0.0f, 0.0f, CELL::Rgba(231, 199, 10)
 			},  {
-				2000, 0, 2.0f, 0.0f, CELL::Rgba(21, 19, 45)
+				2000, 0, 0, 2.0f, 0.0f, CELL::Rgba(21, 19, 45)
 			}, {
-				0, 2000, 0.0f, 2.0f, CELL::Rgba(121, 94, 110)
+				0, 2000, 0, 0.0f, 2.0f, CELL::Rgba(121, 94, 110)
 			},
 			{
-				0, 2000, 0.0f, 2.0f, CELL::Rgba(231, 199, 10)
+				0, 2000, 0, 0.0f, 2.0f, CELL::Rgba(231, 199, 10)
 			},  {
-				2000, 2000, 2.0f, 2.0f, CELL::Rgba(21, 19, 45)
+				2000, 2000, 0, 2.0f, 2.0f, CELL::Rgba(21, 19, 45)
 			}, {
-				2000, 0, 2.0f, 0.0f, CELL::Rgba(121, 94, 110)
+				2000, 0, 0, 2.0f, 0.0f, CELL::Rgba(121, 94, 110)
 			},
 		};
 
@@ -354,28 +354,28 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		// 平移矩阵的应用
 		static float trans = 0.0f;
-		CELL::matrix3 mat_t;
+		CELL::matrix4 mat_t;
 		//mat_t.translate(2000, 2000);
-		mat_t.translate(-1000, -1000);
+		mat_t.translate(-1000, -1000, 0);
 
 		//trans += 1;
 
 		// 缩放矩阵的应用
 		static float scale = -1.0f;
-		CELL::matrix3 mat_s;
+		CELL::matrix4 mat_s;
 		//mat_s.scale(scale, scale);
-		mat_s.scale(0.5f, 0.5f);
+		mat_s.scale(0.5f, 0.5f, 1.0f);
 		//scale += 0.1f;
 
 		// 旋转矩阵的应用
 		static float angle = 0.0f;
-		CELL::matrix3 mat_r;
-		mat_r.rotate(angle);
+		CELL::matrix4 mat_r;
+		mat_r.rotate(angle, 'x');
 		angle += 1.0f;
 
-		CELL::matrix3 mat_t2;
-		mat_t2.translate(1000, 1000);
-		CELL::matrix3 mat_all = mat_t2 * (mat_r * mat_s * mat_t);
+		CELL::matrix4 mat_t2;
+		mat_t2.translate(1000, 1000, 0);
+		CELL::matrix4 mat_all = mat_t2 * (mat_r * mat_s * mat_t);
 
 		//mat_all *= mat_t2;
 

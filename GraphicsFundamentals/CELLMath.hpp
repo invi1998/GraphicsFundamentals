@@ -2606,6 +2606,12 @@ namespace CELL
 			return  *this;
 		}
 
+		/**
+		 * \brief 旋转
+		 * \param angle 旋转角度
+		 * \param v 旋转的轴信息
+		 * \return
+		 */
 		tmat4x4<T>& rotate(value_type angle, tvec3<T> const& v)
 		{
 			T a = DEG2RAD(angle);

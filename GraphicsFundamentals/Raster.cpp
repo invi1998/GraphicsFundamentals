@@ -130,7 +130,7 @@ namespace CELL {
 		_defaultUVPointer._data = _defaultUvArray;
 
 		// 单位矩阵和任何矩阵相乘都等于任何矩阵
-		_matModel = CELL::matrix3(1);		// 默认设置模型矩阵为单位矩阵，单位矩阵和我们的值进行相乘是不会改变值的
+		_matModel = CELL::matrix4(1);		// 默认设置模型矩阵为单位矩阵，单位矩阵和我们的值进行相乘是不会改变值的
 	}
 
 	Raster::~Raster() = default;
@@ -671,19 +671,21 @@ namespace CELL {
 		for (int i = start; i < start + count; i += 3)
 		{
 			float* pos = (float*)posData;
-			float3 p00(pos[0], pos[1], 1);
+			float4 p00(pos[0], pos[1], pos[2], 1);
 			posData += _positionPointer._stride;
 			pos = (float*)(posData);
 			p00 = _matModel * p00;
 
-			float3 p01(pos[0], pos[1], 1);
+			float4 p01(pos[0], pos[1], pos[2], 1);
 			posData += _positionPointer._stride;
 			pos = (float*)(posData);
 			p01 = _matModel * p01;
 
-			float3 p02(pos[0], pos[1], 1);
+			float4 p02(pos[0], pos[1], pos[2], 1);
 			posData += _positionPointer._stride;
 			p02 = _matModel * p02;
+
+			// 转化为屏幕坐标
 
 			int2 p0(p00.x, p00.y);
 			int2 p1(p01.x, p01.y);
@@ -729,13 +731,13 @@ namespace CELL {
 	}
 
 	// 矩阵
-	void Raster::loadMatrix(const CELL::matrix3& mat)
+	void Raster::loadMatrix(const matrix4& mat)
 	{
 		_matModel = mat;
 	}
 
 	void Raster::loadIdentity()
 	{
-		_matModel = CELL::matrix3(1);
+		_matModel = matrix4(1);
 	}
 }
