@@ -77,7 +77,10 @@ namespace CELL {
 
 		Image* _texture;
 
-		matrix4 _matModel;		// 模型矩阵
+		matrix4 _matModel;			// 模型矩阵
+		matrix4 _matView;			// 观察矩阵
+		matrix4 _matProj;			// 投影矩阵
+		float2 _viewPort;			// 视口
 
 		DataElementDes _positionPointer;	// 顶点数据
 		DataElementDes _colorPointer;	// 颜色数据
@@ -88,6 +91,9 @@ namespace CELL {
 
 		Rgba _defaultColorArray[3];
 		float2 _defaultUvArray[3];
+
+	protected:
+		float3 piplineTransform(float3 world);
 
 	public:
 		Raster(int w, int h, void* buffer);
@@ -246,12 +252,28 @@ namespace CELL {
 		 */
 
 		 /// <summary>
-		 /// 加载矩阵，用给定的矩阵来替换我们的当前的矩阵
+		 /// 加载模型矩阵，用给定的矩阵来替换我们的当前的矩阵
 		 /// </summary>
 		 /// <param name="mat"></param>
 		void loadMatrix(const matrix4& mat);
+		// 加载观察矩阵
+		void loadViewMatrix(const matrix4& mat);
+		// 加载投影矩阵
+		void loadProjMatrix(const matrix4& mat);
+		//
 
 		// 将我们的矩阵置为单位矩阵
 		void loadIdentity();
+		void loadViewIdentity();
+		void loadProjIdentity();
+
+		// 生成透视投影矩阵
+		void setPerspective(float fovy, float aspect, float zNear, float zFar);
+
+		// 生成观察矩阵
+		void setLookat(float const& eye, float const& center, float const& up);
+
+		// 生成视口
+		void setViewPort(int x, int y, int w, int h);
 	};
 }

@@ -671,19 +671,19 @@ namespace CELL {
 		for (int i = start; i < start + count; i += 3)
 		{
 			float* pos = (float*)posData;
-			float4 p00(pos[0], pos[1], pos[2], 1);
+			float3 p00(pos[0], pos[1], pos[2]);
 			posData += _positionPointer._stride;
 			pos = (float*)(posData);
-			p00 = _matModel * p00;
+			p00 = piplineTransform(p00);
 
-			float4 p01(pos[0], pos[1], pos[2], 1);
+			float3 p01(pos[0], pos[1], pos[2]);
 			posData += _positionPointer._stride;
 			pos = (float*)(posData);
-			p01 = _matModel * p01;
+			p01 = piplineTransform(p01);
 
-			float4 p02(pos[0], pos[1], pos[2], 1);
+			float3 p02(pos[0], pos[1], pos[2]);
 			posData += _positionPointer._stride;
-			p02 = _matModel * p02;
+			p02 = piplineTransform(p02);
 
 			// 转化为屏幕坐标
 
@@ -730,14 +730,84 @@ namespace CELL {
 		}
 	}
 
-	// 矩阵
+	// 矩阵加载
 	void Raster::loadMatrix(const matrix4& mat)
 	{
 		_matModel = mat;
 	}
 
+	void Raster::loadViewMatrix(const matrix4& mat)
+	{
+		_matView = mat;
+	}
+
+	void Raster::loadProjMatrix(const matrix4& mat)
+	{
+		_matProj = mat;
+	}
+
+	// 矩阵置为单位矩阵
+	void Raster::loadProjIdentity()
+	{
+		_matProj = matrix4(1);
+	}
+
+	void Raster::loadViewIdentity()
+	{
+		_matView = matrix4(1);
+	}
+
 	void Raster::loadIdentity()
 	{
 		_matModel = matrix4(1);
+	}
+
+	// 固定管线转化
+	float3 Raster::piplineTransform(float3 pos)
+	{
+		float4 world(pos.x, pos.y, pos.z, 1);
+		// MVP （投影矩阵*观察矩阵*模型矩阵）
+		// 在OpenGL中，因为OpenGL是左乘，所以就是下面这个 （PVM）
+		// MVP（PVM)的结果再和我们的输入相乘，就得到NDC
+
+		float4 screen = (_matProj * _matView * _matModel) * world;
+		if (screen.w == 0.0f)
+		{
+			return false;
+		}
+		// 下面这些值得范围是 （-1 --- 1）
+		screen.x /= screen.w;
+		screen.y /= screen.w;
+		screen.z /= screen.w;
+
+		// map to range 0-1 （因为上面的矩阵绘制的坐标是-1 到 1），我们需要转化到 0-1
+		screen.x = screen.x * 0.5f + 0.5f;
+		screen.y = screen.y * 0.5f + 0.5f;
+		screen.z = screen.z * 0.5f + 0.5f;
+
+		// map to viewport （转化为屏幕坐标） (注意这里这个x,y不是坐标，而是视口宽高）
+		screen.x = screen.x * _viewPort.x;
+		screen.y = screen.y * _viewPort.y;
+
+		return float3(screen.x, screen.y, screen.z);
+	}
+
+	// 生成透视投影矩阵
+	void Raster::setPerspective(float fovy, float aspect, float zNear, float zFar)
+	{
+		_matProj = perspective<float>(fovy, aspect, zNear, zFar);
+	}
+
+	// 生成观察矩阵
+	void Raster::setLookat(float const& eye, float const& center, float const& up)
+	{
+		_matView = lookAt<float>(eye, center, up);
+	}
+
+	// 生成视口
+	void Raster::setViewPort(int x, int y, int w, int h)
+	{
+		_viewPort.x = w;
+		_viewPort.y = h;
 	}
 }
