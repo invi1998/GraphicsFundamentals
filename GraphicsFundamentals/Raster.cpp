@@ -131,6 +131,10 @@ namespace CELL {
 
 		// 单位矩阵和任何矩阵相乘都等于任何矩阵
 		_matModel = CELL::matrix4(1);		// 默认设置模型矩阵为单位矩阵，单位矩阵和我们的值进行相乘是不会改变值的
+
+		_matProjView = matrix4(1);
+		_matProj = matrix4(1);
+		_matView = matrix4(1);
 	}
 
 	Raster::~Raster() = default;
@@ -806,8 +810,8 @@ namespace CELL {
 
 		// map to viewport （转化为屏幕坐标） (注意这里这个x,y不是坐标，而是视口宽高）
 		screen.x = screen.x * _viewPort.x;
-		//screen.y = screen.y * _viewPort.y;
-		screen.y = _height - (screen.y * _viewPort.y); // 将窗口坐标改为OpenGL的坐标系
+		screen.y = screen.y * _viewPort.y;
+		//screen.y = _height - (screen.y * _viewPort.y); // 将窗口坐标改为OpenGL的坐标系
 
 		return float3(screen.x, screen.y, screen.z);
 	}

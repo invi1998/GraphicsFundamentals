@@ -328,13 +328,112 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		//static float speet = 0.0f;
 
+		//Vertex vertexs[6] = {
+		//	{
+		//		0, 0, 0, 0.0f, 0.0f, CELL::Rgba(231, 199, 10)
+		//	},  {
+		//		2000, 0, 0, 2.0f, 0.0f, CELL::Rgba(21, 19, 45)
+		//	}, {
+		//		0, 2000, 0, 0.0f, 2.0f, CELL::Rgba(121, 94, 110)
+		//	},
+		//	{
+		//		0, 2000, 0, 0.0f, 2.0f, CELL::Rgba(231, 199, 10)
+		//	},  {
+		//		2000, 2000, 0, 2.0f, 2.0f, CELL::Rgba(21, 19, 45)
+		//	}, {
+		//		2000, 0, 0, 2.0f, 0.0f, CELL::Rgba(121, 94, 110)
+		//	},
+		//};
+
+		///*for (int i = 0; i < 6; ++i)
+		//{
+		//	vertexs[i].u += speet;
+		//}
+
+		//speet += 0.1f;*/
+
+		//// 平移矩阵的应用
+		//static float trans = 0.0f;
+		//CELL::matrix4 mat_t;
+		////mat_t.translate(2000, 2000);
+		//mat_t.translate(-1000, -1000, 0);
+
+		////trans += 1;
+
+		//// 缩放矩阵的应用
+		//static float scale = -1.0f;
+		//CELL::matrix4 mat_s;
+		////mat_s.scale(scale, scale);
+		//mat_s.scale(0.5f, 0.5f, 1.0f);
+		////scale += 0.1f;
+
+		//// 旋转矩阵的应用
+		//static float angle = 0.0f;
+		//CELL::matrix4 mat_r;
+		//mat_r.rotate(angle, 'x');
+		//angle += 1.0f;
+
+		//CELL::matrix4 mat_t2;
+		//mat_t2.translate(1000, 1000, 0);
+		//CELL::matrix4 mat_all = mat_t2 * (mat_r * mat_s * mat_t);
+
+		////mat_all *= mat_t2;
+
+		///*for (int i = 0; i < 6; ++i)
+		//{
+		//	CELL::float3 pos(vertexs[i].x, vertexs[i].y, 1);
+		//	pos = mat_s * pos;
+		//	vertexs[i].x = pos.x;
+		//	vertexs[i].y = pos.y;
+		//}
+
+		//for (int i = 0; i < 6; ++i)
+		//{
+		//	CELL::float3 pos(vertexs[i].x, vertexs[i].y, 1);
+		//	pos = mat_t * pos;
+		//	vertexs[i].x = pos.x;
+		//	vertexs[i].y = pos.y;
+		//}*/
+
+		////for (int i = 0; i < 6; ++i)
+		////{
+		////	CELL::float3 pos(vertexs[i].x, vertexs[i].y, 1);
+		////	//pos = mat_r * pos;
+		////	pos = mat_all * pos;
+		////	vertexs[i].x = pos.x;
+		////	vertexs[i].y = pos.y;
+		////}
+
+		//// 指定纹理包装类型
+		//image_s->setWrapType(0);
+
+		//// 指定模型矩阵
+		//raster.loadMatrix(mat_all);
+		//// 指定图片
+		//raster.bindTexture(image_s);
+		//// 指定顶点
+		//raster.vertexPointer(2, CELL::DT_FLOAT, sizeof(Vertex), &vertexs[0].x);
+		//// 指定uv
+		//raster.textureCoordPointer(2, CELL::DT_FLOAT, sizeof(Vertex), &vertexs[0].u);
+		//// 指定颜色
+		////raster.colorPointer(4, CELL::DT_BYTE, sizeof(Vertex), &vertexs[0].color);
+
+		//raster.drawArrays(CELL::DM_TRIANGLES, 0, 6);
+
+		// 3D 绘图 绘制一个三角形
+		/*Vertex vertexs[] = {
+			{0.0f, 0.0f, -2.0f, 0.0f, 0.0f, CELL::Rgba(255, 0, 0, 255)},
+			{0.0f, 1.0f, -2.0f, 0.0f, 1.0f, CELL::Rgba(0, 255, 0, 255)},
+			{1.0f, 0.0f, -2.0f, 1.0f, 0.0f, CELL::Rgba(0, 0, 255, 255)},
+		};*/
+
 		Vertex vertexs[6] = {
 			{
-				0, 0, 0, 0.0f, 0.0f, CELL::Rgba(231, 199, 10)
+				0, 0, 2.0f, 0.0f, 0.0f, CELL::Rgba(231, 199, 10)
 			},  {
 				2000, 0, 0, 2.0f, 0.0f, CELL::Rgba(21, 19, 45)
 			}, {
-				0, 2000, 0, 0.0f, 2.0f, CELL::Rgba(121, 94, 110)
+				0, 2000, -9.0f, 0.0f, 2.0f, CELL::Rgba(121, 94, 110)
 			},
 			{
 				0, 2000, 0, 0.0f, 2.0f, CELL::Rgba(231, 199, 10)
@@ -345,77 +444,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			},
 		};
 
-		/*for (int i = 0; i < 6; ++i)
-		{
-			vertexs[i].u += speet;
-		}
+		image_s->setWrapType(1);
 
-		speet += 0.1f;*/
-
-		// 平移矩阵的应用
-		static float trans = 0.0f;
-		CELL::matrix4 mat_t;
-		//mat_t.translate(2000, 2000);
-		mat_t.translate(-1000, -1000, 0);
-
-		//trans += 1;
-
-		// 缩放矩阵的应用
-		static float scale = -1.0f;
-		CELL::matrix4 mat_s;
-		//mat_s.scale(scale, scale);
-		mat_s.scale(0.5f, 0.5f, 1.0f);
-		//scale += 0.1f;
-
-		// 旋转矩阵的应用
-		static float angle = 0.0f;
-		CELL::matrix4 mat_r;
-		mat_r.rotate(angle, 'x');
-		angle += 1.0f;
-
-		CELL::matrix4 mat_t2;
-		mat_t2.translate(1000, 1000, 0);
-		CELL::matrix4 mat_all = mat_t2 * (mat_r * mat_s * mat_t);
-
-		//mat_all *= mat_t2;
-
-		/*for (int i = 0; i < 6; ++i)
-		{
-			CELL::float3 pos(vertexs[i].x, vertexs[i].y, 1);
-			pos = mat_s * pos;
-			vertexs[i].x = pos.x;
-			vertexs[i].y = pos.y;
-		}
-
-		for (int i = 0; i < 6; ++i)
-		{
-			CELL::float3 pos(vertexs[i].x, vertexs[i].y, 1);
-			pos = mat_t * pos;
-			vertexs[i].x = pos.x;
-			vertexs[i].y = pos.y;
-		}*/
-
-		//for (int i = 0; i < 6; ++i)
-		//{
-		//	CELL::float3 pos(vertexs[i].x, vertexs[i].y, 1);
-		//	//pos = mat_r * pos;
-		//	pos = mat_all * pos;
-		//	vertexs[i].x = pos.x;
-		//	vertexs[i].y = pos.y;
-		//}
-
-		// 指定纹理包装类型
-		image_s->setWrapType(0);
-
-		// 指定模型矩阵
-		raster.loadMatrix(mat_all);
-		// 指定图片
-		raster.bindTexture(image_s);
-		// 指定顶点
 		raster.vertexPointer(2, CELL::DT_FLOAT, sizeof(Vertex), &vertexs[0].x);
-		// 指定uv
 		raster.textureCoordPointer(2, CELL::DT_FLOAT, sizeof(Vertex), &vertexs[0].u);
-		// 指定颜色
 		//raster.colorPointer(4, CELL::DT_BYTE, sizeof(Vertex), &vertexs[0].color);
 
 		raster.drawArrays(CELL::DM_TRIANGLES, 0, 6);
