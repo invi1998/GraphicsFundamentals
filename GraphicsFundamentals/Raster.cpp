@@ -668,64 +668,83 @@ namespace CELL {
 		char* colorData = (char*)colorPointerDesc._data;
 		char* uvData = (char*)uvPointerDesc._data;
 
+		_matProjView = _matProj * _matView;
+
+		// 转置
+		matrix4 matPUT = _matProjView.transpose();
+
+		// 生成拼接台体
+		_frust.loadFrustum(matPUT);
+
 		for (int i = start; i < start + count; i += 3)
 		{
 			float* pos = (float*)posData;
 			float3 p00(pos[0], pos[1], pos[2]);
 			posData += _positionPointer._stride;
 			pos = (float*)(posData);
-			p00 = piplineTransform(p00);
 
 			float3 p01(pos[0], pos[1], pos[2]);
 			posData += _positionPointer._stride;
 			pos = (float*)(posData);
-			p01 = piplineTransform(p01);
 
 			float3 p02(pos[0], pos[1], pos[2]);
 			posData += _positionPointer._stride;
-			p02 = piplineTransform(p02);
 
-			// 转化为屏幕坐标
+			// 因为我们裁剪是对模型平移，旋转，缩放等这些操作之后的点进行裁剪，而不是一开始的原始点，所以需要将我们的点与模型矩阵进行相乘
+			// 然后进行裁剪
+			p00 = p00 * _matModel;
+			p01 = p01 * _matModel;
+			p02 = p02 * _matModel;
 
-			int2 p0(p00.x, p00.y);
-			int2 p1(p01.x, p01.y);
-			int2 p2(p02.x, p02.y);
-
-			Rgba* color = (Rgba*)colorData;
-			Rgba c0(*color);
-			colorData += colorPointerDesc._stride;
-			color = (Rgba*)colorData;
-			Rgba c1(*color);
-			colorData += colorPointerDesc._stride;
-			color = (Rgba*)colorData;
-			Rgba c2(*color);
-			colorData += colorPointerDesc._stride;
-
-			float* uv = (float*)uvData;
-			float2 uv0(uv[0], uv[1]);
-			uvData += uvPointerDesc._stride;
-			uv = (float*)uvData;
-			float2 uv1(uv[0], uv[1]);
-			uvData += uvPointerDesc._stride;
-			uv = (float*)uvData;
-			float2 uv2(uv[0], uv[1]);
-			uvData += uvPointerDesc._stride;
-
-			Edge edges[3] = {
-					Edge(p0.x, p0.y, p1.x, p1.y, c0, c1, uv0, uv1),
-					Edge(p1.x, p1.y, p2.x, p2.y, c1, c2, uv1, uv2),
-					Edge(p2.x, p2.y, p0.x, p0.y, c2, c0, uv2, uv0)
-			};
-
-			drawTriggle(edges);
-
-			if (_colorPointer._data == 0)
+			// 裁剪 (只要判断到这个点与我们的拼接台体相交，就说明这个点我们需要进行绘制）
+			if (_frust.pointInFrustum(p00) || _frust.pointInFrustum(p01) || _frust.pointInFrustum(p02))
 			{
-				colorData = (char*)colorPointerDesc._data;
-			}
-			if (_uvPointer._data == 0)
-			{
-				uvData = (char*)uvPointerDesc._data;
+				p00 = piplineTransform(p00);
+				p01 = piplineTransform(p01);
+				p02 = piplineTransform(p02);
+
+				// 转化为屏幕坐标
+
+				int2 p0(p00.x, p00.y);
+				int2 p1(p01.x, p01.y);
+				int2 p2(p02.x, p02.y);
+
+				Rgba* color = (Rgba*)colorData;
+				Rgba c0(*color);
+				colorData += colorPointerDesc._stride;
+				color = (Rgba*)colorData;
+				Rgba c1(*color);
+				colorData += colorPointerDesc._stride;
+				color = (Rgba*)colorData;
+				Rgba c2(*color);
+				colorData += colorPointerDesc._stride;
+
+				float* uv = (float*)uvData;
+				float2 uv0(uv[0], uv[1]);
+				uvData += uvPointerDesc._stride;
+				uv = (float*)uvData;
+				float2 uv1(uv[0], uv[1]);
+				uvData += uvPointerDesc._stride;
+				uv = (float*)uvData;
+				float2 uv2(uv[0], uv[1]);
+				uvData += uvPointerDesc._stride;
+
+				Edge edges[3] = {
+						Edge(p0.x, p0.y, p1.x, p1.y, c0, c1, uv0, uv1),
+						Edge(p1.x, p1.y, p2.x, p2.y, c1, c2, uv1, uv2),
+						Edge(p2.x, p2.y, p0.x, p0.y, c2, c0, uv2, uv0)
+				};
+
+				drawTriggle(edges);
+
+				if (_colorPointer._data == 0)
+				{
+					colorData = (char*)colorPointerDesc._data;
+				}
+				if (_uvPointer._data == 0)
+				{
+					uvData = (char*)uvPointerDesc._data;
+				}
 			}
 		}
 	}
@@ -770,7 +789,7 @@ namespace CELL {
 		// 在OpenGL中，因为OpenGL是左乘，所以就是下面这个 （PVM）
 		// MVP（PVM)的结果再和我们的输入相乘，就得到NDC
 
-		float4 screen = (_matProj * _matView * _matModel) * world;
+		float4 screen = _matProjView * world;
 		if (screen.w == 0.0f)
 		{
 			return false;
@@ -787,7 +806,8 @@ namespace CELL {
 
 		// map to viewport （转化为屏幕坐标） (注意这里这个x,y不是坐标，而是视口宽高）
 		screen.x = screen.x * _viewPort.x;
-		screen.y = screen.y * _viewPort.y;
+		//screen.y = screen.y * _viewPort.y;
+		screen.y = _height - (screen.y * _viewPort.y); // 将窗口坐标改为OpenGL的坐标系
 
 		return float3(screen.x, screen.y, screen.z);
 	}

@@ -82,6 +82,9 @@ namespace CELL {
 		matrix4 _matProj;			// 投影矩阵
 		float2 _viewPort;			// 视口
 
+		matrix4 _matProjView;		//
+		Frustum _frust;				// 拼接台体
+
 		DataElementDes _positionPointer;	// 顶点数据
 		DataElementDes _colorPointer;	// 颜色数据
 		DataElementDes _uvPointer;	// uv坐标数据
