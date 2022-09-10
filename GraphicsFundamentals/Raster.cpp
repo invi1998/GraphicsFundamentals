@@ -810,8 +810,8 @@ namespace CELL {
 
 		// map to viewport （转化为屏幕坐标） (注意这里这个x,y不是坐标，而是视口宽高）
 		screen.x = screen.x * _viewPort.x;
-		//screen.y = screen.y * _viewPort.y;
-		screen.y = _height - (screen.y * _viewPort.y); // 将窗口坐标改为OpenGL的坐标系
+		screen.y = screen.y * _viewPort.y;
+		//screen.y = _height - (screen.y * _viewPort.y); // 将窗口坐标改为OpenGL的坐标系
 
 		return float3(screen.x, screen.y, screen.z);
 	}
