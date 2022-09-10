@@ -69,8 +69,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	   //WS_POPUPWINDOW,																						// 不要标题栏
 		800,																													// 设置窗口右上角的位置 x
 		50,																													// 设置窗口右上角的位置 y
-		2000,																													// 设置窗口宽
-		2000,																													// 设置窗口高
+		1000,																													// 设置窗口宽
+		1000,																													// 设置窗口高
 		0,																														// 如果有父窗口填父窗口的句柄，没有就取NULL
 		0,																														// 指向附属窗口的句柄
 		hInstance,																											// 这是应用程序的实例。这里使用WinMain()中第一个实参，hinstance句柄
@@ -147,7 +147,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	CELL::Raster raster(width, height, buffer);
 
 	raster.setViewPort(0, 0, width, height);
-	raster.setPerspective(2000, static_cast<float>(width) / static_cast<float>(height), 0.1, 1000);
+	raster.setPerspective(100, static_cast<float>(width) / static_cast<float>(height), 0.1, 100);
 
 	// windows消息循环
 	MSG msg = { 0 };
@@ -432,28 +432,30 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		Vertex vertexs[6] = {
 			{
-				0, 0, 100, 0.0f, 0.0f, CELL::Rgba(231, 199, 10)
+				0.0f, 0.0f, 0, 0.0f, 0.0f, CELL::Rgba(231, 199, 10)
 			},  {
-				2000, 0, 100, 2.0f, 0.0f, CELL::Rgba(21, 19, 45)
+				1.0f, 0.0f, 0, 2.0f, 0.0f, CELL::Rgba(21, 19, 45)
 			}, {
-				0, 2000, 100, 0.0f, 2.0f, CELL::Rgba(121, 94, 110)
+				0.0f, 1.0f, 0, 0.0f, 2.0f, CELL::Rgba(121, 94, 110)
 			},
 			{
-				0, 2000, 100, 0.0f, 2.0f, CELL::Rgba(231, 199, 10)
+				0.0f, 1.0f, 0, 0.0f, 2.0f, CELL::Rgba(231, 199, 10)
 			},  {
-				2000, 2000, 100, 2.0f, 2.0f, CELL::Rgba(21, 19, 45)
+				1.0f, 1.0f, 0, 2.0f, 2.0f, CELL::Rgba(21, 19, 45)
 			}, {
-				2000, 0, 100, 2.0f, 0.0f, CELL::Rgba(121, 94, 110)
+				1.0f, 0.0f, 0, 2.0f, 0.0f, CELL::Rgba(121, 94, 110)
 			},
 		};
 
-		CELL::matrix4 matTrans;
+		//CELL::matrix4 matTrans;
+		CELL::matrix4 rotate;
 		static float transZ(1);
-		matTrans.translate(0, 0, transZ);
+		//matTrans.translate(0, 0, transZ);
+		rotate.scale(transZ, transZ, transZ);
 
-		transZ -= 1.0f;
+		transZ += 1.0f;
 
-		raster.loadMatrix(matTrans);
+		raster.loadMatrix(rotate);
 
 		image_s->setWrapType(0);
 
