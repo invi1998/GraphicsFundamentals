@@ -146,6 +146,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	// 创建一个我们的绘图对象
 	CELL::Raster raster(width, height, buffer);
 
+	raster.setViewPort(0, 0, width, height);
+	raster.setPerspective(2000, static_cast<float>(width) / static_cast<float>(height), 0.1, 1000);
+
 	// windows消息循环
 	MSG msg = { 0 };
 	while (true)
@@ -328,22 +331,22 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		//static float speet = 0.0f;
 
-		//Vertex vertexs[6] = {
-		//	{
-		//		0, 0, 0, 0.0f, 0.0f, CELL::Rgba(231, 199, 10)
-		//	},  {
-		//		2000, 0, 0, 2.0f, 0.0f, CELL::Rgba(21, 19, 45)
-		//	}, {
-		//		0, 2000, 0, 0.0f, 2.0f, CELL::Rgba(121, 94, 110)
-		//	},
-		//	{
-		//		0, 2000, 0, 0.0f, 2.0f, CELL::Rgba(231, 199, 10)
-		//	},  {
-		//		2000, 2000, 0, 2.0f, 2.0f, CELL::Rgba(21, 19, 45)
-		//	}, {
-		//		2000, 0, 0, 2.0f, 0.0f, CELL::Rgba(121, 94, 110)
-		//	},
-		//};
+		/*Vertex vertexs[6] = {
+			{
+				0, 0, 0, 0.0f, 0.0f, CELL::Rgba(231, 199, 10)
+			},  {
+				2000, 0, 0, 2.0f, 0.0f, CELL::Rgba(21, 19, 45)
+			}, {
+				0, 2000, 0, 0.0f, 2.0f, CELL::Rgba(121, 94, 110)
+			},
+			{
+				0, 2000, 0, 0.0f, 2.0f, CELL::Rgba(231, 199, 10)
+			},  {
+				2000, 2000, 0, 2.0f, 2.0f, CELL::Rgba(21, 19, 45)
+			}, {
+				2000, 0, 0, 2.0f, 0.0f, CELL::Rgba(121, 94, 110)
+			},
+		};*/
 
 		///*for (int i = 0; i < 6; ++i)
 		//{
@@ -429,22 +432,32 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		Vertex vertexs[6] = {
 			{
-				0, 0, 2.0f, 0.0f, 0.0f, CELL::Rgba(231, 199, 10)
+				0, 0, 100, 0.0f, 0.0f, CELL::Rgba(231, 199, 10)
 			},  {
-				2000, 0, 0, 2.0f, 0.0f, CELL::Rgba(21, 19, 45)
+				2000, 0, 100, 2.0f, 0.0f, CELL::Rgba(21, 19, 45)
 			}, {
-				0, 2000, -9.0f, 0.0f, 2.0f, CELL::Rgba(121, 94, 110)
+				0, 2000, 100, 0.0f, 2.0f, CELL::Rgba(121, 94, 110)
 			},
 			{
-				0, 2000, 0, 0.0f, 2.0f, CELL::Rgba(231, 199, 10)
+				0, 2000, 100, 0.0f, 2.0f, CELL::Rgba(231, 199, 10)
 			},  {
-				2000, 2000, 0, 2.0f, 2.0f, CELL::Rgba(21, 19, 45)
+				2000, 2000, 100, 2.0f, 2.0f, CELL::Rgba(21, 19, 45)
 			}, {
-				2000, 0, 0, 2.0f, 0.0f, CELL::Rgba(121, 94, 110)
+				2000, 0, 100, 2.0f, 0.0f, CELL::Rgba(121, 94, 110)
 			},
 		};
 
-		image_s->setWrapType(1);
+		CELL::matrix4 matTrans;
+		static float transZ(1);
+		matTrans.translate(0, 0, transZ);
+
+		transZ -= 1.0f;
+
+		raster.loadMatrix(matTrans);
+
+		image_s->setWrapType(0);
+
+		raster.bindTexture(image_s);
 
 		raster.vertexPointer(2, CELL::DT_FLOAT, sizeof(Vertex), &vertexs[0].x);
 		raster.textureCoordPointer(2, CELL::DT_FLOAT, sizeof(Vertex), &vertexs[0].u);

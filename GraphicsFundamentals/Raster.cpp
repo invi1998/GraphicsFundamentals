@@ -659,11 +659,11 @@ namespace CELL {
 		}
 		DataElementDes colorPointerDesc = _colorPointer;
 		DataElementDes uvPointerDesc = _uvPointer;
-		if (colorPointerDesc._data == nullptr)
+		if (colorPointerDesc._data == 0)
 		{
 			colorPointerDesc = _defaultColorPointer;
 		}
-		if (uvPointerDesc._data == nullptr)
+		if (uvPointerDesc._data == 0)
 		{
 			uvPointerDesc = _defaultUVPointer;
 		}
@@ -810,13 +810,14 @@ namespace CELL {
 
 		// map to viewport （转化为屏幕坐标） (注意这里这个x,y不是坐标，而是视口宽高）
 		screen.x = screen.x * _viewPort.x;
-		screen.y = screen.y * _viewPort.y;
-		//screen.y = _height - (screen.y * _viewPort.y); // 将窗口坐标改为OpenGL的坐标系
+		//screen.y = screen.y * _viewPort.y;
+		screen.y = _height - (screen.y * _viewPort.y); // 将窗口坐标改为OpenGL的坐标系
 
 		return float3(screen.x, screen.y, screen.z);
 	}
 
 	// 生成透视投影矩阵
+	// 得到相机视角宽度（fovy）、长宽比率（aspectRatio）、近面裁剪距离（zNear）、远面裁剪距离（zFar）；
 	void Raster::setPerspective(float fovy, float aspect, float zNear, float zFar)
 	{
 		_matProj = perspective<float>(fovy, aspect, zNear, zFar);

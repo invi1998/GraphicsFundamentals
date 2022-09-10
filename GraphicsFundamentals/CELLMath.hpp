@@ -4072,6 +4072,7 @@ namespace CELL
 		return res;
 	}
 
+	// 得到相机视角宽度（fovy）、长宽比率（aspectRatio）、近面裁剪距离（zNear）、远面裁剪距离（zFar）；
 	template <typename valType>
 	tmat4x4<valType> perspective(valType fovy, valType aspect, valType zNear, valType zFar)
 	{
