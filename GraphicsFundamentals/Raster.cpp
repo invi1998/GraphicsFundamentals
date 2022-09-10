@@ -130,7 +130,7 @@ namespace CELL {
 		_defaultUVPointer._data = _defaultUvArray;
 
 		// 单位矩阵和任何矩阵相乘都等于任何矩阵
-		_matModel = CELL::matrix4(1);		// 默认设置模型矩阵为单位矩阵，单位矩阵和我们的值进行相乘是不会改变值的
+		_matModel = matrix4(1);		// 默认设置模型矩阵为单位矩阵，单位矩阵和我们的值进行相乘是不会改变值的
 
 		_matProjView = matrix4(1);
 		_matProj = matrix4(1);
@@ -659,11 +659,11 @@ namespace CELL {
 		}
 		DataElementDes colorPointerDesc = _colorPointer;
 		DataElementDes uvPointerDesc = _uvPointer;
-		if (colorPointerDesc._data == 0)
+		if (colorPointerDesc._data == nullptr)
 		{
 			colorPointerDesc = _defaultColorPointer;
 		}
-		if (uvPointerDesc._data == 0)
+		if (uvPointerDesc._data == nullptr)
 		{
 			uvPointerDesc = _defaultUVPointer;
 		}
