@@ -8,11 +8,52 @@
 //#define _CRT_SECURE_NO_WARNINGS
 // 在Windows下创建一个窗口
 
+// msg 是windows的消息号，他的参数是在后面  WPARAM wParam, LPARAM lParam 这两个参数里进行携带
 LRESULT CALLBACK windowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 	switch (msg)
 	{
 	case WM_SIZE:
 		break;
+	case WM_LBUTTONDOWN:		// 鼠标左键按下
+	{
+		int x = LOWORD(lParam);		// 低字节携带的是鼠标的x坐标信息
+		int y = HIWORD(lParam);		// 高字节携带的是鼠标的y坐标信息
+			// 这里这个x,y不是基于显示器的，而是基于这个程序界面的客户区的（不包括菜单栏）
+			// 这个视口刚好和我们后台建立的缓冲区是相当的
+	}
+	break;
+	case WM_LBUTTONUP:			// 鼠标左键抬起
+	{
+		int x = LOWORD(lParam);		// 低字节携带的是鼠标的x坐标信息
+		int y = HIWORD(lParam);		// 高字节携带的是鼠标的y坐标信息
+	}
+	break;
+	case WM_MOUSEMOVE:			// 鼠标移动
+	{
+		int x = LOWORD(lParam);		// 低字节携带的是鼠标的x坐标信息
+		int y = HIWORD(lParam);		// 高字节携带的是鼠标的y坐标信息
+	}
+	break;
+	case WM_RBUTTONDOWN:		// 鼠标右键按下
+	{
+		int x = LOWORD(lParam);		// 低字节携带的是鼠标的x坐标信息
+		int y = HIWORD(lParam);		// 高字节携带的是鼠标的y坐标信息
+	}
+	break;
+	case WM_RBUTTONUP:			// 鼠标右键抬起
+	{
+		int x = LOWORD(lParam);		// 低字节携带的是鼠标的x坐标信息
+		int y = HIWORD(lParam);		// 高字节携带的是鼠标的y坐标信息
+	}
+	break;
+	case WM_MOUSEWHEEL:			// 鼠标滚轮滚动
+	{
+		// 针对滚轮，我们需要得到的参数是滚轮滚动的方向和滚动的距离
+		// 在参数 wParam 中就存储了我们鼠标滚轮的参数信息
+			// delta 这个返回值的正负就表示了滚轮的方向（正-向上，负-向下）
+		short delta = GET_WHEEL_DELTA_WPARAM(wParam);
+	}
+	break;
 	case WM_CLOSE:
 	case WM_DESTROY:
 		PostQuitMessage(0);
@@ -69,8 +110,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	   //WS_POPUPWINDOW,																						// 不要标题栏
 		800,																													// 设置窗口右上角的位置 x
 		50,																													// 设置窗口右上角的位置 y
-		1000,																													// 设置窗口宽
-		1000,																													// 设置窗口高
+		2000,																													// 设置窗口宽
+		2000,																													// 设置窗口高
 		0,																														// 如果有父窗口填父窗口的句柄，没有就取NULL
 		0,																														// 指向附属窗口的句柄
 		hInstance,																											// 这是应用程序的实例。这里使用WinMain()中第一个实参，hinstance句柄
