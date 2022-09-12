@@ -11,6 +11,8 @@
 
 // 创建一个全局的摄像机对象
 CELL::CELLCamera g_camera;
+CELL::int2 g_rButtonDown;
+bool g_rButtonFlag = false;
 
 // msg 是windows的消息号，他的参数是在后面  WPARAM wParam, LPARAM lParam 这两个参数里进行携带
 LRESULT CALLBACK windowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
@@ -36,18 +38,30 @@ LRESULT CALLBACK windowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 	{
 		int x = LOWORD(lParam);		// 低字节携带的是鼠标的x坐标信息
 		int y = HIWORD(lParam);		// 高字节携带的是鼠标的y坐标信息
+
+		if (g_rButtonFlag)
+		{
+			// 如果鼠标右键按下，并且捕获到鼠标移动，那么如果是横向变化，那么就是沿着Y轴旋转，如果是纵向变化，就是沿着x轴旋转
+			int offsetX = x - g_rButtonDown.x;
+			g_camera.rotateViewY(offsetX);
+			g_rButtonDown.x = x;
+		}
 	}
 	break;
 	case WM_RBUTTONDOWN:		// 鼠标右键按下
 	{
-		int x = LOWORD(lParam);		// 低字节携带的是鼠标的x坐标信息
-		int y = HIWORD(lParam);		// 高字节携带的是鼠标的y坐标信息
+		g_rButtonDown.x = LOWORD(lParam);		// 低字节携带的是鼠标的x坐标信息
+		g_rButtonDown.y = HIWORD(lParam);		// 高字节携带的是鼠标的y坐标信息
+
+		g_rButtonFlag = true;
 	}
 	break;
 	case WM_RBUTTONUP:			// 鼠标右键抬起
 	{
 		int x = LOWORD(lParam);		// 低字节携带的是鼠标的x坐标信息
 		int y = HIWORD(lParam);		// 高字节携带的是鼠标的y坐标信息
+
+		g_rButtonFlag = false;
 	}
 	break;
 	case WM_MOUSEWHEEL:			// 鼠标滚轮滚动
