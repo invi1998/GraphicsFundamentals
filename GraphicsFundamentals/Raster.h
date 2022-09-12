@@ -278,5 +278,7 @@ namespace CELL {
 
 		// 生成视口
 		void setViewPort(int x, int y, int w, int h);
+
+		void setView(const matrix4& viewMat);
 	};
 }

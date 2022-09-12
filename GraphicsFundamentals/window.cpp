@@ -2,11 +2,15 @@
 #include <tchar.h>
 #include "Raster.h"
 #include "CELLMath.hpp"
-//#include "CELLTimestamp.h"
+#include "CELLCamera.hpp"
+#include "CELLTimestamp.h"
 //#include <FreeImage.h>
 
 //#define _CRT_SECURE_NO_WARNINGS
 // 在Windows下创建一个窗口
+
+// 创建一个全局的摄像机对象
+CELL::CELLCamera g_camera;
 
 // msg 是windows的消息号，他的参数是在后面  WPARAM wParam, LPARAM lParam 这两个参数里进行携带
 LRESULT CALLBACK windowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
@@ -93,7 +97,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	winClass.hIcon = NULL;																							//窗口的最小化图标为缺省图标
 	winClass.hIconSm = NULL;																						//和窗口类关联的小图标。如果该值为NULL。则把hIcon中的图标转换成大小合适的小图标
 	winClass.hCursor = LoadCursor(NULL, IDC_ARROW);												//窗口采用箭头光标
-	winClass.hbrBackground = (HBRUSH)(WHITE_BRUSH);											//窗口背景色为白色
+	winClass.hbrBackground = (HBRUSH)(BLACK_BRUSH);											//窗口背景色为白色
 	winClass.lpszMenuName = NULL;																			//无窗口菜单
 	winClass.cbClsExtra = 0;																							//窗口类无扩展
 	winClass.cbWndExtra = 0;																						//窗口实例无扩展
@@ -106,12 +110,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		NULL,
 		"Raster",																											// 设置之前的创建基础类名，
 		"Raster",																											// 窗口的名称
-		WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN | WS_CLIPSIBLINGS,			// 这是一个说明窗口外观的通用标志
+		// WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN | WS_CLIPSIBLINGS,			// 这是一个说明窗口外观的通用标志
 	   //WS_POPUPWINDOW,																						// 不要标题栏
-		800,																													// 设置窗口右上角的位置 x
-		50,																													// 设置窗口右上角的位置 y
-		2000,																													// 设置窗口宽
-		2000,																													// 设置窗口高
+		WS_OVERLAPPEDWINDOW,
+		1000,																													// 设置窗口右上角的位置 x
+		200,																													// 设置窗口右上角的位置 y
+		1000,																													// 设置窗口宽
+		1000,																													// 设置窗口高
 		0,																														// 如果有父窗口填父窗口的句柄，没有就取NULL
 		0,																														// 指向附属窗口的句柄
 		hInstance,																											// 这是应用程序的实例。这里使用WinMain()中第一个实参，hinstance句柄
@@ -177,6 +182,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	sprintf_s(szImage, 1024, "%s/image/3.png", imagPathBuf);
 	CELL::Image* alphaImage = CELL::Image::loadFromFile(szImage);
 
+	sprintf_s(szImage, 1024, "%s/image/wenli.jpg", imagPathBuf);
+	CELL::Image* wenli = CELL::Image::loadFromFile(szImage);
+
 	struct Vertex
 	{
 		float x, y, z;
@@ -187,8 +195,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	// 创建一个我们的绘图对象
 	CELL::Raster raster(width, height, buffer);
 
+	// 初始化摄像机对象
+	g_camera.setViewSize(width, height);
+	g_camera.perspective(60, (float)(width) / (float)(height), 0.1, 10000);
+	g_camera.update();
+
 	raster.setViewPort(0, 0, width, height);
-	raster.setPerspective(100, static_cast<float>(width) / static_cast<float>(height), 0.1, 1000);
+	raster.setPerspective(60, (float)(width) / (float)(height), 0.1, 10000);
 
 	// windows消息循环
 	MSG msg = { 0 };
@@ -215,6 +228,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		raster.clear();
 		// 直接让 raster 使用我们创建好的buffer，就可以省去这里进行buffer拷贝的过程
 		//memcpy(buffer, raster._buffer, raster.getLength() * sizeof(CELL::Rgba));
+
+		CELL::CELLTimestamp tms;
+
+		tms.update();
+		double  mis = tms.getElapsedTimeInMicroSec();
+
+		char    szBuf[128];
+		sprintf_s(szBuf, "%f ", mis);
 
 		// 绘制100个随机点
 		/*for (int i = 0; i < 100; ++i) {
@@ -471,42 +492,74 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			{1.0f, 0.0f, -2.0f, 1.0f, 0.0f, CELL::Rgba(0, 0, 255, 255)},
 		};*/
 
-		Vertex vertexs[6] = {
-			{
-				-1.0f, 1.0f, -3.0f, 0.0f, 1.0f, CELL::Rgba(231, 199, 10)
-			},  {
-				-1.0f, -1.0f, -3.0f, 0.0f, 0.0f, CELL::Rgba(21, 19, 45)
-			}, {
-				1.0f, -1.0f, -3.0f, 1.0f, 0.0f, CELL::Rgba(121, 94, 110)
-			},
-			{
-				-1.0f, 1.0f, -3.0f, 0.0f, 1.0f, CELL::Rgba(231, 199, 10)
-			},  {
-				1.0f, 1.0f, -3.0f, 1.0f, 1.0f, CELL::Rgba(21, 19, 45)
-			}, {
-				1.0f, -1.0f, -3.0f, 1.0f, 0.0f, CELL::Rgba(121, 94, 110)
-			},
+		//Vertex vertexs[6] = {
+		//	{
+		//		-1.0f, 1.0f, -3.0f, 0.0f, 1.0f, CELL::Rgba(231, 199, 10)
+		//	},  {
+		//		-1.0f, -1.0f, -3.0f, 0.0f, 0.0f, CELL::Rgba(21, 19, 45)
+		//	}, {
+		//		1.0f, -1.0f, -3.0f, 1.0f, 0.0f, CELL::Rgba(121, 94, 110)
+		//	},
+		//	{
+		//		-1.0f, 1.0f, -3.0f, 0.0f, 1.0f, CELL::Rgba(231, 199, 10)
+		//	},  {
+		//		1.0f, 1.0f, -3.0f, 1.0f, 1.0f, CELL::Rgba(21, 19, 45)
+		//	}, {
+		//		1.0f, -1.0f, -3.0f, 1.0f, 0.0f, CELL::Rgba(121, 94, 110)
+		//	},
+		//};
+
+		//CELL::matrix4 matScale;
+		//CELL::matrix4 matRot;
+		//CELL::matrix4 matAll;
+		//static float transZ(1);
+		//matScale.scale(3, 0.7, 3);
+		//matRot.rotateZ(transZ);
+		//matAll = matScale * matRot;
+
+		//transZ += 1.0f;
+
+		//raster.loadMatrix(matAll);
+
+		//image_s->setWrapType(0);
+
+		//raster.bindTexture(image_s);
+
+		//raster.vertexPointer(2, CELL::DT_FLOAT, sizeof(Vertex), &vertexs[0].x);
+		//raster.textureCoordPointer(2, CELL::DT_FLOAT, sizeof(Vertex), &vertexs[0].u);
+		////raster.colorPointer(4, CELL::DT_BYTE, sizeof(Vertex), &vertexs[0].color);
+
+		//raster.drawArrays(CELL::DM_TRIANGLES, 0, 6);
+
+		raster.setView(g_camera.getView());
+
+		// 搭建场景
+		Vertex vertexs[] = {
+			{-1, 0, 1, 0, 0, CELL::Rgba()},
+			{1, 0, 1, 1, 0, CELL::Rgba()},
+			{1, 0, -1, 1, 1, CELL::Rgba()},
+
+			{-1, 0, 1, 0, 0, CELL::Rgba()},
+			{1, 0, -1, 1, 1, CELL::Rgba()},
+			{-1, 0, -1, 0, 1, CELL::Rgba()}
 		};
 
-		CELL::matrix4 matScale;
-		CELL::matrix4 matRot;
-		CELL::matrix4 matAll;
-		static float transZ(1);
-		matScale.scale(3, 0.7, 3);
-		matRot.rotateZ(transZ);
-		matAll = matScale * matRot;
+		for (int i = 0; i < 6; ++i)
+		{
+			vertexs[i].x *= 100;
+			vertexs[i].z *= 100;
 
-		transZ += 1.0f;
+			vertexs[i].u *= 10;
+			vertexs[i].v *= 10;
+		}
 
-		raster.loadMatrix(matAll);
+		wenli->setWrapType(0);
 
-		image_s->setWrapType(0);
-
-		raster.bindTexture(image_s);
+		raster.bindTexture(wenli);
 
 		raster.vertexPointer(2, CELL::DT_FLOAT, sizeof(Vertex), &vertexs[0].x);
 		raster.textureCoordPointer(2, CELL::DT_FLOAT, sizeof(Vertex), &vertexs[0].u);
-		//raster.colorPointer(4, CELL::DT_BYTE, sizeof(Vertex), &vertexs[0].color);
+		raster.colorPointer(4, CELL::DT_BYTE, sizeof(Vertex), &vertexs[0].color);
 
 		raster.drawArrays(CELL::DM_TRIANGLES, 0, 6);
 

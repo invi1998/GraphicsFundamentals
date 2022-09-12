@@ -364,7 +364,7 @@ namespace CELL {
 
 			scale += step;
 
-			setPiexlEx(x, span._y, dst);
+			setPiexlEx(x, span._y, piexl);
 		}
 	}
 
@@ -653,7 +653,7 @@ namespace CELL {
 
 	void Raster::drawArrays(DRAWMODE pri, int start, int count)
 	{
-		if (!_positionPointer._data)
+		if (_positionPointer._data == 0)
 		{
 			return;
 		}
@@ -834,5 +834,10 @@ namespace CELL {
 	{
 		_viewPort.x = w;
 		_viewPort.y = h;
+	}
+
+	void Raster::setView(const matrix4& viewMat)
+	{
+		_matView = viewMat;
 	}
 }
