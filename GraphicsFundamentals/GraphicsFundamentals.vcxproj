@@ -177,6 +177,7 @@
     <ClCompile Include="window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CELLCamera.hpp" />
     <ClInclude Include="CELLMath.hpp" />
     <ClInclude Include="CELLTimestamp.h" />
     <ClInclude Include="Image.hpp" />

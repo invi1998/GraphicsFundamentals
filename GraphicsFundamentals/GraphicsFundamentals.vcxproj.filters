@@ -38,6 +38,9 @@
     <ClInclude Include="Image.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="CELLCamera.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
