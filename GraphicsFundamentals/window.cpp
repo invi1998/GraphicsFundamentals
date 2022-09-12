@@ -14,6 +14,18 @@ CELL::CELLCamera g_camera;
 CELL::int2 g_rButtonDown;
 bool g_rButtonFlag = false;
 
+CELL::int2 g_lButtonDown;
+bool g_lButtonFlag = false;
+
+// 给定一个射线，计算返回该射线和地面的交点
+CELL::float3  calcIntersectPoint(CELL::Ray& ray)
+{
+	CELL::float3    pos = ray.getOrigin();
+	float           tm = abs((pos.y) / ray.getDirection().y);
+	CELL::float3    target = ray.getPoint(tm);
+	return  CELL::float3(target.x, 0, target.z);
+}
+
 // msg 是windows的消息号，他的参数是在后面  WPARAM wParam, LPARAM lParam 这两个参数里进行携带
 LRESULT CALLBACK windowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 	switch (msg)
@@ -22,16 +34,18 @@ LRESULT CALLBACK windowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 		break;
 	case WM_LBUTTONDOWN:		// 鼠标左键按下
 	{
-		int x = LOWORD(lParam);		// 低字节携带的是鼠标的x坐标信息
-		int y = HIWORD(lParam);		// 高字节携带的是鼠标的y坐标信息
+		g_lButtonDown.x = LOWORD(lParam);		// 低字节携带的是鼠标的x坐标信息
+		g_lButtonDown.y = HIWORD(lParam);		// 高字节携带的是鼠标的y坐标信息
 			// 这里这个x,y不是基于显示器的，而是基于这个程序界面的客户区的（不包括菜单栏）
 			// 这个视口刚好和我们后台建立的缓冲区是相当的
+		g_lButtonFlag = true;
 	}
 	break;
 	case WM_LBUTTONUP:			// 鼠标左键抬起
 	{
 		int x = LOWORD(lParam);		// 低字节携带的是鼠标的x坐标信息
 		int y = HIWORD(lParam);		// 高字节携带的是鼠标的y坐标信息
+		g_lButtonFlag = false;
 	}
 	break;
 	case WM_MOUSEMOVE:			// 鼠标移动
@@ -48,6 +62,27 @@ LRESULT CALLBACK windowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 			g_camera.rotateViewX(offsetY);
 			g_rButtonDown.x = x;
 			g_rButtonDown.y = y;
+		}
+		// 左键按住拖动场景（场景平移）
+		if (g_lButtonFlag)
+		{
+			// 首先计算出来一个像素和当前场景的比例
+			CELL::Ray ray0 = g_camera.createRayFromScreen(x, y);
+			CELL::Ray ray1 = g_camera.createRayFromScreen(g_lButtonDown.x, g_lButtonDown.y);
+
+			CELL::float3 pos0 = calcIntersectPoint(ray0);
+			CELL::float3 pos1 = calcIntersectPoint(ray1);
+
+			CELL::float3 offset = pos1 - pos0;
+
+			g_lButtonDown = CELL::int2(x, y);
+
+			CELL::float3 newEye = g_camera.getEye() + offset;
+			CELL::float3 newTgt = g_camera.getTarget() + offset;
+
+			g_camera.setEye(newEye);
+			g_camera.setTarget(newTgt);
+			g_camera.update();
 		}
 	}
 	break;
