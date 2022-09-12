@@ -701,7 +701,7 @@ namespace CELL {
 			p02 = p02 * _matModel;
 
 			// 裁剪 (只要判断到这个点与我们的拼接台体相交，就说明这个点我们需要进行绘制）
-			if (_frust.pointInFrustum(p00) || _frust.pointInFrustum(p01) || _frust.pointInFrustum(p02))
+			//if (_frust.pointInFrustum(p00) || _frust.pointInFrustum(p01) || _frust.pointInFrustum(p02))
 			{
 				p00 = piplineTransform(p00);
 				p01 = piplineTransform(p01);

@@ -43,8 +43,11 @@ LRESULT CALLBACK windowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 		{
 			// 如果鼠标右键按下，并且捕获到鼠标移动，那么如果是横向变化，那么就是沿着Y轴旋转，如果是纵向变化，就是沿着x轴旋转
 			int offsetX = x - g_rButtonDown.x;
+			int offsetY = y - g_rButtonDown.y;
 			g_camera.rotateViewY(offsetX);
+			g_camera.rotateViewX(offsetY);
 			g_rButtonDown.x = x;
+			g_rButtonDown.y = y;
 		}
 	}
 	break;
@@ -70,6 +73,19 @@ LRESULT CALLBACK windowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 		// 在参数 wParam 中就存储了我们鼠标滚轮的参数信息
 			// delta 这个返回值的正负就表示了滚轮的方向（正-向上，负-向下）
 		short delta = GET_WHEEL_DELTA_WPARAM(wParam);
+		if (delta > 0)
+		{
+			float len = CELL::length(g_camera._eye - g_camera._target);
+			len *= 1.2f;
+			g_camera._eye = (g_camera._target - g_camera._dir * len);
+		}
+		else
+		{
+			float len = CELL::length(g_camera._eye - g_camera._target);
+			len *= 0.9f;
+			g_camera._eye = (g_camera._target - g_camera._dir * len);
+		}
+		g_camera.update();
 	}
 	break;
 	case WM_CLOSE:
