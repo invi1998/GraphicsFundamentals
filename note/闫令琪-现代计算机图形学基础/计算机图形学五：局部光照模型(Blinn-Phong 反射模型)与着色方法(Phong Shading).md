@@ -212,3 +212,133 @@ Flat Shading 虽然计算很快，只需对每一个面进行一次着色计算�
 
 至此我们知道如何计算变换之后的法线向量，又知道了如何插值出每个点的法线向量，已经可以利用上节的Blinn-Phong模型渲染出相当质量的图形了，但还有一点正如文中的tips所提到的，那就是对重心坐标插值误差的一个纠正，这究竟是个什么问题呢，我们在下一节当中进行具体探讨！
 
+Shader Toy网站
+
+https://www.shadertoy.com/new
+
+VScode插件
+
+1. Shader languages support for VS Code
+2. Shader Toy
+
+```glsl
+#define PI 3.1415926
+#define LV 4.
+#define AA 4
+
+vec3 Grid(in vec2 uv){
+    vec3 color = vec3(0.);
+    vec2 faction = 1. - 2.* abs(fract(uv) - 0.5);
+
+    // if (abs(uv.x) <= 2. * fwidth(uv.x)){
+    //     color.g = 1.;
+    // } else if (abs(uv.y) <= 2. * fwidth(uv.y)){
+    //     color.r = 1.;
+    // } else if (faction.x < 2. * fwidth(uv.x) || faction.y < 2. * fwidth(uv.y)){
+    //     color = vec3(1.);
+    // }
+
+    // 先把格子设置为白色
+    color = vec3(smoothstep(LV * fwidth(uv.x), 3.9*fwidth(uv.x), faction.x));
+    color += vec3(smoothstep(LV * fwidth(uv.y), 3.9*fwidth(uv.y), faction.y));
+
+    // 填充坐标轴颜色(y， x)
+    color.rb  *= smoothstep(1.9* fwidth(uv.x), 2. * fwidth(uv.x), abs(uv.x));
+    color.gb  *= smoothstep(1.9* fwidth(uv.y), 2. * fwidth(uv.y), abs(uv.y));
+
+    return color;
+}
+
+// 黑白格底色
+vec3 GridBW(in vec2 uv){
+    vec3 color = vec3(0.1);
+    vec2 grid = floor(mod(uv, 2.));
+    if (grid.x == grid.y) color = vec3(0.15);
+    color = mix(color, vec3(0.), smoothstep(1.1 * fwidth(uv.x), fwidth(uv.x), abs(uv.x)));
+    color = mix(color, vec3(0.), smoothstep(1.1 * fwidth(uv.y), fwidth(uv.y), abs(uv.y)));
+
+    return color;
+}
+
+
+vec2 fixUV(in vec2 c){
+    return LV * (2. * c - iResolution.xy) / min(iResolution.x, iResolution.y);
+}
+
+float Segment(in vec2 p, in vec2 a, in vec2 b, in float w) {
+    float f = 0.;
+    vec2 ba = b - a;
+    vec2 pa = p - a;
+    float proj = clamp(dot(pa, ba) / dot(ba, ba), 0., 1.);
+    float d = length(proj * ba - pa);
+    // if (d <= w){
+    //     f = 1.;
+    // }
+    f = smoothstep(w, w*0.95, d);
+    return f;
+}
+
+float func(in float x){
+    float T = 4. + 5. * sin(iTime);
+    return cos(2. * PI / T * x);
+    // return mod(x, 2.);
+    // return smoothstep(0., 1., x);
+}
+
+float plotFunc(vec2 uv) {
+    float f = func(uv.x);
+    return smoothstep(f - 0.01, f + 0.01, uv.y);
+}
+
+float funcPlot(in vec2 uv){
+    float f = 0.;
+    for(float i = 0.; i <= iResolution.x; i += 1.) {
+        float fx = fixUV(vec2(i, 0.)).x;
+        float nextFx = fixUV(vec2(i + 1., 0.)).x;
+        f += Segment(uv, vec2(fx, func(fx)), vec2(nextFx, func(nextFx)), fwidth(uv.x));
+    }
+    // 向量归一化
+    return clamp(f, 0., 1.);
+}
+
+
+void mainImage(out vec4 fragColor, in vec2 fragCoord){
+
+    vec2 uv = fixUV(fragCoord);
+
+    vec3 color = GridBW(uv);
+
+    // 做颜色差值
+    // color += vec3(Segment(uv, vec2(4., 4.), vec2(-4., -4.), fwidth(uv.x)));
+    // color = mix(color, vec3(0.3, 0.6, 0.8), funcPlot(uv));
+
+    // 利用smoothstep画圆
+    // vec3 color = vec3(0., 1., 0.5);
+    // color = vec3(smoothstep(1., 0.99, length(uv)));
+
+    float count = 0.;
+    for (int m = 0; m < AA; m++) {
+        for (int n = 0; n<AA; n++){
+            vec2 offset = (vec2(float(m), float(n)) - 0.5 * float(AA)) / float(AA) * 2.;
+            count += plotFunc(fixUV(fragCoord+offset));
+        }
+    }
+
+    if (count > float(AA*AA) / 2.){
+        count = float(AA * AA) - count;
+    }
+
+    count = count * 2. / float(AA*AA);
+    color = mix(color, vec3(1.), count);
+
+    // color = vec3(plotFunc(uv));
+
+    // color = mix(color, vec3(0.5, 0.1, 0.05), plotFunc(uv));
+    fragColor = vec4(color, 1);
+}
+```
+
+
+
+
+
