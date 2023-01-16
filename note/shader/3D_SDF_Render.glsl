@@ -2,7 +2,8 @@
 #define TMAX 20.
 #define RAYMARCH_TIME 128   // 最大迭代次数
 #define PRECISION   0.001   // 定义精度
-#define AA 3    
+#define AA 3
+#define PI 3.1415936
 
 vec2 fixUV(in vec2 c) {
     return (2. * c - iResolution.xy) / min(iResolution.x, iResolution.y);
@@ -40,12 +41,37 @@ vec3 calcNormal(in vec3 p) {
     );
 }
 
+// 设置相机（target, 摄像机位置，还有θ角）
+mat3 setCamera(vec3 ta, vec3 ro, float cr) {
+    // 确定z轴
+    vec3 z = normalize(ta - ro);
+    vec3 cp = vec3(sin(cr), cos(cr), 0.);
+    // x轴 z叉乘cp，然后正则化（归一化，单位向量）
+    vec3 x = normalize(cross(z, cp));
+    // y轴 x叉乘z
+    vec3 y = cross(x, z);
+
+    return mat3(x, y, z);
+}
+
 vec3 render(vec2 uv) {
     vec3 color = vec3(0.);
     // 定义摄像机
-    vec3 ro = vec3(0., 0., -2.);
+    // vec3 ro = vec3(0., 0., -2.);
+    vec3 ro = vec3(2. * cos(iTime), 1., 2. * sin(iTime));
+
+    if (iMouse.z > 0.01) {
+        float theta = iMouse.x / iResolution.x * 2. * PI;
+        float thetay = iMouse.y / iResolution.y *2. *PI;
+        ro = vec3(2. * cos(theta), sin(thetay), 2. * sin(theta));
+    }
+
+    // 目标方向，朝向中心即可
+    vec3 ta = vec3(0.);
+    mat3 cam = setCamera(ta, ro, 0.);
+
     // 定义射线方向（从摄像机到屏幕上任意点的方向）,然后归一化（单位向量）
-    vec3 rd = normalize(vec3(uv, 0.) - ro);
+    vec3 rd = normalize(cam * vec3(uv, 1.));
 
     float t = rayMarch(ro, rd);
 
