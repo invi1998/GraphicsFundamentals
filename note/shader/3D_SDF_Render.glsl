@@ -20,9 +20,9 @@ float sdfSphere(in vec3 p) {
 }
 
 // 3维立方体
-float sdfRect(in vec3 p, in vec3 b) {
+float sdfBox(in vec3 p, in vec3 b, float rad) {
     vec3 d = abs(p) - b;
-    return length(max(d, 0.)) + min(max(d.x, max(d.y, d.z)), 0.);
+    return length(max(d, 0.)) + min(max(d.x, max(d.y, d.z)), 0.) - rad;
 }
 
 vec2 opU(vec2 a, vec2 b) {
@@ -32,14 +32,16 @@ vec2 opU(vec2 a, vec2 b) {
 // 这里返回一个二维向量，第一个值还是他的最短距离，第二个用于标记这个物体（现在要做物体区分）
 vec2 map(in vec3 p) {
     // float d = sdfSphere(p);
-    // // float d = sdfRect(p, vec3(0.4, 1., 0.3));
+    // // float d = sdfBox(p, vec3(0.4, 1., 0.3));
     // d = min(d, sdfPlane(p + vec3(0., 1., 0.)));
     // return d;
 
-    vec2 d = vec2(sdfSphere(p - vec3(0., 1., 0.)), 2.);    // 球体标记为2
     // d = opU(d, vec2(sdfPlane(p + vec3(0., 1., 0.)), 1.));       // 平面标记为1
-    d = opU(d, vec2(sdfRect(p - vec3(-2., 1., 1.4), vec3(0.7, 1., 1.)), 3.));
 
+    // vec2 d = vec2(sdfSphere(p - vec3(0., 1., 0.)), 2.);    // 球体标记为2
+    // d = opU(d, vec2(sdfBox(p - vec3(-2., 1., 1.4), vec3(0.7, 1., 1.)), 3.));   // 长方体标记为3
+
+    vec2 d = vec2(sdfBox(p - vec3(0., 1., 0.), vec3(1.5, 0.8, 1.), 0.3), 2);
 
     return d;
 }
@@ -61,7 +63,7 @@ vec2 rayMarch(in vec3 ro, in vec3 rd) {
         vec3 p = ro + t * rd;
         // float d = sdfSphere(p);
         vec2 d = map(p);
-        // float d = sdfRect(p, vec3(.4, .4, .5));
+        // float d = sdfBox(p, vec3(.4, .4, .5));
         if (d.x < PRECISION) {
             res = vec2(t, d.y);
             break;
@@ -179,16 +181,16 @@ vec3 render(vec2 uv, in vec2 px, in vec2 py) {
         dif *= softShadow(p, normalize(light - p), 10.);
 
         // 添加环境光
-        float amp = 0.5 + 0.3 * dot(n, vec3(0., 0., -1.));
+        float amp = 0.9 + 0.3 * dot(n, vec3(0., 0., -1.));
 
         vec3 c = vec3(0.);
 
         if (t.y > 2.9 && t.y < 3.1) {
             // 长方体
-            c = vec3(0.8, 0.16, 1.);
+            c = vec3(1., 0., 0.2);
         } else if (t.y > 1.9 && t.y < 2.1) {
-            // 球体
-            c = vec3(0.2, 0.76, 0.93);
+            // 球体 - > 身体
+            c = vec3(0.2, 0.8, 0.93);
         } else if (t.y > 0.9 && t.y < 1.1) {
             // 平面
             // vec2 grid = floor(p.xz);
