@@ -6,15 +6,23 @@ float sdfCircle(in vec2 p) {
     // 这里p就是一个二维的坐标（注意，不是圆心），r就是半径，这里sdf的返回值是有负数情况的，返回负数就表示在圆内部
 }
 
+// SDF绘制矩形
+float sdfRect(in vec2 p, vec2 b) {
+    vec2 d = abs(p) -b;
+    return length(max(d, 0.)) + min(max(d.x, d.y), 0.);
+}
+
 vec2 fixUV(in vec2 c){
-    return (2.*c - iResolution.xy) / min(iResolution.x, iResolution.y);
+    return 2. * (2.*c - iResolution.xy) / min(iResolution.x, iResolution.y);
 }
 
 void mainImage(out vec4 fragColor, in vec2 fragCoord) {
 
     vec2 uv = fixUV(fragCoord);
 
-    float d = sdfCircle(uv);
+    // float d = sdfCircle(uv);
+    
+    float d = sdfRect(uv, vec2(1. + 0.2 * sin(iTime), 1. + 0.3 * cos(iTime)));
 
     vec3 color = 0.1 + sign(d) * vec3(.3, .2, .8);
     // 注意这里：如果在圆里面，因为d是负值，所以sin(d)也就是在[-1,0]这个区间，为负数
@@ -27,7 +35,8 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     if(iMouse.z > 0.1){
         // 获取当前鼠标的坐标
         vec2 m = fixUV(iMouse.xy);
-        float currentDistance = abs(sdfCircle(m));
+        // float currentDistance = abs(sdfCircle(m));
+        float currentDistance = abs(sdfRect(uv, vec2(1. + 0.2 * sin(iTime), 1. + 0.3 * cos(iTime))));
         color = mix(color, vec3(0.7, 0., 0.6), smoothstep(0.01, 0.001, abs(length(uv - m) - currentDistance)));
         // 绘制鼠标圆心
         color = mix(color, vec3(0.1, 0.8, 0.5), smoothstep(0.01, 0.001, length(uv - m)));

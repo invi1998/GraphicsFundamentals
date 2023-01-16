@@ -15,13 +15,20 @@ float sdfSphere(in vec3 p) {
     return length(p) - 0.3;
 }
 
+// 3维立方体
+float sdfRect(in vec3 p, in vec3 b) {
+    vec3 d = abs(p) - b;
+    return length(max(d, 0.)) + min(max(d.x, max(d.y, d.z)), 0.);
+}
+
 // 射线源头，射线方向
 float rayMarch(in vec3 ro, in vec3 rd) {
     // 走的距离t
     float t = TMIN;
     for (int i = 0; i < RAYMARCH_TIME && t < TMAX; i++) {
         vec3 p = ro + t * rd;
-        float d = sdfSphere(p);
+        // float d = sdfSphere(p);
+        float d = sdfRect(p, vec3(.4, .4, .5));
         if (d < PRECISION) {
             break;
         }
@@ -83,7 +90,7 @@ vec3 render(vec2 uv) {
         // 定义光线源
         vec3 light = vec3(cos(iTime), 3., sin(iTime) - 2.);
         // 计算光线和法向量的夹角余弦（做点乘）
-        float dif = clamp(dot(normalize(light - p) , n), 0., 1.);
+        float dif = clamp(dot(normalize(light - p) , n), 0.1, 1.);
         // 添加环境光
         float amp = 0.2 + 0.3 * dot(n, vec3(0., 0., -1.));
         color = amp * vec3(1, 0.2, 0.5) + dif * vec3(0.8);
