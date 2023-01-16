@@ -127,20 +127,33 @@ float softShadow(in vec3 ro, in vec3 rd, float k) {
     return res;
 }
 
-vec3 render(vec2 uv) {
+vec2 tri(in vec2 x) {
+    vec2 h = fract(x*0.5) - 0.5;
+    return 1. - 2. * abs(h);
+}
+
+float checkersGrid(in vec2 uv, in vec2 ddx, in vec2 ddy) {
+    vec2 w = max(abs(ddx), abs(ddy)) + 0.01;
+    vec2 i = (tri(uv + 0.5 * w) - tri(uv-0.5*w)) / w;
+    return 0.5 - 0.5*i.x * i.y;
+}
+
+vec3 render(vec2 uv, in vec2 px, in vec2 py) {
     // 定义摄像机
     // vec3 ro = vec3(0., 3., -6.);
-    vec3 ro = vec3(5. * sin(iTime), 3., -6);
+    vec3 ro = vec3(4. * cos(.1 * iTime), 3., 6. * sin(.1 * iTime));
 
     if (iMouse.z > 0.01) {
         float theta = iMouse.x / iResolution.x * 2. * PI;
         float thetay = iMouse.y / iResolution.y *2. *PI;
-        ro = vec3(6. * cos(theta), 3. * sin(thetay), -6. * sin(theta));
+        ro = vec3(4. * cos(theta), 3. * sin(thetay), 4. * sin(theta));
     }
 
     // 目标方向，朝向中心即可
-    vec3 ta = vec3(0., 0.5, 0);
+    vec3 ta = vec3(0., 1., 0);
     mat3 cam = setCamera(ta, ro, 0.);
+    // 定义焦距
+    float fl = 1.;
 
     // 定义射线方向（从摄像机到屏幕上任意点的方向）,然后归一化（单位向量）
     vec3 rd = normalize(cam * vec3(uv, 1.));
@@ -178,7 +191,15 @@ vec3 render(vec2 uv) {
             c = vec3(0.2, 0.76, 0.93);
         } else if (t.y > 0.9 && t.y < 1.1) {
             // 平面
-            c = vec3(0.31);
+            // vec2 grid = floor(p.xz);
+            // c = vec3(0.) + 1. * mod(grid.x + grid.y, 2.);
+            vec3 rdx = normalize(cam * vec3(px, fl));
+            vec3 rdy = normalize(cam * vec3(py, fl));
+
+            vec3 ddx = ro.y * (rd / rd.y - rdx/rdx.y);
+            vec3 ddy = ro.y * (rd / rd.y - rdy/rdy.y);
+
+            c = vec3(0.) + vec3(0.9) * checkersGrid(p.xz, ddx.xz, ddy.xz);
         }
 
         // color = amp * vec3(1, 0.2, 0.5) + dif * vec3(0.8);
@@ -191,11 +212,16 @@ vec3 render(vec2 uv) {
 
 void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     vec3 color = vec3(0.);
+
+
+
     for(int m = 0; m < AA; m++){
         for (int n = 0; n < AA; n++){
             vec2 offset = 2. * (vec2(float(m), float(n)) / float(AA) - 0.5);
             vec2 uv = fixUV(fragCoord + offset);
-            color += render(uv);
+            vec2 px = fixUV(fragCoord + vec2(1., 0.) + offset);
+            vec2 py = fixUV(fragCoord + vec2(0., 1.) + offset);
+            color += render(uv, px, py);
 
         }
     }
