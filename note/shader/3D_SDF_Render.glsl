@@ -43,6 +43,27 @@ float sdfCappedTorus(in vec3 p, in vec2 sc, in float ra, in float rb) {
     return sqrt(dot(p, p) + ra*ra - 2.0 * ra * k) -rb;
 }
 
+float shape1(in vec3 p) {
+    float d = sdfSphere(p);
+    // 并集运算，因为sdf它是空间中任何一点到形状的距离，所以对于sdf的并操作，它其实就是两个图形的sdf取最小即可
+    d = min(d, sdfBox(p - vec3(0., 0., 0.), vec3(0.5, 0.5, 1.), 0.));
+    return d;
+}
+
+float shape2(in vec3 p) {
+    float d = sdfSphere(p);
+    // 交集运算，因为sdf它是空间中任何一点到形状的距离，所以对于sdf的相交操作，它其实就是两个图形的sdf取最大即可
+    d = max(d, sdfBox(p - vec3(0., 0., 0.), vec3(0.5, 0.5, 1.), 0.));
+    return d;
+}
+
+float shape3(in vec3 p) {
+    float d = sdfSphere(p);
+    // 差运算，因为sdf它是空间中任何一点到形状的距离，所以对于sdf的相交操作，它其实就是将图形1的sdf和图形2的复值相交
+    d = max(d, -1. * sdfBox(p - vec3(0., 0., 0.), vec3(0.5, 0.5, 1.), 0.));
+    return d;
+}
+
 // 拉伸操作
 vec4 opElongate(in vec3 p, in vec3 h) {
     vec3 q = abs(p) - h;
@@ -65,31 +86,41 @@ vec2 map(in vec3 p) {
     // vec2 d = vec2(sdfSphere(p - vec3(0., 1., 0.)), 2.);    // 球体标记为2
     // d = opU(d, vec2(sdfBox(p - vec3(-2., 1., 1.4), vec3(0.7, 1., 1.)), 3.));   // 长方体标记为3
 
-    vec2 d = vec2(sdfBox(p - vec3(0., 1., 0.), vec3(1.5, 0.8, 1.), 0.3), 2);
+    // 画小电视
 
-    {
-        // 框架
-        vec4 w = opElongate(p.xzy - vec3(0., -1.3, 1.0), vec3(1.1, 0.0, 0.4));
-        float t = w.w + sdfTorus(w.xyz, vec2(0.4, 0.05));
-        d = opU(d, vec2(t, 3)); 
-    }
-    {
-        // 眼睛
-        d = opU(d, vec2(sdfCapsule(p - vec3(-2.0, 0., -1.8), vec3(1.6, 1.3, 0.5), vec3(1.0, 1.0, .5), .1), 3));
-        d = opU(d, vec2(sdfCapsule(p - vec3(-2.0, 0., -1.8), vec3(2.45, 1.3, 0.5), vec3(3.05, 1.0, .5), .1), 3));
-    }
-    {
-        // 嘴巴
-        float an = 70. / 180. * PI;
-        d = opU(d, vec2(sdfCappedTorus(p *  vec3(1.,  -1., 1.) - vec3(0.3, -0.8, -1.3), vec2(sin(an), cos(an)), .3, .1), 3));
-        d = opU(d, vec2(sdfCappedTorus(p *  vec3(1.,  -1., 1.) - vec3(-.3, -0.8, -1.3), vec2(sin(an), cos(an)), .3, .1), 3));
-    }
-    {
-        // 天线
-        d = opU(d, vec2(sdfCapsule(p - vec3(-2.0, 0., -1.), vec3(3.8, 2.8, 0.5), vec3(3.0, 2.0, .5), .1), 3));
-        d = opU(d, vec2(sdfCapsule(p - vec3(-2.0, 0., -1.), vec3(0.2, 2.8, 0.5), vec3(1., 2.0, .5), .1), 3));
-    }
+    // vec2 d = vec2(sdfBox(p - vec3(0., 1., 0.), vec3(1.5, 0.8, 1.), 0.3), 2);
 
+    // {
+    //     // 框架
+    //     vec4 w = opElongate(p.xzy - vec3(0., -1.3, 1.0), vec3(1.1, 0.0, 0.4));
+    //     float t = w.w + sdfTorus(w.xyz, vec2(0.4, 0.05));
+    //     d = opU(d, vec2(t, 3)); 
+    // }
+    // {
+    //     // 眼睛
+    //     d = opU(d, vec2(sdfCapsule(p - vec3(-2.0, 0., -1.8), vec3(1.6, 1.3, 0.5), vec3(1.0, 1.0, .5), .1), 3));
+    //     d = opU(d, vec2(sdfCapsule(p - vec3(-2.0, 0., -1.8), vec3(2.45, 1.3, 0.5), vec3(3.05, 1.0, .5), .1), 3));
+    // }
+    // {
+    //     // 嘴巴
+    //     float an = 70. / 180. * PI;
+    //     d = opU(d, vec2(sdfCappedTorus(p *  vec3(1.,  -1., 1.) - vec3(0.3, -0.8, -1.3), vec2(sin(an), cos(an)), .3, .1), 3));
+    //     d = opU(d, vec2(sdfCappedTorus(p *  vec3(1.,  -1., 1.) - vec3(-.3, -0.8, -1.3), vec2(sin(an), cos(an)), .3, .1), 3));
+    // }
+    // {
+    //     // 天线
+    //     d = opU(d, vec2(sdfCapsule(p - vec3(-2.0, 0., -1.), vec3(3.8, 2.8, 0.5), vec3(3.0, 2.0, .5), .1), 3));
+    //     d = opU(d, vec2(sdfCapsule(p - vec3(-2.0, 0., -1.), vec3(0.2, 2.8, 0.5), vec3(1., 2.0, .5), .1), 3));
+    // }
+
+
+    // 测试bool运算
+    // 并
+    vec2 d = vec2(shape1(p - vec3(1.5, 1., 0.)), 2.);
+    // 交
+    d = opU(d, vec2(shape2(p - vec3(-1.5, 1., 0.)), 3.));
+    // 差
+    d = opU(d, vec2(shape3(p - vec3(-4.5, 1., 0.)), 4.));
 
     return d;
 }
@@ -190,7 +221,7 @@ float checkersGrid(in vec2 uv, in vec2 ddx, in vec2 ddy) {
 
 vec3 render(vec2 uv, in vec2 px, in vec2 py) {
     // 定义摄像机
-    vec3 ro = vec3(0., 2., -4.);
+    vec3 ro = vec3(0., 2., -6.);
     // vec3 ro = vec3(4. * cos(.1 * iTime), 3., 6. * sin(.1 * iTime));
 
     if (iMouse.z > 0.01) {
@@ -220,7 +251,7 @@ vec3 render(vec2 uv, in vec2 px, in vec2 py) {
         vec3 n = (t.y < 1.1) ? vec3(0, 1, 0) : calcNormal(p);
         // 定义光线源
         // vec3 light = vec3(2. * cos(iTime), 6., sin(iTime) - 2.);
-        vec3 light = vec3(2., 7., -2.);
+        vec3 light = vec3(2., 10., -2.);
         // 计算光线和法向量的夹角余弦（做点乘）
         float dif = clamp(dot(normalize(light - p), n), 0.1, 1.);
 
@@ -233,7 +264,10 @@ vec3 render(vec2 uv, in vec2 px, in vec2 py) {
 
         vec3 c = vec3(0.);
 
-        if (t.y > 2.9 && t.y < 3.1) {
+        if (t.y > 3.9 && t.y < 4.1) {
+            // 长方体
+            c = vec3(0., 1., 0.);
+        } else if (t.y > 2.9 && t.y < 3.1) {
             // 长方体
             c = vec3(1., 0., 0.2);
         } else if (t.y > 1.9 && t.y < 2.1) {
