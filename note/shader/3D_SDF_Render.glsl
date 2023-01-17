@@ -25,6 +25,30 @@ float sdfBox(in vec3 p, in vec3 b, float rad) {
     return length(max(d, 0.)) + min(max(d.x, max(d.y, d.z)), 0.) - rad;
 }
 
+// 绘制圆环
+float sdfTorus(in vec3 p, in vec2 t) {
+    vec2 q = vec2(length(p.xz) - t.x, p.y);
+    return length(q) - t.y;
+}
+
+float sdfCapsule(in vec3 p, in vec3 a, in vec3 b, in float r) {
+    vec3 pa = p - a, ba = b - a;
+    float h = clamp(dot(pa, ba)/dot(ba,ba), 0.0, 1.0);
+    return length(pa - ba*h) - r;
+}
+
+float sdfCappedTorus(in vec3 p, in vec2 sc, in float ra, in float rb) {
+    p.x = abs(p.x);
+    float k = (sc.y * p.x > sc.x * p.y) ? dot(p.xy, sc) : length(p.xy);
+    return sqrt(dot(p, p) + ra*ra - 2.0 * ra * k) -rb;
+}
+
+// 拉伸操作
+vec4 opElongate(in vec3 p, in vec3 h) {
+    vec3 q = abs(p) - h;
+    return vec4(max(q, 0.0), min(max(q.x, max(q.y, q.z)), 0.0));
+}
+
 vec2 opU(vec2 a, vec2 b) {
     return a.x < b.x ? a : b; 
 }
@@ -42,6 +66,30 @@ vec2 map(in vec3 p) {
     // d = opU(d, vec2(sdfBox(p - vec3(-2., 1., 1.4), vec3(0.7, 1., 1.)), 3.));   // 长方体标记为3
 
     vec2 d = vec2(sdfBox(p - vec3(0., 1., 0.), vec3(1.5, 0.8, 1.), 0.3), 2);
+
+    {
+        // 框架
+        vec4 w = opElongate(p.xzy - vec3(0., -1.3, 1.0), vec3(1.1, 0.0, 0.4));
+        float t = w.w + sdfTorus(w.xyz, vec2(0.4, 0.05));
+        d = opU(d, vec2(t, 3)); 
+    }
+    {
+        // 眼睛
+        d = opU(d, vec2(sdfCapsule(p - vec3(-2.0, 0., -1.8), vec3(1.6, 1.3, 0.5), vec3(1.0, 1.0, .5), .1), 3));
+        d = opU(d, vec2(sdfCapsule(p - vec3(-2.0, 0., -1.8), vec3(2.45, 1.3, 0.5), vec3(3.05, 1.0, .5), .1), 3));
+    }
+    {
+        // 嘴巴
+        float an = 70. / 180. * PI;
+        d = opU(d, vec2(sdfCappedTorus(p *  vec3(1.,  -1., 1.) - vec3(0.3, -0.8, -1.3), vec2(sin(an), cos(an)), .3, .1), 3));
+        d = opU(d, vec2(sdfCappedTorus(p *  vec3(1.,  -1., 1.) - vec3(-.3, -0.8, -1.3), vec2(sin(an), cos(an)), .3, .1), 3));
+    }
+    {
+        // 天线
+        d = opU(d, vec2(sdfCapsule(p - vec3(-2.0, 0., -1.), vec3(3.8, 2.8, 0.5), vec3(3.0, 2.0, .5), .1), 3));
+        d = opU(d, vec2(sdfCapsule(p - vec3(-2.0, 0., -1.), vec3(0.2, 2.8, 0.5), vec3(1., 2.0, .5), .1), 3));
+    }
+
 
     return d;
 }
@@ -142,8 +190,8 @@ float checkersGrid(in vec2 uv, in vec2 ddx, in vec2 ddy) {
 
 vec3 render(vec2 uv, in vec2 px, in vec2 py) {
     // 定义摄像机
-    // vec3 ro = vec3(0., 3., -6.);
-    vec3 ro = vec3(4. * cos(.1 * iTime), 3., 6. * sin(.1 * iTime));
+    vec3 ro = vec3(0., 2., -4.);
+    // vec3 ro = vec3(4. * cos(.1 * iTime), 3., 6. * sin(.1 * iTime));
 
     if (iMouse.z > 0.01) {
         float theta = iMouse.x / iResolution.x * 2. * PI;
@@ -152,7 +200,7 @@ vec3 render(vec2 uv, in vec2 px, in vec2 py) {
     }
 
     // 目标方向，朝向中心即可
-    vec3 ta = vec3(0., 1., 0);
+    vec3 ta = vec3(0., 1.5, 0);
     mat3 cam = setCamera(ta, ro, 0.);
     // 定义焦距
     float fl = 1.;
