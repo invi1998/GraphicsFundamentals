@@ -9,6 +9,13 @@ vec2 fixUV(in vec2 c) {
     return (2. * c - iResolution.xy) / min(iResolution.x, iResolution.y);
 }
 
+// 光滑拼接（最小函数），如果是普通的min，直接比较sdf大小，我们的3维模型交接的地方会有很生硬的交接
+// 改函数可生成平滑的交界面, k就是平滑度，值越高，越平滑
+float smin(float a, float b, float k) {
+    float h = clamp(0.5 + 0.5 * (b - a) / k, 0.0, 1.0);
+    return mix(b, a, h) - k * h * (1.0 - h);
+}
+
 // 定义平面
 float sdfPlane(in vec3 p) {
     return p.y;
@@ -47,6 +54,14 @@ float shape1(in vec3 p) {
     float d = sdfSphere(p);
     // 并集运算，因为sdf它是空间中任何一点到形状的距离，所以对于sdf的并操作，它其实就是两个图形的sdf取最小即可
     d = min(d, sdfBox(p - vec3(0., 0., 0.), vec3(0.5, 0.5, 1.), 0.));
+    return d;
+}
+
+
+float shapeSmin(in vec3 p) {
+    float d = sdfSphere(p);
+    // 并集运算，因为sdf它是空间中任何一点到形状的距离，所以对于sdf的并操作，它其实就是两个图形的sdf取最小即可
+    d = smin(d, sdfBox(p - vec3(0., 0., 0.), vec3(1.5, 0.4, 0.4), 0.), 0.1);
     return d;
 }
 
@@ -114,13 +129,16 @@ vec2 map(in vec3 p) {
     // }
 
 
-    // 测试bool运算
-    // 并
-    vec2 d = vec2(shape1(p - vec3(1.5, 1., 0.)), 2.);
-    // 交
-    d = opU(d, vec2(shape2(p - vec3(-1.5, 1., 0.)), 3.));
-    // 差
-    d = opU(d, vec2(shape3(p - vec3(-4.5, 1., 0.)), 4.));
+    // // 测试bool运算
+    // // 并
+    // vec2 d = vec2(shape1(p - vec3(1.5, 1., 0.)), 2.);
+    // // 交
+    // d = opU(d, vec2(shape2(p - vec3(-1.5, 1., 0.)), 3.));
+    // // 差
+    // d = opU(d, vec2(shape3(p - vec3(-4.5, 1., 0.)), 4.));
+
+    // 平滑smin
+    vec2 d = vec2(shapeSmin(p - vec3(0., 1., 0.)), 2.);
 
     return d;
 }
@@ -221,7 +239,7 @@ float checkersGrid(in vec2 uv, in vec2 ddx, in vec2 ddy) {
 
 vec3 render(vec2 uv, in vec2 px, in vec2 py) {
     // 定义摄像机
-    vec3 ro = vec3(0., 2., -6.);
+    vec3 ro = vec3(0., 2., -3.);
     // vec3 ro = vec3(4. * cos(.1 * iTime), 3., 6. * sin(.1 * iTime));
 
     if (iMouse.z > 0.01) {
