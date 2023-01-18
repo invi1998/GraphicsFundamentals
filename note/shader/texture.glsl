@@ -120,7 +120,8 @@ float calcAO2(vec3 n) {
 
 vec3 render(vec2 uv) {
     vec3 color = vec3(0.);
-    vec3 ro = vec3(3. * cos(iTime), 1., 3. * sin(iTime));
+    vec3 ro = vec3(3. * cos(iTime), 2.5, 3. * sin(iTime));
+    // vec3 ro = vec3(1.5, 1.5, 1.);
     if (iMouse.z > 0.01) {
         float theta = iMouse.x / iResolution.x * 3. * PI;
         ro = vec3(3. * cos(theta), 3. * (-3. * iMouse.y / iResolution.y + 1.), 3. * sin(theta));
@@ -136,18 +137,39 @@ vec3 render(vec2 uv) {
         float dif = clamp(dot(normalize(light - p), n), 0., 1.);
         float amb = 0.5 + 0.5 * dot(n, vec3(0., 1., 0.));
 
+        // color = texture(iChannel1, p.xy).rgb;
+        // color *= n.z;
+        // color += texture(iChannel2, p.xy).rgb;
+        // color *= n.z;
+
         // color = amb * vec3(.7) + dif * vec3(1.);
-        vec3 colorXY = texture(iChannel1, p.xy * .5 + .5).rgb;
-        vec3 colorYX = texture(iChannel2, p.yx * .5 + .5).rgb;
-        vec3 colorXZ = texture(iChannel3, p.xz * .5 + .5).rgb;
-        vec3 colorZX = texture(iChannel4, p.zx * .5 + .5).rgb;
-        vec3 colorYZ = texture(iChannel5, p.yz * .5 + .5).rgb;
-        vec3 colorZY = texture(iChannel6, p.zy * .5 + .5).rgb;
-        n = abs(n);
-        n = pow(n, vec3(10.));
-        n /= n.x + n.y + n.z;
-        color = colorXY * n.z + colorXZ * n.y + colorYZ * n.x + colorYX * n.z * -1.;
-        //color = n;
+        vec3 colorXY = texture(iChannel1, p.xy * 0.5 + 0.5).rgb;
+        vec3 colorYX = texture(iChannel2, p.xy * 0.5 + 0.5).rgb;
+        vec3 colorXZ = texture(iChannel3, p.xz * 0.5 + 0.5).rgb;
+        vec3 colorZX = texture(iChannel4, p.xz * 0.5 + 0.5).rgb;
+        vec3 colorYZ = texture(iChannel5, p.zy * 0.5 + 0.5).rgb;
+        vec3 colorZY = texture(iChannel6, p.zy * 0.5 + 0.5).rgb;
+        // n = abs(n);
+        // n = pow(n, vec3(10.));
+        // n /= n.x + n.y + n.z;
+        // color = colorXY * n.z + colorXZ * n.y + colorYZ * n.x;
+        if (n.z > 0.) {
+            color = colorXY * n.z;
+        } else if (n.z < 0.) {
+            color = colorYX * -n.z;
+        }
+        if (n.y > 0.) {
+            color += colorXZ * n.y;
+        } else if (n.y < 0.) {
+            color += colorZX * -n.y;
+        }
+        if (n.x > 0.) {
+            color += colorYZ * n.x;
+        } else if (n.x < 0.) {
+            color += colorZY * -n.x;
+        }
+        //  + colorYX * -n.z;
+        // color = n;
     }
     return color;
 }
