@@ -5,12 +5,12 @@
 #iChannel5 "file://girls5.png"
 #iChannel6 "file://girls6.png"
 
-#iChannel1::WrapMode "Clamp"
-#iChannel2::WrapMode "Clamp"
-#iChannel3::WrapMode "Clamp"
-#iChannel4::WrapMode "Clamp"
-#iChannel5::WrapMode "Clamp"
-#iChannel6::WrapMode "Clamp"
+#iChannel1::WrapMode "Repeat"
+#iChannel2::WrapMode "Repeat"
+#iChannel3::WrapMode "Repeat"
+#iChannel4::WrapMode "Repeat"
+#iChannel5::WrapMode "Repeat"
+#iChannel6::WrapMode "Repeat"
 
 
 #define AA 3
@@ -45,9 +45,9 @@ float smin(float a, float b, float k) {
 
 float map(in vec3 p) {
     // 球体
-    float d = sdfSphere(p, 0.7);
+    // float d = sdfSphere(p, 0.7);
 
-    // float d = sdfBox(p - vec3(0., 1., 0.), vec3(0.5), 0.);
+    float d = sdfBox(p - vec3(0., 1., 0.), vec3(0.5), 0.);
     // d = smin(d, sdfPlane(p), 1. + 0.5 * sin(0.57 * iTime));
     
     return d;
@@ -147,35 +147,35 @@ vec3 render(vec2 uv) {
         // color *= n.z;
 
         // color = amb * vec3(.7) + dif * vec3(1.);
-        vec3 colorXY = texture(iChannel1, p.xy * 0.5 + 0.5).rgb;
-        vec3 colorYX = texture(iChannel2, p.xy * 0.5 + 0.5).rgb;
-        vec3 colorXZ = texture(iChannel3, p.xz * 0.5 + 0.5).rgb;
-        vec3 colorZX = texture(iChannel4, p.xz * 0.5 + 0.5).rgb;
-        vec3 colorYZ = texture(iChannel5, p.zy * 0.5 + 0.5).rgb;
-        vec3 colorZY = texture(iChannel6, p.zy * 0.5 + 0.5).rgb;
-        // if (n.z > 0.) {
-        //     color = colorXY * n.z;
-        // } else if (n.z < 0.) {
-        //     color = colorYX * -n.z;
-        // }
-        // if (n.y > 0.) {
-        //     color += colorXZ * n.y;
-        // } else if (n.y < 0.) {
-        //     color += colorZX * -n.y;
-        // }
-        // if (n.x > 0.) {
-        //     color += colorYZ * n.x;
-        // } else if (n.x < 0.) {
-        //     color += colorZY * -n.x;
-        // }
+        vec3 colorXY = texture(iChannel1, p.xy + 0.5).rgb;
+        vec3 colorYX = texture(iChannel2, p.xy + 0.5).rgb;
+        vec3 colorXZ = texture(iChannel3, p.xz + 0.5).rgb;
+        vec3 colorZX = texture(iChannel4, p.xz + 0.5).rgb;
+        vec3 colorYZ = texture(iChannel5, p.zy + 0.5).rgb;
+        vec3 colorZY = texture(iChannel6, p.zy + 0.5).rgb;
+        if (n.z > 0.) {
+            color = colorXY * n.z;
+        } else if (n.z < 0.) {
+            color = colorYX * -n.z;
+        }
+        if (n.y > 0.) {
+            color += colorXZ * n.y;
+        } else if (n.y < 0.) {
+            color += colorZX * -n.y;
+        }
+        if (n.x > 0.) {
+            color += colorYZ * n.x;
+        } else if (n.x < 0.) {
+            color += colorZY * -n.x;
+        }
         //  + colorYX * -n.z;
         
         // 球体贴图
-        n = abs(n);
-        n = pow(n, vec3(10.));
-        // n /= n.x + n.y + n.z;
-        // color = colorXY * n.z + colorXZ * n.y + colorYZ * n.x;
-        color = n;
+        // n = abs(n);
+        // n = pow(n, vec3(10.));
+        // // n /= n.x + n.y + n.z;
+        // // color = colorXY * n.z + colorXZ * n.y + colorYZ * n.x;
+        // color = n;
     }
     return color;
 }
