@@ -1,7 +1,7 @@
 #iChannel1 "file://girls1.png"
 #iChannel2 "file://girls2.png"
-#iChannel3 "file://girls3.png"
-#iChannel4 "file://girls4.png"
+#iChannel3 "file://girls4.png"
+#iChannel4 "file://girls3.png"
 #iChannel5 "file://girls5.png"
 #iChannel6 "file://girls6.png"
 
@@ -149,7 +149,7 @@ vec3 render(vec2 uv) {
         // color = amb * vec3(.7) + dif * vec3(1.);
         vec3 colorXY = texture(iChannel1, p.xy + 0.5).rgb;
         vec3 colorYX = texture(iChannel2, p.xy + 0.5).rgb;
-        vec3 colorXZ = texture(iChannel3, p.xz + 0.5).rgb;
+        vec3 colorXZ = texture(iChannel3, p.zx + 0.5).rgb;
         vec3 colorZX = texture(iChannel4, p.xz + 0.5).rgb;
         vec3 colorYZ = texture(iChannel5, p.zy + 0.5).rgb;
         vec3 colorZY = texture(iChannel6, p.zy + 0.5).rgb;
