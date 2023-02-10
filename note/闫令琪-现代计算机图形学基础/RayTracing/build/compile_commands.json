@@ -1,0 +1,8 @@
+[
+{
+  "directory": "D:/GraphicsFundamentals/note/闫令琪-现代计算机图形学基础/RayTracing/build",
+  "command": "C:/MinGW/bin/g++.exe   -g -std=gnu++17 -o CMakeFiles/RayTracing.dir/src/RayTracing.cpp.obj -c D:/GraphicsFundamentals/note/闫令琪-现代计算机图形学基础/RayTracing/src/RayTracing.cpp",
+  "file": "D:/GraphicsFundamentals/note/闫令琪-现代计算机图形学基础/RayTracing/src/RayTracing.cpp",
+  "output": "CMakeFiles/RayTracing.dir/src/RayTracing.cpp.obj"
+}
+]
