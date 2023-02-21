@@ -31,7 +31,7 @@
 
 本书中最难的两部分是BVH和柏林噪声贴图。所以我将标题取名为“一周”而不是像上一本一样的“一个周末”。如果你想一个周末搞定这本书, 那么你可以把这两个部分留到最后。这本书中提到的概念, 各章节的顺序并不是很重要, 没有BVH和柏林噪声贴图你仍然能渲染出属于自己漂亮的Cornell Box!
 
-![img](https://pic3.zhimg.com/80/v2-c25e15927f1db7d76454545171bae936_720w.webp)
+![img](..\img\v2-c25e15927f1db7d76454545171bae936_720w.webp)
 
 a cornell box
 
@@ -269,7 +269,7 @@ camera cam(lookfrom, lookat, vup, 20, aspect_ratio, aperture, dist_to_focus, 0.0
 
 你将会得到类似下面的结果:
 
-![img](https://pic2.zhimg.com/80/v2-52e1894de917447810291ad004c97535_720w.webp)
+![img](..\img\v2-52e1894de917447810291ad004c97535_720w.webp)
 
 弹跳的小球
 
@@ -314,13 +314,13 @@ return false
 
 大多数人采用一个叫**堆叠法(slab)**的方法。显然一个n维的AABB盒是由n个平行线所截的区间的重叠拼出来的区域 *【译注: 这里看图就行了, 别看字】*, 我们管这个叫"slab"。一个区间就是两个端点间的距离。比如对于x, 3<x<5, 或者更加简洁的 �∈(3,5) 。在二维的情况下, 两段区间重叠的部分就是一个二维的AABB(一个矩形):
 
-![img](https://pic2.zhimg.com/80/v2-00428d9e4f0b83e72552759836e311b9_720w.webp)
+![img](..\img\v2-00428d9e4f0b83e72552759836e311b9_720w.webp)
 
 图2: 2D轴对齐包围盒
 
 对于检测射线是否射入一段区间来说, 我们首先要看看射线有没有射入这个区间的边界。还是拿二维来举例子, 这是光线变量t0, t1。(在光线和目标平面平行的情况下, 因为并没有交点, 这两个变量将未定义)
 
-![img](https://pic1.zhimg.com/80/v2-c13320c49f1bd37b84370b6a8a1a9318_720w.webp)
+![img](..\img\v2-c13320c49f1bd37b84370b6a8a1a9318_720w.webp)
 
 图3: 光线与区间相交
 
@@ -346,7 +346,7 @@ return false
 
 把这个1D的等式运用到我们AABB求交运算的关键是, 你需要把n个维度的t区间重叠在一起。举例来说, 在2D情况下, 绿色的t区间和蓝色的t区间发生重叠的情况如下:
 
-![img](https://pic4.zhimg.com/80/v2-65bd39b93d98813a5d5a068d0030e78b_720w.webp)
+![img](..\img\v2-65bd39b93d98813a5d5a068d0030e78b_720w.webp)
 
 图4: 区间重叠
 
@@ -757,7 +757,7 @@ world.add(make_shared<sphere>(vec3(0,-1000,0), 1000, make_shared<lambertian>(che
 
 就有:
 
-![img](https://pic2.zhimg.com/80/v2-bb9182ea1929308c14f338279b160dc5_720w.webp)
+![img](..\img\v2-bb9182ea1929308c14f338279b160dc5_720w.webp)
 
 在棋盘格上的球体们
 
@@ -795,7 +795,7 @@ camera cam(lookfrom, lookat, vup, 20, aspect_ratio, aperture, dist_to_focus, 0.0
 
 我们将得到:
 
-![img](https://pic1.zhimg.com/80/v2-e08241f5d691ad8c1d51175719dd12b8_720w.webp)
+![img](..\img\v2-e08241f5d691ad8c1d51175719dd12b8_720w.webp)
 
 棋盘格球体
 
@@ -803,13 +803,13 @@ camera cam(lookfrom, lookat, vup, 20, aspect_ratio, aperture, dist_to_focus, 0.0
 
 为了得到一个看上去很cool的纹理, 大部分人使用柏林噪声(Perlin noise)。柏林噪声是以它的发明者Ken Perlin命名的。柏林噪声并不会得到以下的白噪声:
 
-![img](https://pic4.zhimg.com/80/v2-45cd6131b8e1aa8dcfda4980ffc48dbf_720w.webp)
+![img](..\img\v2-45cd6131b8e1aa8dcfda4980ffc48dbf_720w.webp)
 
 白噪声
 
 取而代之的是一些类似模糊后的白噪声:
 
-![img](https://pic4.zhimg.com/80/v2-8d4c01409d351da943de11ddc36c8893_720w.webp)
+![img](..\img\v2-8d4c01409d351da943de11ddc36c8893_720w.webp)
 
 模糊的白噪声
 
@@ -817,7 +817,7 @@ camera cam(lookfrom, lookat, vup, 20, aspect_ratio, aperture, dist_to_focus, 0.0
 
 我们可以用一个随机生成的三维数组铺满(tile)整个空间, 你会得到明显重复的区块:
 
-![img](https://pic4.zhimg.com/80/v2-801c8744e8603e20409a2c7a48479ecf_720w.webp)
+![img](..\img\v2-801c8744e8603e20409a2c7a48479ecf_720w.webp)
 
 贴上随机的颜色块
 
@@ -933,7 +933,7 @@ camera cam(lookfrom, lookat, vup, 20, aspect_ratio, aperture, dist_to_focus, 0.0
 
 如我们所愿, 我们成功的使用哈希生成了下面的图案:
 
-![img](https://pic4.zhimg.com/80/v2-ffbb7bf9ec9ef52c9f543f15a52565fb_720w.webp)
+![img](..\img\v2-ffbb7bf9ec9ef52c9f543f15a52565fb_720w.webp)
 
 使用hash生成的随机材质
 
@@ -981,7 +981,7 @@ class perlin {
 
 我们会得到:
 
-![img](https://pic1.zhimg.com/80/v2-62109dd5b223a9253fa5648788c77954_720w.webp)
+![img](..\img\v2-62109dd5b223a9253fa5648788c77954_720w.webp)
 
 使用三线性插值的柏林噪声
 
@@ -1007,7 +1007,7 @@ class perlin (
 
 这样看起来就更加平滑了:
 
-![img](https://pic1.zhimg.com/80/v2-15d23edd0c12695edbfe196b25323f38_720w.webp)
+![img](..\img\v2-15d23edd0c12695edbfe196b25323f38_720w.webp)
 
 平滑的柏林噪声
 
@@ -1031,7 +1031,7 @@ class noise_texture : public texture {
 
 会得到:
 
-![img](https://pic2.zhimg.com/80/v2-d2e10e0b6269432efa1d15dc7a587f3d_720w.webp)
+![img](..\img\v2-d2e10e0b6269432efa1d15dc7a587f3d_720w.webp)
 
 使用更高的变化频率
 
@@ -1147,7 +1147,7 @@ class noise_texture : public texture {
 
 最终我们得到一个让人满意的结果:
 
-![img](https://pic3.zhimg.com/80/v2-1486a7bf9d8f9a5bf30913422c597176_720w.webp)
+![img](..\img\v2-1486a7bf9d8f9a5bf30913422c597176_720w.webp)
 
 柏林噪声
 
@@ -1178,7 +1178,7 @@ class perlin {
 
 直接使用turb函数来产生纹理, 会得到一个看上去像伪装网一样的东西:
 
-![img](https://pic4.zhimg.com/80/v2-3956bdbbadae95ca33e31047336bdc27_720w.webp)
+![img](..\img\v2-3956bdbbadae95ca33e31047336bdc27_720w.webp)
 
 扰动效果
 
@@ -1202,7 +1202,7 @@ class noise_texture : public texture {
 
 最终得到:
 
-![img](https://pic1.zhimg.com/80/v2-20b702c94384e41bad3fa71b072fcd10_720w.webp)
+![img](..\img\v2-20b702c94384e41bad3fa71b072fcd10_720w.webp)
 
 柏林噪声, 大理石材质
 
@@ -1309,7 +1309,7 @@ class image_texture : public texture {
 #include "stb_image.h"
 ```
 
-![img](https://pic3.zhimg.com/80/v2-ffb463eb4976b6821a5b9c9a6cbe7382_720w.webp)
+![img](..\img\v2-ffb463eb4976b6821a5b9c9a6cbe7382_720w.webp)
 
 earthmap.jpg
 
@@ -1332,7 +1332,7 @@ hittable_list earth() {
 
 如果你想测试的话, 我们先应用这个球, 然后暂时修改`ray_color`函数, 使其只返回attenuation的值, 你会得到下面的结果:
 
-![img](https://pic1.zhimg.com/80/v2-163856bfe8d26d93856016aaa80e7a4c_720w.webp)
+![img](..\img\v2-163856bfe8d26d93856016aaa80e7a4c_720w.webp)
 
 为球体贴上地球贴图
 
@@ -1412,7 +1412,7 @@ vec3 ray_color(const ray& r, const vec3& background, const hittable& world, int 
 
 首先将一个矩形放在xy平面, 通常我们使用一个z值来定义这样的平面。举例来说, �=� 。一个轴对齐的矩形是由 �=�0 , �=�1 , �=�0 , 以及 �=�1 这四条直线构成的。
 
-![img](https://pic3.zhimg.com/80/v2-218518d832d1d1be9f60e040c493fdce_720w.webp)
+![img](..\img\v2-218518d832d1d1be9f60e040c493fdce_720w.webp)
 
 图5: 光线与矩形相交
 
@@ -1493,7 +1493,7 @@ hittable_list simple_light() {
 
 我们会得到:
 
-![img](https://pic4.zhimg.com/80/v2-8fe3e1a75c14758f82889671249d3a17_720w.webp)
+![img](..\img\v2-8fe3e1a75c14758f82889671249d3a17_720w.webp)
 
 使用矩形光源
 
@@ -1501,7 +1501,7 @@ hittable_list simple_light() {
 
 同样的我们在做一些球型光源
 
-![img](https://pic1.zhimg.com/80/v2-46653b52f9776230539a5866ede479f0_720w.webp)
+![img](..\img\v2-46653b52f9776230539a5866ede479f0_720w.webp)
 
 再加入一个球形光源
 
@@ -1627,7 +1627,7 @@ camera cam(lookfrom, lookat, vup, vfov, aspect_ratio, aperture, dist_to_focus, 0
 
 我们会得到如下的结果: 【这里书有些问题, 在hit时设定了法向, 就不需要再flip了】
 
-![img](https://pic3.zhimg.com/80/v2-12910a90f2c51333d4950f7a45ae5b16_720w.webp)
+![img](..\img\v2-12910a90f2c51333d4950f7a45ae5b16_720w.webp)
 
 空空的cornell box
 
@@ -1680,7 +1680,7 @@ camera cam(lookfrom, lookat, vup, vfov, aspect_ratio, aperture, dist_to_focus, 0
 
 看呀:
 
-![img](https://pic2.zhimg.com/80/v2-8534646fe898a1e27ed457835e1e1745_720w.webp)
+![img](..\img\v2-8534646fe898a1e27ed457835e1e1745_720w.webp)
 
 修正墙面朝向后的Cornell Box
 
@@ -1777,13 +1777,13 @@ objects.add(make_shared<box>(vec3(265, 0, 295), vec3(430, 330, 460), white));
 
 现在有:
 
-![img](https://pic2.zhimg.com/80/v2-023774eba33871b6135c2df476aacfb1_720w.webp)
+![img](..\img\v2-023774eba33871b6135c2df476aacfb1_720w.webp)
 
 肚子里面两块砖
 
 现在我们有了这两个长方体, 为了让它看上去更加接近**正宗**的Cornell Box, 我们还需要让他旋转一下。在光线追踪中, 我们时常使用**实例(instance)**来完成这个工作。实例是一种经过旋转过或者平移等操作的几何图元。在光线追踪中, 这其实很简单。我们并不需要去移动任何东西。相对的, 我们只需将射线。举例来说, 想象一个**平移**操作, 我们可以将位于原点的粉红色盒子所有的组成部分的的x值+2, 或者就把盒子放在那里, 然后在hit函数中, 相对的将射线的原点-2。(这也是我们在ray tracing中惯用的做法)*【译注: 射线原点-2计算出hit record后, 得到是左边盒子, 最后还要将计算结果+2, 才能获得正确的射入点(右边盒子)】*
 
-![img](https://pic4.zhimg.com/80/v2-f38a962c426b20212585be2f969b81df_720w.webp)
+![img](..\img\v2-f38a962c426b20212585be2f969b81df_720w.webp)
 
 移动射线VS移动盒子
 
@@ -1828,7 +1828,7 @@ bool translate::bounding_box(double t0, double t1, aabb& output_box) const {
 
 旋转就没有那么容易理解或列出算式了。一个常用的图像技巧是将所有的旋转都当成是绕xyz轴旋转。首先, 让我们绕z轴旋转。这样只会改变xy而不会改变z值。
 
-![img](https://pic2.zhimg.com/80/v2-fbb493f5c284b552bb5760a6bfaa8ee5_720w.webp)
+![img](..\img\v2-fbb493f5c284b552bb5760a6bfaa8ee5_720w.webp)
 
 图7: 绕z轴旋转
 
@@ -1963,7 +1963,7 @@ objects.add(box2);
 
 最后得到:
 
-![img](https://pic1.zhimg.com/80/v2-756cb3e39f6e665d7b57a1eeb2ca18d4_720w.webp)
+![img](..\img\v2-756cb3e39f6e665d7b57a1eeb2ca18d4_720w.webp)
 
 正宗Cornell Box
 
@@ -1973,7 +1973,7 @@ objects.add(box2);
 
 首先让我们来生成一个固定密度的体积体。光线可以在体积体内部发生散射, 也可以像图中的中间那条射线一样直接穿过去。体积体越薄越透明, 直接穿过去的情况就越有可能会发生。光线在体积体中直线传播所经过的距离也决定了光线采用图中哪种方式通过体积体。
 
-![img](https://pic2.zhimg.com/80/v2-bedd710b1d812c5c0a6c284aec1b11a1_720w.webp)
+![img](..\img\v2-bedd710b1d812c5c0a6c284aec1b11a1_720w.webp)
 
 光线与体积体相交
 
@@ -2117,7 +2117,7 @@ hittable_list cornell_smoke() {
 
 我们会得到:
 
-![img](https://pic1.zhimg.com/80/v2-dc0e109f216f2aa5f488b9bfcc74d050_720w.webp)
+![img](..\img\v2-dc0e109f216f2aa5f488b9bfcc74d050_720w.webp)
 
 Cornell Box与烟雾
 
@@ -2200,7 +2200,7 @@ hittable_list final_scene() {
 
 每个像素点采样10,000次, 得到下图的结果:
 
-![img](https://pic1.zhimg.com/80/v2-460d12c611ba27f071c9977864c6a2d0_720w.webp)
+![img](..\img\v2-460d12c611ba27f071c9977864c6a2d0_720w.webp)
 
 最终场景
 
