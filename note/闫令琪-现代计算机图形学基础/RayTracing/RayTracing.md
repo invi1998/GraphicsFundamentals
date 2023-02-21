@@ -6,7 +6,7 @@
 
 # Ray Tracing in One Weekend V3.0中文翻译
 
-![img](.\img\v2-9a35b750d53cf1316439c9ee9c5dce46_180x120.jpg)
+![img](..\img\v2-9a35b750d53cf1316439c9ee9c5dce46_180x120.jpg)
 
 ## 目录
 
@@ -46,7 +46,7 @@
 
 当你开始写渲染器的时候, 你首先要有办法看到你渲染的图像。最直接了当的方法就行把图像信息写入文件。问题是, 有那么多图片格式, 而且许多格式都挺复杂的。在一开始, 我常常使用最简单的ppm文件。这里引用Wikipedia上面的简明介绍:
 
-![img](.\img\v2-d23bb56acdadb81f85b89d8fc74f48e1_720w.webp)
+![img](..\img\v2-d23bb56acdadb81f85b89d8fc74f48e1_720w.webp)
 
 我们来写一下输出这种图片格式的C++代码:
 
@@ -94,7 +94,7 @@ build/inOneWeekend > image.ppm
 
 打开我们输出的文件(我是Mac系统, 我是用ToyViewer打开的, 你可以用你喜欢的任意看图软件来打开。如果你默认的看图软件(比如windows下的图片)不支持ppm格式, 只要Google一下"ppm viewer"装个新的就行。)打开后的结果如下:
 
-![img](.\img\v2-fb2906fa70e6a50c6814f52351d1d8d2_720w.webp)
+![img](..\img\v2-fb2906fa70e6a50c6814f52351d1d8d2_720w.webp)
 
 好耶!这便是图形学中的"hello world"了【吐槽：图形学的hello world不是三角形嘛】。如果你的图像看上去不是这样的, 用文本编辑器打开你的输出文件, 看看里面内容是啥样的。不出意外的话, 正确格式应该是这样的:
 
@@ -275,7 +275,7 @@ int main() {
 
 所有的光线追踪器都有个一个ray类, 我们假定光线的公式为 $p(t) = a + t\vec{b}$ 。这里的 p 是三维射线上的一个点。 $a$ 是射线的原点, $\vec{b}$ 是射线的方向。类中的变量 t 是一个实数(代码中为double类型)。 $p(t)$ 接受任意的 $\vec{b}$ 做为变量, 返回射线上的对应点。如果允许 t 取负值你可以得到整条直线。对于一个正数 t, 你只能得到原点前部分 a , 这常常被称为半条直线, 或者说射线。
 
-![img](.\img\v2-0a13240fad9e360645339165054c4e62_720w.webp)
+![img](..\img\v2-0a13240fad9e360645339165054c4e62_720w.webp)
 
 图1:线性插值
 
@@ -316,7 +316,7 @@ class ray {
 
 在使用正方形的图像Debug时我时常会遇到问题, 因为我老是把x和y弄反。所以我坚持使用200x100这样长宽不等的图像。我会把视点(或者说摄像机, 如果你认为它是个摄像机的话)放在(0,0,0)。这里y轴向上, x轴向右, 为了准守使用右手系的规范, 摄像机看向的方向为z轴的负方向。我会把发出射线的原点从图像的左下角开始沿着xy方向做增量直至遍历全图。注意我这里并没有将射线的向量设置为单位向量, 因为我认为这样代码会更加简单快捷。
 
-![img](.\img\v2-d8d14f547542744c59ef7db86e510083_720w.webp)
+![img](..\img\v2-d8d14f547542744c59ef7db86e510083_720w.webp)
 
 图2:摄像机图例
 
@@ -365,7 +365,7 @@ blendedValue=(1−t)⋅startValue+t⋅endValue
 
 当t从0到1, 我们会渲染出这样的图像:
 
-![img](.\img\v2-f16c3bad8439858002670f5ee582789e_720w.webp)
+![img](..\img\v2-f16c3bad8439858002670f5ee582789e_720w.webp)
 
 一个沿Y轴蓝白渐变的图像
 
@@ -399,7 +399,7 @@ $t^2\vec{b}⋅\vec{b}+2t\vec{b}⋅\vec{(a−c)}+\vec{(a−c)}⋅\vec{(a−c)}−
 
 方程中的向量和半径R都是已知的常量, 唯一的未知数就是t, 并且这个等式是关于t的一个一元二次方程, 就像你在高中数学课上【吐槽: ？？？】学到的那样。你可以用求根公式来判别交点个数, 为正则2个交点, 为负则无交点, 为0则一个交点。在图形学中, 代数与几何往往密切相关, 你看图:
 
-![img](.\img\v2-5a3fbd572f05c511bc2cdf7fcd3df55a_720w.webp)
+![img](..\img\v2-5a3fbd572f05c511bc2cdf7fcd3df55a_720w.webp)
 
 图3: 射线与球体相交的交点情况
 
@@ -426,7 +426,7 @@ vec3 ray_color(const ray& r) {
 
 我们会得到:
 
-![img](.\img\v2-73a372b979105344547ea89345970093_720w.webp)
+![img](..\img\v2-73a372b979105344547ea89345970093_720w.webp)
 
 一个简单的红色球体
 
@@ -436,7 +436,7 @@ vec3 ray_color(const ray& r) {
 
 为了来给球体着色, 首先我们来定义一下面法线。面法线应该是一种垂直于交点所在平面的三维向量。关于面法线我们存在两个设计抉择。首先是是否将其设计为单位向量, 这样对于着色器来说, 所以我会说"yes!"但是我并没有在代码里这么做, 这部分差异可能会导致一些潜在的bug。所以记住, 这个是个人喜好, 大多数的人喜好使用单位法线。对于球体来说, 朝外的法线是直线与球的交点减去球心:
 
-![img](.\img\v2-009e0ab00e758c137a5a9a6dbc639a8c_720w.webp)
+![img](..\img\v2-009e0ab00e758c137a5a9a6dbc639a8c_720w.webp)
 
 图4: 球体的表面法线
 
@@ -471,7 +471,7 @@ vec3 ray_color(const ray& r) {
 
 这会得到下面的结果:
 
-![img](.\img\v2-7b6105ac601399ee8171da1c3df9cf56_720w.webp)
+![img](..\img\v2-7b6105ac601399ee8171da1c3df9cf56_720w.webp)
 
 使用法线作为颜色值输出
 
@@ -595,7 +595,7 @@ bool sphere::hit(const ray& r, double t_min, double t_max, hit_record& rec) cons
 
 好了, 让我们来谈谈第二个关于面法线设计上的问题吧， 那就是面法线的朝向问题。对于现在来说, 如果光线从球体外部击中球体, 那么法线也是朝外的, 与射线的方向相反(不是数学意义上的严格相反, 只是大致逆着)。如果光线从内部射向球面时, 此时的面法线依然朝外, 与射线方向相同。相对的, 我们也可以总是让法线向量与射线方向相反, 即射线从外部射向球面, 法向量朝外, 射线从内部射向球面, 法向量向着球心。
 
-![img](.\img\v2-f3be9d1529ba6a7d923f9c4e3533aba3_720w.webp)
+![img](..\img\v2-f3be9d1529ba6a7d923f9c4e3533aba3_720w.webp)
 
 图5: 光线可能射入的方向
 
@@ -879,7 +879,7 @@ int main() {
 
 这样我们就会得到一张使用法向作为球体颜色值的图片。当你想查看模型的特征细节与瑕疵时, 输出面法向作为颜色值不失为一种很好的方法。
 
-![img](.\img\v2-c4e02ebc310fa0ab8102bf334c31a21e_720w.webp)
+![img](..\img\v2-c4e02ebc310fa0ab8102bf334c31a21e_720w.webp)
 
 加上地板, 输出法线
 
@@ -925,7 +925,7 @@ inline double random_double() {
 
 对于给定的像素, 我们发射多条射线进行多次采样。然后我们对颜色结果求一个平均值:
 
-![img](.\img\v2-e54c77c97131c90f04a27e5a5de7ec55_720w.webp)
+![img](..\img\v2-e54c77c97131c90f04a27e5a5de7ec55_720w.webp)
 
 图6: 对一个像素进行多次采样
 
@@ -1027,7 +1027,7 @@ int main() {
 
 停, 放大放大再放大, 看啊, 每一个像素都是背景和前景的混合:
 
-![img](.\img\v2-807248338e5835236f2c884fa9ed4105_720w.webp)
+![img](..\img\v2-807248338e5835236f2c884fa9ed4105_720w.webp)
 
 加入抗锯齿效果后前背景颜色混合的像素
 
@@ -1037,7 +1037,7 @@ int main() {
 
 漫反射材质不仅仅接受其周围环境的光线, 还会在散射时使光线变成自己本身的颜色。光线射入漫反射材质后, 其反射方向是随机的。所以如果我们为下面这两个漫发射的球射入三条光线, 光线都会有不同的反射角度:
 
-![img](.\img\v2-f61ad9d024071668f27db1fc248abcf5_720w.webp)
+![img](..\img\v2-f61ad9d024071668f27db1fc248abcf5_720w.webp)
 
 并且大部分的光线都会被吸收, 而不是被反射。表面越暗, 吸收就越有可能发生。我们使用任意的算法生成随机的反射方向, 就能让其看上去像一个粗糙不平的漫反射材质。这里我们采用最简单的算法就能得到一个理想的漫反射表面(其实是懒得写lambertian所以用了一个数学上近似的方法)。
 
@@ -1045,7 +1045,7 @@ int main() {
 
 好, 现在有两个单位球相切于点p, 这两个球体的球心为$(p+\vec{N})$ 和 $(p−\vec{N})$ ,$\vec{N}$是球体表面的法向量。球心为 $(p-\vec{N})$ 的那个球在表面的内部, 球心为 $(p+\vec{N})$的球在表面的外部。选择和光线原点位于表面同一侧的那个单位球, 并从球中随机选取一点 $s$ , 向量 $(s-p)$ 就是我们要求的反射光线的方向:
 
-![img](.\img\v2-45d8ee02fefda11052daf78be9ace252_720w.webp)
+![img](..\img\v2-45d8ee02fefda11052daf78be9ace252_720w.webp)
 
 图8：生成一条随机的反射光线
 
@@ -1144,7 +1144,7 @@ int main() {
 
 我们会得到:
 
-![img](.\img\v2-01259cbd92f891d2db907a773d51e7aa_720w.webp)
+![img](..\img\v2-01259cbd92f891d2db907a773d51e7aa_720w.webp)
 
 第一次渲染出漫反射材质的球体
 
@@ -1169,7 +1169,7 @@ void write_color(std::ostream &out, int samples_per_pixel) {
 
 好了, 现在看上去更灰了, 如我们所愿:
 
-![img](.\img\v2-f0ab33e768ac857087b5e2547f47b8b3_720w.webp)
+![img](..\img\v2-f0ab33e768ac857087b5e2547f47b8b3_720w.webp)
 
 伽马校正后的漫反射球体
 
@@ -1198,7 +1198,7 @@ vec3 random_unit_vector() {
 }
 ```
 
-![img](.\img\v2-2a37ce5c0bb8e7e3f51cd3f947ce4f8f_720w.webp)
+![img](..\img\v2-2a37ce5c0bb8e7e3f51cd3f947ce4f8f_720w.webp)
 
 图9: 在球面上生成一个随机的向量
 
@@ -1226,7 +1226,7 @@ vec3 ray_color(const ray& r, const hittable& world, int depth) {
 
 我们会得到这样的图片, 和之前很相像:
 
-![img](.\img\v2-cc4cdd3d687349fa0d472a701f541cfe_720w.webp)
+![img](..\img\v2-cc4cdd3d687349fa0d472a701f541cfe_720w.webp)
 
 正确的lambertian球体
 
@@ -1283,7 +1283,7 @@ vec3 ray_color(const ray& r, const hittable& world, int depth) {
 
 我们会得到如下的图片:
 
-![img](.\img\v2-733c6ea8353952f6f50e33a1990c8a67_720w.webp)
+![img](..\img\v2-733c6ea8353952f6f50e33a1990c8a67_720w.webp)
 
 使用半球面向量渲染漫反射球体
 
@@ -1420,7 +1420,7 @@ class lambertian : public material {
 
 
 
-![img](.\img\v2-8029e9a049925eeec08d6884d44de012_720w.webp)
+![img](..\img\v2-8029e9a049925eeec08d6884d44de012_720w.webp)
 
 
 
@@ -1524,7 +1524,7 @@ int main() {
 
 我们就能得到这样的图片:
 
-![img](.\img\v2-02f0718b49ea2f298ca637e70f1e2ae4_720w.webp)
+![img](..\img\v2-02f0718b49ea2f298ca637e70f1e2ae4_720w.webp)
 
 闪耀☆金属球
 
@@ -1555,7 +1555,7 @@ class metal : public material {
 
 我们可以将模糊值设置为0.3和1.0, 图片会变成这样:
 
-![img](.\img\v2-e362c4148c81abe70ebefa2d089c3eef_720w.webp)
+![img](..\img\v2-e362c4148c81abe70ebefa2d089c3eef_720w.webp)
 
 模糊的金属
 
@@ -1565,7 +1565,7 @@ class metal : public material {
 
 折射部分是最难去debug的部分。我常常一开始让所有的光线只发生折射来调试。在这个项目中, 我加入了两个这样的玻璃球, 并且得到下图(我还没教你怎么弄出这样的玻璃球, 你先往下读, 一会儿你就知道了):
 
-![img](.\img\v2-e61f5ce6422cdb6fd13190900fc30896_720w.webp)
+![img](..\img\v2-e61f5ce6422cdb6fd13190900fc30896_720w.webp)
 
 图10-1
 
@@ -1577,7 +1577,7 @@ $η⋅sinθ=η^′⋅sinθ^′$
 
 θ与 θ′ 是入射光线与折射光线距离法线的夹角, θ 与 θ′ (读作theta和theta prime)是介质的折射率(规定空气为1.0, 玻璃为1.3-1.7,钻石为2.4), 如图:
 
-![img](.\img\v2-4f08d1085c6bc318a23e135512b6def0_720w.webp)
+![img](..\img\v2-4f08d1085c6bc318a23e135512b6def0_720w.webp)
 
 折射光线示意图
 
@@ -1652,7 +1652,7 @@ class dielectric : public material {
 };
 ```
 
-![img](.\img\v2-368925cc729af1d7d580d5b92fc8f2e3_720w.webp)
+![img](..\img\v2-368925cc729af1d7d580d5b92fc8f2e3_720w.webp)
 
 只发生折射的玻璃材质
 
@@ -1755,7 +1755,7 @@ world.add(make_shared<sphere>(vec3(-1,0,-1), 0.5, make_shared<dielectric>(1.5)))
 
 我们会得到:
 
-![img](.\img\v2-7484d6b5ddb4744f741747ac725e7749_720w.webp)
+![img](..\img\v2-7484d6b5ddb4744f741747ac725e7749_720w.webp)
 
 现实世界中的玻璃, 发生折射的概率会随着入射角而改变——从一个很狭窄的角度去看玻璃窗, 它会变成一面镜子。这个式子又丑又长, 好在我们有个数学上近似的等式, 它是由Christophe Schlick提出的:
 
@@ -1819,7 +1819,7 @@ world.add(make_shared<sphere>(vec3(-1,0,-1), -0.45, make_shared<dielectric>(1.5)
 
 就有:
 
-![img](.\img\v2-1c249bd477ba8b2aeb5f49d845486fbc_720w.webp)
+![img](..\img\v2-1c249bd477ba8b2aeb5f49d845486fbc_720w.webp)
 
 一个通透的玻璃球
 
@@ -1829,7 +1829,7 @@ world.add(make_shared<sphere>(vec3(-1,0,-1), -0.45, make_shared<dielectric>(1.5)
 
 首先我让射线从原点射向 z=−1 平面。我们当然也可以让其射向 z=−2 的平面,或者其他的什么值都行, 反正h和这个距离d是成比例的。
 
-![img](.\img\v2-d8f93c297ec72b9e072535b4f6dcb9c8_720w.webp)
+![img](..\img\v2-d8f93c297ec72b9e072535b4f6dcb9c8_720w.webp)
 
 摄像机示意图
 
@@ -1878,7 +1878,7 @@ world.add(make_shared<sphere>(vec3( R,0,-1), R, make_shared<lambertian>(vec3(1, 
 
 我们会得到:
 
-![img](.\img\v2-a5ee444b1b746b41d932c4fc403d6ee3_720w.webp)
+![img](..\img\v2-a5ee444b1b746b41d932c4fc403d6ee3_720w.webp)
 
 一个90°的广角镜头
 
@@ -1886,13 +1886,13 @@ world.add(make_shared<sphere>(vec3( R,0,-1), R, make_shared<lambertian>(vec3(1, 
 
 我们还需要一个变量去描述摄像机的倾斜程度, 或者说摄像机绕着轴lookfrom - lookat旋转的角度【想象下图中红色平面绕这个轴旋转】。就好比你站直了, 但是你的头还是可以左右转动。为了去描述这个倾斜程度, 我们需要一个向量来指定摄像机坐标系的正上方方向(up vector)。这里注意:这个向量就在视线方向正交投影过来的那个平面上:
 
-![img](.\img\v2-aade90f2e3cab80e0d37eb824e87d602_720w.webp)
+![img](..\img\v2-aade90f2e3cab80e0d37eb824e87d602_720w.webp)
 
 摄像机的视线方向
 
 我们可以使用任意的方向向量, 将其投影到上图的平面中来获得摄像机的up vector。我这里给他起名叫vup向量。经过一系列的点乘操作, 我们会有完整的u,v,w三个向量来描述摄像机的旋向【这里要结合着代码看与下面的图片看】。
 
-![img](.\img\v2-c981ba8338f9688cc36c7f0e4a8861eb_720w.webp)
+![img](..\img\v2-c981ba8338f9688cc36c7f0e4a8861eb_720w.webp)
 
 vup
 
@@ -1947,13 +1947,13 @@ camera cam(vec3(-2,2,1), vec3(0,0,-1), vup, 90, aspect_ratio);
 
 
 
-![img](.\img\v2-3a76513e86c48fc03887ee41abb03b53_720w.webp)
+![img](..\img\v2-3a76513e86c48fc03887ee41abb03b53_720w.webp)
 
 从远处看
 
 然后我们在改变一下fov:【这里缩小了fov】
 
-![img](.\img\v2-3b1f9d7c41cfdf7c32c4452f82e80d48_720w.webp)
+![img](..\img\v2-3b1f9d7c41cfdf7c32c4452f82e80d48_720w.webp)
 
 放大看
 
@@ -1967,13 +1967,13 @@ camera cam(vec3(-2,2,1), vec3(0,0,-1), vup, 90, aspect_ratio);
 
 现实世界中的摄像机的透镜组是很复杂的。但对于我们写代码来说, 我们只需要模拟上述的顺序: 图像传感器, 透镜, 快门, 然后射出光线, 最后记得翻转图片(进过透镜成像会被上下翻转)。图形学中人们常常使用一块薄片透镜近似模拟:
 
-![img](.\img\v2-08cf2fde8d40da8c84f80f9fec833a0e_720w.webp)
+![img](..\img\v2-08cf2fde8d40da8c84f80f9fec833a0e_720w.webp)
 
 摄像机透镜模型
 
 但是我们根本不用模拟任何摄像机内部的东西, 对于我们渲染摄像机外的物体来说, 这些都没必要。我们只要从一个虚拟的透镜范围中发射光线到我们的摄像机平面就能模拟了,这个透镜与平面的距离成为焦距(focus_dist)
 
-![img](.\img\v2-5d7653d4521c1fff2fde0d4195a0caaa_720w.webp)
+![img](..\img\v2-5d7653d4521c1fff2fde0d4195a0caaa_720w.webp)
 
 摄像机平面
 
@@ -2056,7 +2056,7 @@ camera cam(lookfrom, lookat, vup, 20, aspect_ratio, aperture, dist_to_focus);
 
 就有:
 
-![img](.\img\v2-8d5daba641a0c74f8af90cd9b47f9e42_720w.webp)
+![img](..\img\v2-8d5daba641a0c74f8af90cd9b47f9e42_720w.webp)
 
 加入景深效果
 
@@ -2125,7 +2125,7 @@ int main() {
 
 我们会得到:
 
-![img](.\img\v2-7483e528431ca10622ddd31ce8ebbba9_720w.webp)
+![img](..\img\v2-7483e528431ca10622ddd31ce8ebbba9_720w.webp)
 
 最终场景
 

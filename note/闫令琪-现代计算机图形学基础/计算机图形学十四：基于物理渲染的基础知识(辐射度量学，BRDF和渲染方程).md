@@ -22,7 +22,7 @@
 
 辐射度量学其实是对光照的一套测量系统和单位，它能够准确的描述光线的物理性质。
 
-具体来说，我们需要明白的是其中的几个关于光线的概念，分别为： **辐射能量(Radiant energy)，辐射通量(Radiant flux)，辐射强度(Radiant intensity)，irradiance，radiance**，(对后两种概念没有合适的中文，所以就直接用英文了)，接下来就对这些概念进行具体解释。
+具体来说，我们需要明白的是其中的几个关于光线的概念，分别为： **辐射能量(Radiant energy)，辐射通量(Radiant flux)，辐射强度(Radiant intensity)，irradiance（辐射照度），radiance（辐射亮度）**，(对后两种概念没有合适的中文，所以就直接用英文了)，接下来就对这些概念进行具体解释。
 
 ## **2.1 辐射能量(Radiant energy)和辐射通量(Radiant flux)**
 
@@ -106,7 +106,7 @@ $$
 
 ![img](./img/14-9.png)
 
-同样用一句话来说，irradiance是指每单位**照射**面积所接收到的power，单位如图中所示。 借助于irradiance，可以很轻松的解释在Blinn-Phong所提到的Lambert's Law,即光线亮度在计算时需要乘上一个cosθ，如下图所示：
+同样用一句话来说，irradiance是 指每单位**照射**面积所接收到的power，单位如图中所示。 借助于irradiance，可以很轻松的解释在Blinn-Phong所提到的Lambert's Law,即光线亮度在计算时需要乘上一个cosθ，如下图所示：
 
 ![img](./img/14-10.png)
 
